@@ -2,17 +2,17 @@
 
 namespace Database\Seeders;
 
-use App\Models\DepartmentAccess;
+use App\Models\IdeaRating;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class DepartmentAccessSeeder extends Seeder
+class IdeaRatingSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        DepartmentAccess::factory()->count(10)->create();
+        IdeaRating::factory()->count(10)->create();
     }
 }

@@ -27,12 +27,9 @@ class DatabaseSeeder extends Seeder
             TopicTagSeeder::class,
             IdeaLogSeeder::class,
             IdeaUserSeeder::class,
-
+            IdeaCommentSeeder::class,
+            IdeaRatingSeeder::class,
+            EvalutionObject::class,
         ]);
-
-        // User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
     }
 }
