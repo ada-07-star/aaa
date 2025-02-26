@@ -9,4 +9,5 @@ class TopicCategory extends Model
 {
     /** @use HasFactory<\Database\Factories\TopicCategoryFactory> */
     use HasFactory;
+    
 }

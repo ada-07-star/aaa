@@ -9,4 +9,18 @@ class Category extends Model
 {
     /** @use HasFactory<\Database\Factories\CategoryFactory> */
     use HasFactory;
+
+    protected $fillable = [
+        'title',
+        'department_id',
+        'description',
+        'status',
+        'created_by',
+        'updated_by'
+    ];
+
+    public function topics()
+    {
+        return $this->belongsToMany(Topic::class, 'topic_categories');
+    }
 }

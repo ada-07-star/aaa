@@ -14,7 +14,6 @@ class EvaluationObject extends Model
         'department_id',
         'description',
         'status',
-        'status',
         'created_by',
     ];
 }

@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\DepartmentAccess;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -29,7 +28,8 @@ class DatabaseSeeder extends Seeder
             IdeaUserSeeder::class,
             IdeaCommentSeeder::class,
             IdeaRatingSeeder::class,
-            EvalutionObject::class,
+            EvaluationObjectSeeder::class,
+            TopicCategorySeeder::class,
         ]);
     }
 }
