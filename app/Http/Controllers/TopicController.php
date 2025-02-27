@@ -5,34 +5,35 @@ namespace App\Http\Controllers;
 use App\Models\Topic;
 use App\Http\Requests\StoreTopicRequest;
 use App\Http\Requests\UpdateTopicRequest;
-use App\Services\TopicService;
+use App\Repositories\TopicRepository;
 use GuzzleHttp\Psr7\Request;
+use Illuminate\Http\JsonResponse;
 
 class TopicController extends Controller
 {
-    protected $topicService;
+    protected $topicRepository;
 
-    public function __construct(TopicService $topicService)
+    public function __construct(TopicRepository $topicRepository)
     {
-        $this->topicService = $topicService;
+        $this->topicRepository = $topicRepository;
     }
+
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): JsonResponse
     {
-        $topics = Topic::with('categories')->orderBy('created_at', 'asc')->get();
-
-        $topicsList = $this->topicService->getTopicsList($topics);
+        $topics = $this->topicRepository->getTopicsList();
 
         return response()->json([
             'status' => 'success',
             'message' => 'sample message',
             'data' => [
-                'topics' => $topicsList,
+                'topics' => $topics,
             ],
         ]);
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -55,8 +56,7 @@ class TopicController extends Controller
      */
     public function show($id)
     {
-        $topic = Topic::with(['categories'])->find($id);
-
+        $topic = $this->topicRepository->getTopicDetails($id);
         if (!$topic) {
             return response()->json([
                 'status' => 'error',
@@ -64,14 +64,11 @@ class TopicController extends Controller
             ], 404);
         }
 
-        // دریافت اطلاعات موضوع با استفاده از TopicService
-        $topicDetails = $this->topicService->getTopicDetails($topic);
-
         return response()->json([
             'status' => 'success',
-            'message' => 'sample message',
+            'message' => 'جزئیات موضوع با موفقیت دریافت شد.',
             'data' => [
-                'topic' => $topicDetails,
+                'topic' => $topic,
             ],
         ]);
     }

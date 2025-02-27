@@ -2,7 +2,8 @@
 
 namespace App\Providers;
 
-use App\Services\TopicService;
+use App\Models\Topic;
+use App\Repositories\TopicRepository;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -12,8 +13,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(TopicService::class, function ($app) {
-            return new TopicService();
+        $this->app->bind(TopicRepository::class, function ($app) {
+            return new TopicRepository($app->make(Topic::class));
         });
     }
 

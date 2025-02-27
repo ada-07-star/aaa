@@ -15,21 +15,22 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
         $this->call([
-            UserSeeder::class,
-            DepartmentSeeder::class,
-            DepartmentAccessSeeder::class,
-            LanguageSeeder::class,
-            TopicSeeder::class,
-            IdeaSeeder::class,
-            CategorySeeder::class,
-            TagSeeder::class,
-            TopicTagSeeder::class,
-            IdeaLogSeeder::class,
-            IdeaUserSeeder::class,
-            IdeaCommentSeeder::class,
-            IdeaRatingSeeder::class,
-            EvaluationObjectSeeder::class,
-            TopicCategorySeeder::class,
+            // UserSeeder::class,
+            // DepartmentSeeder::class,
+            // DepartmentAccessSeeder::class,
+            // LanguageSeeder::class,
+            // TopicSeeder::class,
+            // IdeaSeeder::class,
+            // CategorySeeder::class,
+            // TagSeeder::class,
+            // TopicTagSeeder::class,
+            // IdeaLogSeeder::class,
+            // IdeaUserSeeder::class,
+            // IdeaCommentSeeder::class,
+            // IdeaRatingSeeder::class,
+            // EvaluationObjectSeeder::class,
+            // TopicCategorySeeder::class,
+            EvaluationSeeder::class
         ]);
     }
 }
