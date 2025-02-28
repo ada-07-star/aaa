@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\v1;
 
-use App\Models\TopicCategory;
-use App\Http\Requests\StoreTopicCategoryRequest;
-use App\Http\Requests\UpdateTopicCategoryRequest;
+use App\Models\IdeaLog;
+use App\Http\Requests\StoreIdeaLogRequest;
+use App\Http\Requests\UpdateIdeaLogRequest;
 
-class TopicCategoryController extends Controller
+class IdeaLogController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -27,7 +27,7 @@ class TopicCategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreTopicCategoryRequest $request)
+    public function store(StoreIdeaLogRequest $request)
     {
         //
     }
@@ -35,7 +35,7 @@ class TopicCategoryController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(TopicCategory $topicCategory)
+    public function show(IdeaLog $ideaLog)
     {
         //
     }
@@ -43,7 +43,7 @@ class TopicCategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(TopicCategory $topicCategory)
+    public function edit(IdeaLog $ideaLog)
     {
         //
     }
@@ -51,7 +51,7 @@ class TopicCategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateTopicCategoryRequest $request, TopicCategory $topicCategory)
+    public function update(UpdateIdeaLogRequest $request, IdeaLog $ideaLog)
     {
         //
     }
@@ -59,7 +59,7 @@ class TopicCategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(TopicCategory $topicCategory)
+    public function destroy(IdeaLog $ideaLog)
     {
         //
     }

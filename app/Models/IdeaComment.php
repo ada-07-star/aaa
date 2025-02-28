@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class IdeaComment extends Model
 {
@@ -18,22 +20,22 @@ class IdeaComment extends Model
         'created_by',
     ];
 
-    public function idea()
+    public function idea(): BelongsTo
     {
         return $this->belongsTo(Idea::class, 'idea_id');
     }
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    public function parent()
+    public function parent(): BelongsTo
     {
         return $this->belongsTo(IdeaComment::class, 'parent_id');
     }
 
-    public function replies()
+    public function replies(): HasMany
     {
         return $this->hasMany(IdeaComment::class, 'parent_id');
     }

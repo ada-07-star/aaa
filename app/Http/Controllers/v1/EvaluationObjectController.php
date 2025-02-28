@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\v1;
 
-use App\Models\Idea;
-use App\Http\Requests\StoreIdeaRequest;
-use App\Http\Requests\UpdateIdeaRequest;
+use App\Models\EvaluationObject;
+use Illuminate\Http\Request;
 
-class IdeaController extends Controller
+class EvaluationObjectController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -27,7 +26,7 @@ class IdeaController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreIdeaRequest $request)
+    public function store(Request $request)
     {
         //
     }
@@ -35,7 +34,7 @@ class IdeaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Idea $idea)
+    public function show(EvaluationObject $evaluationObject)
     {
         //
     }
@@ -43,7 +42,7 @@ class IdeaController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Idea $idea)
+    public function edit(EvaluationObject $evaluationObject)
     {
         //
     }
@@ -51,7 +50,7 @@ class IdeaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateIdeaRequest $request, Idea $idea)
+    public function update(Request $request, EvaluationObject $evaluationObject)
     {
         //
     }
@@ -59,7 +58,7 @@ class IdeaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Idea $idea)
+    public function destroy(EvaluationObject $evaluationObject)
     {
         //
     }

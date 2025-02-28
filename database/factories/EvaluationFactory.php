@@ -18,7 +18,7 @@ class EvaluationFactory extends Factory
     {
         return [
            'title' => $this->faker->sentence(6),
-            'department_id' => $this->faker->numberBetween(1, 10),
+            'department_id' => \App\Models\Department::factory(),
             // 'evaluation_rating_id' => $this->faker->numberBetween(1, 5),
             'description' => $this->faker->paragraph,
             'status' => $this->faker->boolean,

@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\v1;
 
-use App\Models\EvaluationObject;
-use Illuminate\Http\Request;
+use App\Models\Department;
+use App\Http\Requests\StoreDepartmentRequest;
+use App\Http\Requests\UpdateDepartmentRequest;
 
-class EvaluationObjectController extends Controller
+class DepartmentController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -26,7 +27,7 @@ class EvaluationObjectController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreDepartmentRequest $request)
     {
         //
     }
@@ -34,7 +35,7 @@ class EvaluationObjectController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(EvaluationObject $evaluationObject)
+    public function show(Department $department)
     {
         //
     }
@@ -42,7 +43,7 @@ class EvaluationObjectController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(EvaluationObject $evaluationObject)
+    public function edit(Department $department)
     {
         //
     }
@@ -50,7 +51,7 @@ class EvaluationObjectController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, EvaluationObject $evaluationObject)
+    public function update(UpdateDepartmentRequest $request, Department $department)
     {
         //
     }
@@ -58,7 +59,7 @@ class EvaluationObjectController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(EvaluationObject $evaluationObject)
+    public function destroy(Department $department)
     {
         //
     }

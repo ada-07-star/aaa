@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\v1;
 
 use App\Models\Topic;
 use App\Http\Requests\StoreTopicRequest;
 use App\Http\Requests\UpdateTopicRequest;
-use App\Repositories\TopicRepository;
+use App\Repositories\v1\TopicRepository;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Http\JsonResponse;
 

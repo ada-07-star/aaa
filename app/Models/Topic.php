@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -27,13 +28,14 @@ class Topic extends Model
         'current_state',
         'judge_number',
         'minimum_score',
+        'evaluation_id',
         'status',
         'is_archive',
         'created_by',
         'updated_by',
     ];
 
-    public function categories()
+    public function categories(): BelongsToMany
     {
         return $this->belongsToMany(Category::class, 'topic_categories');
     }

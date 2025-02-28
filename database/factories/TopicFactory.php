@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Models\Topic;
 use App\Models\Department;
+use App\Models\Evaluation;
 use App\Models\Language;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -36,6 +36,7 @@ class TopicFactory extends Factory
             'current_state' => $this->faker->randomElement(['pending', 'approved', 'rejected']), 
             'judge_number' => $this->faker->numberBetween(1, 10), 
             'minimum_score' => $this->faker->numberBetween(0, 100),
+            'evaluation_id' => Evaluation::all()->random()->id,
             'status' => $this->faker->boolean,  
             'is_archive' => $this->faker->boolean, 
             'created_by' => $this->faker->numberBetween(1, 100),

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\v1;
 
-use App\Models\TopicTag;
-use App\Http\Requests\StoreTopicTagRequest;
-use App\Http\Requests\UpdateTopicTagRequest;
+use App\Models\DepartmentAccess;
+use App\Http\Requests\StoreDepartmentAccessRequest;
+use App\Http\Requests\UpdateDepartmentAccessRequest;
 
-class TopicTagController extends Controller
+class DepartmentAccessController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -27,7 +27,7 @@ class TopicTagController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreTopicTagRequest $request)
+    public function store(StoreDepartmentAccessRequest $request)
     {
         //
     }
@@ -35,7 +35,7 @@ class TopicTagController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(TopicTag $topicTag)
+    public function show(DepartmentAccess $departmentAccess)
     {
         //
     }
@@ -43,7 +43,7 @@ class TopicTagController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(TopicTag $topicTag)
+    public function edit(DepartmentAccess $departmentAccess)
     {
         //
     }
@@ -51,7 +51,7 @@ class TopicTagController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateTopicTagRequest $request, TopicTag $topicTag)
+    public function update(UpdateDepartmentAccessRequest $request, DepartmentAccess $departmentAccess)
     {
         //
     }
@@ -59,7 +59,7 @@ class TopicTagController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(TopicTag $topicTag)
+    public function destroy(DepartmentAccess $departmentAccess)
     {
         //
     }

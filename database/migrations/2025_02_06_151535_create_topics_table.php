@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreign('department_id')->references('id')->on('departments');
             $table->unsignedBigInteger('language_id');
             $table->foreign('language_id')->references('id')->on('languages');
-            $table->enum('age_range', AgeRangeEnum::getValues())->default(AgeRangeEnum::ADULT);
+            $table->enum('age_range', AgeRangeEnum::getValues())->default(null);
             $table->bigInteger('gender')->nullable();
             $table->string('thumb_image', 500)->nullable();
             $table->string('cover_image', 500)->nullable();
@@ -32,6 +32,8 @@ return new class extends Migration
             $table->string('current_state', 50);
             $table->integer('judge_number');
             $table->integer('minimum_score');
+            $table->unsignedBigInteger('evaluation_id')->nullable();
+            $table->foreign('evaluation_id')->references('id')->on('evaluations');
             $table->Boolean('status');
             $table->Boolean('is_archive');
             $table->bigInteger('created_by');

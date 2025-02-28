@@ -9,6 +9,7 @@ class DepartmentAccess extends Model
 {
     /** @use HasFactory<\Database\Factories\DepartmentAccessFactory> */
     use HasFactory;
+    
     protected $fillable = [  
         'user_id',  
         'role_id',  

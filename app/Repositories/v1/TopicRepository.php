@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories;
+namespace App\Repositories\v1;
 
 use App\Models\Topic;
 use Illuminate\Support\Collection;
@@ -100,7 +100,7 @@ class TopicRepository
      * @param int $topicId
      * @return array
      */
-    public function getTopicDetails(int $topicId)
+    public function getTopicDetails(int $topicId): array
     {
         $topic = $this->model->with('categories')->find($topicId);
 
@@ -126,6 +126,7 @@ class TopicRepository
             'current_state' => $topic->current_state,
             'judge_number' => $topic->judge_number,
             'minimum_score' => $topic->minimum_score,
+            'evaluation_id' => $topic->evaluation_id,
             'status' => $topic->status,
             'is_archive' => $topic->is_archive,
             'created_by' => $topic->created_by,

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\v1;
 
-use App\Models\DepartmentAccess;
-use App\Http\Requests\StoreDepartmentAccessRequest;
-use App\Http\Requests\UpdateDepartmentAccessRequest;
+use App\Models\Idea;
+use App\Http\Requests\StoreIdeaRequest;
+use App\Http\Requests\UpdateIdeaRequest;
 
-class DepartmentAccessController extends Controller
+class IdeaController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -27,7 +27,7 @@ class DepartmentAccessController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreDepartmentAccessRequest $request)
+    public function store(StoreIdeaRequest $request)
     {
         //
     }
@@ -35,7 +35,7 @@ class DepartmentAccessController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(DepartmentAccess $departmentAccess)
+    public function show(Idea $idea)
     {
         //
     }
@@ -43,7 +43,7 @@ class DepartmentAccessController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(DepartmentAccess $departmentAccess)
+    public function edit(Idea $idea)
     {
         //
     }
@@ -51,7 +51,7 @@ class DepartmentAccessController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateDepartmentAccessRequest $request, DepartmentAccess $departmentAccess)
+    public function update(UpdateIdeaRequest $request, Idea $idea)
     {
         //
     }
@@ -59,7 +59,7 @@ class DepartmentAccessController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(DepartmentAccess $departmentAccess)
+    public function destroy(Idea $idea)
     {
         //
     }

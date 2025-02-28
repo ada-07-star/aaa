@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Topic;
-use App\Repositories\TopicRepository;
+use App\Repositories\v1\TopicRepository;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider

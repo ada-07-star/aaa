@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Category;
+use App\Models\Topic;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +19,8 @@ class TopicCategoryFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'category_id' => Category::all()->random()->id,
+            'topic_id' => Topic::all()->random()->id,
         ];
     }
 }

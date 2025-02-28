@@ -18,12 +18,12 @@ class CategoryFactory extends Factory
     public function definition(): array
     {
         return [
-            'title' => $this->faker->sentence(3), // یا هر مقدار دلخواه دیگر  
-            'department_id' => Department::pluck('id')->random(), // انتخاب یک department_id تصادفی  
-            'description' => $this->faker->paragraph(), // توضیحات تصادفی  
-            'status' => $this->faker->boolean(), // وضعیت تصادفی  
-            'created_by' => $this->faker->randomNumber(), // شناسه کاربر ایجادکننده  
-            'updated_by' => $this->faker->randomNumber(), // شناسه کاربر به‌روزرسانی‌کننده  
+            'title' => $this->faker->sentence(3),
+            'department_id' => Department::pluck('id')->random(),
+            'description' => $this->faker->paragraph(),
+            'status' => $this->faker->boolean(),
+            'created_by' => $this->faker->randomNumber(), 
+            'updated_by' => $this->faker->randomNumber(),
             'created_at' => now(),  
             'updated_at' => now(),
         ];
