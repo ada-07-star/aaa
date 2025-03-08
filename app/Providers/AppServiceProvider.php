@@ -2,8 +2,9 @@
 
 namespace App\Providers;
 
-use App\Models\Topic;
-use App\Repositories\v1\TopicRepository;
+use App\Interfaces\TopicRepositoryInterface;
+use App\Repositories\IdeaRepository;
+use App\Repositories\TopicRepository;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,8 +14,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(TopicRepository::class, function ($app) {
-            return new TopicRepository($app->make(Topic::class));
+
+
+        $this->app->bind(
+            TopicRepositoryInterface::class,
+            TopicRepository::class
+        );
+
+        $this->app->bind(IdeaRepository::class, function ($app) {
+            return new IdeaRepository();
         });
     }
 

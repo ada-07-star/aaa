@@ -2,19 +2,18 @@
 
 namespace App\Enums;
 
-enum CurrentStateEnum
+final class CurrentStateEnum
 {
-    const ACTIVE = 'active';  
-    const INACTIVE = 'inactive';  
-    const PENDING = 'pending';  
+    const  DRAFT = 'پیش نویس';
+    const  ACTIVE =  'فعال';
+    const  ARCHIVED =  'بایگانی شده';
 
-    // متد برای بازگرداندن تمام مقادیر  
-    public static function getValues()  
-    {  
-        return [  
-            self::ACTIVE,  
-            self::INACTIVE,  
-            self::PENDING,  
-        ];  
-    }  
+    public static function getValues()
+    {
+        return [
+            self::DRAFT,
+            self::ACTIVE,
+            self::ARCHIVED,
+        ];
+    }
 }

@@ -20,8 +20,8 @@ return new class extends Migration
             $table->string('title', 500);
             $table->text('description');
             $table->Boolean('is_published');
-            $table->enum('current_state', CurrentStateEnum::getValues())->default(CurrentStateEnum::ACTIVE);
-            $table->enum('participation_type', ParticipationTypeEnum::getValues())->default(ParticipationTypeEnum::INDIVIDUAL);
+            $table->enum('current_state', CurrentStateEnum::getValues())->default(null);
+            $table->enum('participation_type', ParticipationTypeEnum::getValues())->default(null);
             $table->integer('final_score');
             $table->timestamps();
         });
