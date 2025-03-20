@@ -1,0 +1,49 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API ایده‌ها",
+        "description": "API برای مدیریت ایده‌ها",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://127.0.0.1:8000",
+            "description": "سرور اصلی"
+        }
+    ],
+    "paths": {
+        "/api/v1/app/topics": {
+            "get": {
+                "summary": "Get list of topics",
+                "operationId": "af108928cdfcc146382601a04660c13d",
+                "responses": {
+                    "200": {
+                        "description": "List of topics"
+                    }
+                }
+            }
+        },
+        "/api/v1/app/topics/{id}": {
+            "get": {
+                "summary": "Get a specific topic",
+                "operationId": "f54bb1b5ca83b09ff882e82b9dbf2808",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Topic details"
+                    }
+                }
+            }
+        }
+    },
+    "tags": []
+}

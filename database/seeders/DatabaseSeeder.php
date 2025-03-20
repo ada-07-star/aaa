@@ -16,7 +16,6 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             DepartmentSeeder::class,
             EvaluationSeeder::class,
-            DepartmentAccessSeeder::class,
             LanguageSeeder::class,
             TopicSeeder::class,
             IdeaSeeder::class,
@@ -28,6 +27,8 @@ class DatabaseSeeder extends Seeder
             IdeaCommentSeeder::class,
             IdeaRatingSeeder::class,
             EvaluationObjectSeeder::class,
+            DepartmentAccessSeeder::class,
+
         ]);
     }
 }

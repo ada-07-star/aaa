@@ -18,10 +18,9 @@ return new class extends Migration
             $table->foreign('idea_id')->references('id')->on('ideas');
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->foreign('parent_id')->references('id')->on('idea_comments');
-            $table->foreign('created_by')->references('id')->on('users');
             $table->integer('likes')->nullable();
-            $table->enum('status', ['active', 'inactive'])->default('active');
-            $table->unsignedBigInteger('created_by');
+            $table->enum('status', ['active', 'DRAFT'])->default('active');
+            $table->bigInteger('created_by');
             $table->timestamps();
         });
     }

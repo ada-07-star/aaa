@@ -14,7 +14,7 @@ class AgeRangeEnumCast implements CastsAttributes
 
     public function set($model, string $key, $value, array $attributes)
     {
-        if (!in_array($value, AgeRangeEnum::getValues())) {
+        if (!in_array($value, AgeRangeEnum::cases())) {
             throw new \InvalidArgumentException("مقدار نامعتبر برای ParticipationTypeEnum");
         }
 

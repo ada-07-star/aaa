@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Enums\CurrentStateEnum;
 use App\Enums\ParticipationTypeEnum;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Idea extends Model
 {
@@ -27,13 +28,13 @@ class Idea extends Model
         'participation_type' => ParticipationTypeEnum::class,
     ];
 
-    public function topics()
+    public function topic()
     {
         return $this->belongsTo(Topic::class);
     }
 
-    public function users()
+    public function users(): BelongsToMany
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsToMany(User::class, 'idea_users', 'idea_id', 'user_id');
     }
 }

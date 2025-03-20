@@ -2,18 +2,23 @@
 
 namespace App\Enums;
 
-final class CurrentStateEnum
+enum CurrentStateEnum: string
 {
-    const  DRAFT = 'پیش نویس';
-    const  ACTIVE =  'فعال';
-    const  ARCHIVED =  'بایگانی شده';
+    case DRAFT = 'draft';
+    case ACTIVE = 'active';
+    case ARCHIVED = 'archived';
 
-    public static function getValues()
+    public function label(): string
     {
-        return [
-            self::DRAFT,
-            self::ACTIVE,
-            self::ARCHIVED,
-        ];
+        return match ($this) {
+            self::DRAFT => 'پیش نویس',
+            self::ACTIVE => 'فعال',
+            self::ARCHIVED => 'بایگانی شده',
+        };
+    }
+
+    public static function values(): array
+    {
+        return array_column(self::cases(), 'value');
     }
 }

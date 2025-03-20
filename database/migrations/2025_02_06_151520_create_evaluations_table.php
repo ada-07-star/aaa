@@ -20,10 +20,8 @@ return new class extends Migration
             // $table->foreign('evaluation_rating_id')->references('id')->on('evaluation_ratings');
             $table->text('description')->nullable();
             $table->boolean('status');
-            $table->unsignedBigInteger('created_by');
-            $table->foreign('created_by')->references('id')->on('users');
-            $table->unsignedBigInteger('updated_by');
-            $table->foreign('updated_by')->references('id')->on('users');
+            $table->bigInteger('created_by');
+            $table->bigInteger('updated_by');
             $table->timestamps();
         });
     }

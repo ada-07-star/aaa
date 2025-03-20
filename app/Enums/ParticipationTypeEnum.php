@@ -2,16 +2,21 @@
 
 namespace App\Enums;
 
-enum ParticipationTypeEnum
+enum ParticipationTypeEnum: string
 {
-    const INDIVIDUAL = 'فردی';
-    const TEAM = 'تیمی';  
-  
-    public static function getValues()
-    {  
-        return [
-            self::INDIVIDUAL,
-            self::TEAM,
-        ];
-    }  
+    case  INDIVIDUAL = 'individual';
+    case  TEAM = 'team';
+
+    public function label(): string
+    {
+        return match ($this) {
+            self::INDIVIDUAL => 'فردی',
+            self::TEAM => 'تیمی',
+        };
+    }
+
+    public static function values(): array
+    {
+        return array_column(self::cases(), 'value');
+    }
 }

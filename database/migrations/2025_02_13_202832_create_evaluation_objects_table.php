@@ -18,8 +18,7 @@ return new class extends Migration
             $table->foreign('department_id')->references('id')->on('departments');
             $table->text('description')->nullable();
             $table->boolean('status');
-            $table->foreign('created_by')->references('id')->on('users');
-            $table->unsignedBigInteger('created_by');
+            $table->bigInteger('created_by');
             $table->timestamps();
         });
     }

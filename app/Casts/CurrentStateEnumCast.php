@@ -14,8 +14,8 @@ class CurrentStateEnumCast implements CastsAttributes
 
     public function set($model, string $key, $value, array $attributes)
     {
-        if (!in_array($value, CurrentStateEnum::getValues())) {
-            throw new \InvalidArgumentException("مقدار نامعتبر برای ParticipationTypeEnum");
+        if (!in_array($value, CurrentStateEnum::cases())) {
+            throw new \InvalidArgumentException("مقدار نامعتبر برای CurrentStateEnum");
         }
 
         return $value;

@@ -9,13 +9,6 @@ use App\Http\Requests\UpdateTopicRequest;
 use App\Interfaces\TopicRepositoryInterface;
 use Illuminate\Http\JsonResponse;
 
-/**
- * @OA\Info(
- *     title="My API",
- *     version="1.0.0",
- *     description="API documentation for My Application"
- * )
- */
 class TopicController extends Controller
 {
     protected $topicRepository;

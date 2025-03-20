@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Interfaces\IdeaRepositoryInterface;
 use App\Interfaces\TopicRepositoryInterface;
 use App\Repositories\IdeaRepository;
 use App\Repositories\TopicRepository;
@@ -21,9 +22,10 @@ class AppServiceProvider extends ServiceProvider
             TopicRepository::class
         );
 
-        $this->app->bind(IdeaRepository::class, function ($app) {
-            return new IdeaRepository();
-        });
+        $this->app->bind(
+            IdeaRepositoryInterface::class,
+            IdeaRepository::class
+        );
     }
 
     /**

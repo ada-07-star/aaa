@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreign('department_id')->references('id')->on('departments');
             $table->unsignedBigInteger('language_id');
             $table->foreign('language_id')->references('id')->on('languages');
-            $table->enum('age_range', AgeRangeEnum::getValues())->default(null);
+            $table->string('age_range');
             $table->bigInteger('gender')->nullable();
             $table->string('thumb_image', 500)->nullable();
             $table->string('cover_image', 500)->nullable();

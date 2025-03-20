@@ -2,18 +2,23 @@
 
 namespace App\Enums;
 
-enum AgeRangeEnum
+enum AgeRangeEnum: string
 {
-    const CHILD = 'child';  
-    const TEEN = 'teen';  
-    const ADULT = 'adult';  
+    case CHILD = 'child';  
+    case TEEN = 'teen';  
+    case ADULT = 'adult';  
 
-    public static function getValues()  
+    public function label(): string
     {  
-        return [  
-            self::CHILD,  
-            self::TEEN,  
-            self::ADULT,  
-        ];  
+        return match ($this) {
+            self::CHILD => 'کودک',  
+            self::TEEN=> 'نوجوان',  
+            self::ADULT=> 'مسن',
+        };
     }  
+
+    public static function values(): array
+    {
+        return array_column(self::cases(), 'value');
+    }
 }

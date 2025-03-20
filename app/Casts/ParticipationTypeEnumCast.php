@@ -14,7 +14,7 @@ class ParticipationTypeEnumCast implements CastsAttributes
 
     public function set($model, string $key, $value, array $attributes)
     {
-        if (!in_array($value, ParticipationTypeEnum::getValues())) {
+        if (!in_array($value, ParticipationTypeEnum::cases())) {
             throw new \InvalidArgumentException("مقدار نامعتبر برای ParticipationTypeEnum");
         }
 

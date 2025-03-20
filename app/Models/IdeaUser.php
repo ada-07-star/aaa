@@ -9,4 +9,5 @@ class IdeaUser extends Model
 {
     /** @use HasFactory<\Database\Factories\IdeaUserFactory> */
     use HasFactory;
+    protected $table = 'idea_users';
 }

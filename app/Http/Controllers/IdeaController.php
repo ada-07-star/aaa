@@ -6,24 +6,24 @@ use App\Http\Controllers\Controller;
 use App\Models\Idea;
 use App\Http\Requests\StoreIdeaRequest;
 use App\Http\Requests\UpdateIdeaRequest;
-use App\Repositories\IdeaRepository;
+use App\Interfaces\IdeaRepositoryInterface;
 use Illuminate\Http\JsonResponse;
 
 class IdeaController extends Controller
 {
     protected $ideaRepository;
 
-    public function __construct(IdeaRepository $ideaRepository)
+    public function __construct(IdeaRepositoryInterface $ideaRepository)
     {
         $this->ideaRepository = $ideaRepository;
     }
-    
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        dd('sdfsdd');
+        //
     }
 
     /**
@@ -34,12 +34,16 @@ class IdeaController extends Controller
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreIdeaRequest $request)
+
+    public function store(StoreIdeaRequest $request): JsonResponse
     {
-        dd('sdfsd');
+        $validatedData = $request->validated();
+
+        $idea = $this->ideaRepository->createIdea($validatedData);
+
+        $response = $this->ideaRepository->formatIdeaResponse($idea);
+
+        return response()->json($response, 201);
     }
 
     /**
@@ -61,17 +65,9 @@ class IdeaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateIdeaRequest $request): JsonResponse
+    public function update(UpdateIdeaRequest $request)
     {
-        $updatedIdea = $this->ideaRepository->updateIdea($request->all());
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'ایده با موفقیت بروزرسانی شد.',
-            'data' => [
-                'idea' => $updatedIdea,
-            ],
-        ]);
+        //
     }
 
     /**

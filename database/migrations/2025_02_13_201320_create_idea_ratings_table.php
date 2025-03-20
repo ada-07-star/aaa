@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('idea_id')->nullable();
             $table->foreign('idea_id')->references('id')->on('ideas');
             $table->unsignedBigInteger('rate_number');
-            $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
         });

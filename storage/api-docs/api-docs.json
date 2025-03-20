@@ -1,11 +1,197 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "My API",
-        "description": "API documentation for My Application",
+        "title": "API ایده‌ها",
+        "description": "API برای مدیریت ایده‌ها",
         "version": "1.0.0"
     },
+    "servers": [
+        {
+            "url": "http://127.0.0.1:8000",
+            "description": "سرور اصلی"
+        }
+    ],
     "paths": {
+        "/api/v1/app/idea": {
+            "post": {
+                "tags": [
+                    "ایده‌ها"
+                ],
+                "summary": "ثبت ایده جدید",
+                "description": "از این endpoint برای ثبت ایده جدید استفاده می‌شود.",
+                "operationId": "registerIdea",
+                "requestBody": {
+                    "description": "Payload برای ثبت ایده",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "topic_id",
+                                    "title",
+                                    "description",
+                                    "participation_type",
+                                    "users"
+                                ],
+                                "properties": {
+                                    
+                                    "topic_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "example": "رواق کودک"
+                                    },
+                                    "is_published": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "رواق کودک"
+                                    },
+                                    "current_state": {
+                                        "type": "string",
+                                        "example": "draft"
+                                    },
+                                    "participation_type": {
+                                        "type": "string",
+                                        "example": "individual"
+                                    },
+                                    "final_score": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "users": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer",
+                                            "example": "5"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "عملیات موفق",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Idea created successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "idea": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 32323
+                                                            },
+                                                            "topic": {
+                                                                "properties": {
+                                                                    "title": {
+                                                                        "type": "string",
+                                                                        "example": "موضوعات عام"
+                                                                    },
+                                                                    "id": {
+                                                                        "type": "integer",
+                                                                        "example": 32323
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            },
+                                                            "title": {
+                                                                "type": "string",
+                                                                "example": "رواق کودک"
+                                                            },
+                                                            "description": {
+                                                                "type": "string",
+                                                                "example": "رواق کودک"
+                                                            },
+                                                            "is_published": {
+                                                                "type": "boolean",
+                                                                "example": false
+                                                            },
+                                                            "created_at": {
+                                                                "type": "string",
+                                                                "example": "2025-02-12 16:27:01"
+                                                            },
+                                                            "current_state": {
+                                                                "properties": {
+                                                                    "title": {
+                                                                        "type": "string",
+                                                                        "example": "پیش نویس"
+                                                                    },
+                                                                    "slug": {
+                                                                        "type": "string",
+                                                                        "example": "draft"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            },
+                                                            "participation_type": {
+                                                                "properties": {
+                                                                    "title": {
+                                                                        "type": "string",
+                                                                        "example": "فردی"
+                                                                    },
+                                                                    "slug": {
+                                                                        "type": "string",
+                                                                        "example": "individual"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            },
+                                                            "users": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "properties": {
+                                                                        "uuid": {
+                                                                            "type": "string",
+                                                                            "example": "sasa-4343kmn43k4-4343m4km34=434"
+                                                                        },
+                                                                        "name": {
+                                                                            "type": "string",
+                                                                            "example": "نام"
+                                                                        },
+                                                                        "family": {
+                                                                            "type": "string",
+                                                                            "example": "نام خانوادگی"
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                }
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/app/topics": {
             "get": {
                 "summary": "Get list of topics",
@@ -38,5 +224,11 @@
                 }
             }
         }
-    }
+    },
+    "tags": [
+        {
+            "name": "ایده‌ها",
+            "description": "عملیات مربوط به ایده‌ها"
+        }
+    ]
 }

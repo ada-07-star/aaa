@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Enums\CurrentStateEnum;
+use App\Enums\ParticipationTypeEnum;
 use App\Models\Topic;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -22,9 +24,9 @@ class IdeaFactory extends Factory
             'title' => $this->faker->sentence(6),
             'description' => $this->faker->paragraph,
             'is_published' => $this->faker->boolean,
-            'current_state' => $this->faker->randomElement(['ACTIVE', 'INACTIVE', 'PENDING']),
-            'participation_type' => $this->faker->randomElement(['INDIVIDUAL', 'GROUP', 'CORPORATE']),
-            'final_score' => $this->faker->numberBetween(0, 100), 
+            'current_state' => $this->faker->randomElement(CurrentStateEnum::values()),
+            'participation_type' => $this->faker->randomElement(ParticipationTypeEnum::values()),
+            'final_score' => $this->faker->numberBetween(0, 100),
         ];
     }
 }

@@ -26,7 +26,7 @@ class IdeaCommentFactory extends Factory
             'idea_id' => \App\Models\Idea::factory(),
             'parent_id' => null,
             'likes' => $this->faker->numberBetween(0, 100),
-            'status' => $this->faker->randomElement(['active', 'inactive']),
+            'status' => $this->faker->randomElement(['active', 'DRAFT']),
             'created_by' => \App\Models\User::factory(),
         ];
     }
