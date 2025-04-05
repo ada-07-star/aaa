@@ -11,7 +11,6 @@ use Illuminate\Http\JsonResponse;
 
 class IdeaController extends Controller
 {
-
     protected $ideaRepository;
 
     public function __construct(IdeaRepositoryInterface $ideaRepository)
@@ -38,7 +37,6 @@ class IdeaController extends Controller
 
     public function store(StoreIdeaRequest $request): JsonResponse
     {
-
         $validatedData = $request->validated();
 
         $idea = $this->ideaRepository->createIdea($validatedData);

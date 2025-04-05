@@ -217,60 +217,6 @@
                     }
                 }
             }
-        },
-        "/api/v1/app/users/{id}": {
-            "put": {
-                "tags": [
-                    "Users"
-                ],
-                "summary": "به‌روزرسانی نام کاربر",
-                "description": "این endpoint برای به‌روزرسانی نام کاربر با شناسه مشخص استفاده می‌شود.",
-                "operationId": "c69c50ae1d4bf9912651f93ae1b65a80",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "name": {
-                                        "type": "string",
-                                        "example": "dav"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "کاربر با موفقیت به‌روزرسانی شد",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/User"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "ورودی نامعتبر"
-                    },
-                    "404": {
-                        "description": "کاربر پیدا نشد"
-                    }
-                }
-            }
         }
     },
     "components": {
@@ -283,34 +229,7 @@
                     },
                     "title": {
                         "type": "string",
-                        "example": "کاربر اوکی شد."
-                    }
-                },
-                "type": "object"
-            },
-            "User": {
-                "properties": {
-                    "id": {
-                        "type": "integer",
-                        "example": 1
-                    },
-                    "name": {
-                        "type": "string",
-                        "example": "Jane Doe"
-                    },
-                    "email": {
-                        "type": "string",
-                        "example": "jane.doe@example.com"
-                    },
-                    "created_at": {
-                        "type": "string",
-                        "format": "date-time",
-                        "example": "2025-01-01T00:00:00Z"
-                    },
-                    "updated_at": {
-                        "type": "string",
-                        "format": "date-time",
-                        "example": "2025-01-02T00:00:00Z"
+                        "example": "عنوان اوکی شد."
                     }
                 },
                 "type": "object"
@@ -321,10 +240,6 @@
         {
             "name": "Idea",
             "description": "Idea"
-        },
-        {
-            "name": "Users",
-            "description": "Users"
         }
     ]
 }

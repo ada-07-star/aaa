@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+<<<<<<< HEAD
 use Illuminate\Http\JsonResponse;
+=======
+>>>>>>> 4f1632b509c752f9ebb9c4af700608d41e9e5135
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,7 +15,10 @@ use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
 {
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4f1632b509c752f9ebb9c4af700608d41e9e5135
     /**
      * Display the login view.
      */

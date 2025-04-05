@@ -27,7 +27,6 @@ class IdeaRepository implements IdeaRepositoryInterface
 
     public function formatIdeaResponse($idea)
     {
-
         return [
             'status' => 'success',
             'message' => 'ایده با موفقیت ثبت شد.',

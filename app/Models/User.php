@@ -6,23 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
 
-/**  
- * @OA\Schema(  
- *     schema="User",  
- *     type="object",  
- *     @OA\Property(property="id", type="integer", example=1),  
- *     @OA\Property(property="name", type="string", example="Jane Doe"),  
- *     @OA\Property(property="email", type="string", example="jane.doe@example.com"),  
- *     @OA\Property(property="created_at", type="string", format="date-time", example="2025-01-01T00:00:00Z"),  
- *     @OA\Property(property="updated_at", type="string", format="date-time", example="2025-01-02T00:00:00Z"),  
- * )  
- */
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasApiTokens;
+    use HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.

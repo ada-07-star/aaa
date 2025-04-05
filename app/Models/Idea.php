@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  *     schema="Idea",
  *     type="object",
  *     @OA\Property(property="id", type="integer", example=1),
- *     @OA\Property(property="title", type="string", example="کاربر اوکی شد."),
+ *     @OA\Property(property="title", type="string", example="عنوان اوکی شد."),
  * )
  */
 class Idea extends Model
