@@ -1,0 +1,330 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API ایده‌ها",
+        "description": "API برای مدیریت ایده‌ها",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://127.0.0.1:8000",
+            "description": "سرور اصلی"
+        }
+    ],
+    "paths": {
+        "/api/v1/app/idea/{ideaId}": {
+            "put": {
+                "tags": [
+                    "Idea"
+                ],
+                "summary": "به‌روزرسانی ایده",
+                "description": "این endpoint برای به‌روزرسانی عنوان ایده با شناسه مشخص استفاده می‌شود.",
+                "operationId": "updateIdea",
+                "parameters": [
+                    {
+                        "name": "ideaId",
+                        "in": "path",
+                        "description": "شناسه یکتای ایده",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "داده‌های مورد نیاز برای به‌روزرسانی ایده",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "description",
+                                    "participation_type"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "description": "عنوان ایده (حداکثر 255 کاراکتر)",
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "example": "عنوان جدید ایده"
+                                    },
+                                    "description": {
+                                        "description": "محتوای کامل توضیحات ایده",
+                                        "type": "string",
+                                        "example": "توضیحات کامل درباره ایده جدید"
+                                    },
+                                    "participation_type": {
+                                        "description": "نوع مشارکت در ایده",
+                                        "type": "string",
+                                        "enum": [
+                                            "individual",
+                                            "team"
+                                        ],
+                                        "example": "individual"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "عملیات موفق",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "ایده با موفقیت به‌روزرسانی شد."
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "idea": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "title": {
+                                                            "type": "string",
+                                                            "example": "عنوان جدید ایده"
+                                                        },
+                                                        "description": {
+                                                            "type": "string",
+                                                            "example": "توضیحات کامل"
+                                                        },
+                                                        "participation_type": {
+                                                            "description": "نوع مشارکت: team یا individual",
+                                                            "type": "string",
+                                                            "example": "individual"
+                                                        },
+                                                        "updated_at": {
+                                                            "type": "string",
+                                                            "format": "date-time",
+                                                            "example": "2023-05-01T12:00:00Z"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "ورودی نامعتبر",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid input"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "ایده پیدا نشد",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Idea not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "خطای اعتبارسنجی",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "title": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The title field is required."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/app/topics": {
+            "get": {
+                "summary": "Get list of topics",
+                "operationId": "af108928cdfcc146382601a04660c13d",
+                "responses": {
+                    "200": {
+                        "description": "List of topics"
+                    }
+                }
+            }
+        },
+        "/api/v1/app/topics/{id}": {
+            "get": {
+                "summary": "Get a specific topic",
+                "operationId": "f54bb1b5ca83b09ff882e82b9dbf2808",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Topic details"
+                    }
+                }
+            }
+        },
+        "/api/v1/app/users/{id}": {
+            "put": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "به‌روزرسانی نام کاربر",
+                "description": "این endpoint برای به‌روزرسانی نام کاربر با شناسه مشخص استفاده می‌شود.",
+                "operationId": "c69c50ae1d4bf9912651f93ae1b65a80",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "dav"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "کاربر با موفقیت به‌روزرسانی شد",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "ورودی نامعتبر"
+                    },
+                    "404": {
+                        "description": "کاربر پیدا نشد"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Idea": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "کاربر اوکی شد."
+                    }
+                },
+                "type": "object"
+            },
+            "User": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Jane Doe"
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "jane.doe@example.com"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-01-01T00:00:00Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-01-02T00:00:00Z"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Idea",
+            "description": "Idea"
+        },
+        {
+            "name": "Users",
+            "description": "Users"
+        }
+    ]
+}
