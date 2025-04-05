@@ -113,7 +113,7 @@ class IdeaRepository implements IdeaRepositoryInterface
                         return [
                             'id' => $user->id,
                             'name' => $user->name,
-                            'family' => $user->family,
+                            'email' => $user->email,
                         ];
                     }),
                 ],
