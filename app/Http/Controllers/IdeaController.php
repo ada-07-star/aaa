@@ -46,12 +46,60 @@ class IdeaController extends Controller
         return response()->json($response, 201);
     }
 
-    /**
-     * Display the specified resource.
+        /**
+     * @OA\Get(
+     *     path="/api/v1/app/idea/{id}",
+     *     tags={"Ideas"},
+     *     summary="نمایش جزئیات ایده",
+     *     description="نمایش کامل اطلاعات یک ایده بر اساس شناسه",
+     *     operationId="showIdea",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="شناسه یکتای ایده",
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64",
+     *             example=1
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="عملیات موفق",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="جزئیات موضوع با موفقیت دریافت شد."),
+     *            
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="ایده یافت نشد",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="موضوع مورد نظر یافت نشد.")
+     *         )
+     *     )
+     * )
      */
-    public function show(Idea $idea)
+    public function show($id)
     {
-        //
+        $results = $this->ideaRepository->showIdeaRepository($id);
+        if (!$results) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'موضوع مورد نظر یافت نشد.',
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'جزئیات موضوع با موفقیت دریافت شد.',
+            'data' => [
+                'results' => $results,
+            ],
+        ]);
     }
 
     /**

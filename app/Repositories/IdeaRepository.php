@@ -2,6 +2,8 @@
 
 namespace App\Repositories;
 
+use App\Enums\CurrentStateEnum;
+use App\Enums\ParticipationTypeEnum;
 use App\Interfaces\IdeaRepositoryInterface;
 use App\Models\Idea;
 use App\Models\IdeaLog;
@@ -117,6 +119,33 @@ class IdeaRepository implements IdeaRepositoryInterface
                     }),
                 ],
             ],
+        ];
+    }
+
+    public function showIdeaRepository(int $idea)
+    {
+
+        $idea = Idea::findOrFail($idea);
+
+        return [
+            'id' => $idea->id,
+            'topic_id' => $idea->topic->isEmpty ? null : [
+                'title' => $idea->topic->title,
+                'id' => $idea->topic->id,
+            ],
+            'title' => $idea->title,
+            'description' => $idea->description,
+            'is_published' => $idea->is_published,
+            'created_at' => $idea->created_at,
+            'current_state' =>$idea->current_state,
+            'participation_type' =>$idea->participation_type,
+            'users' => $idea->users->map(function ($user) {
+                return [
+                    'uuid' => $user->uuid,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                ];
+            }),
         ];
     }
 }

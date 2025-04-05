@@ -12,6 +12,71 @@
         }
     ],
     "paths": {
+        "/api/v1/app/idea/{id}": {
+            "get": {
+                "tags": [
+                    "Ideas"
+                ],
+                "summary": "نمایش جزئیات ایده",
+                "description": "نمایش کامل اطلاعات یک ایده بر اساس شناسه",
+                "operationId": "showIdea",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "شناسه یکتای ایده",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "عملیات موفق",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "جزئیات موضوع با موفقیت دریافت شد."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "ایده یافت نشد",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "موضوع مورد نظر یافت نشد."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/app/idea/{ideaId}": {
             "put": {
                 "tags": [
@@ -237,6 +302,10 @@
         }
     },
     "tags": [
+        {
+            "name": "Ideas",
+            "description": "Ideas"
+        },
         {
             "name": "Idea",
             "description": "Idea"

@@ -8,5 +8,6 @@ interface IdeaRepositoryInterface
     public function formatIdeaResponse($idea);
     public function updateIdea(array $data, $ideaId);
     public function formatUpdateIdea($ideaUpdate);
+    public function showIdeaRepository(int $idea);
     
 }
