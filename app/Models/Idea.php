@@ -41,8 +41,13 @@ class Idea extends Model
         return $this->belongsTo(Topic::class);
     }
 
-    public function users(): BelongsToMany  
-    {  
-        return $this->belongsToMany(User::class, 'idea_users');  
-    } 
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'idea_users');
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(IdeaComment::class, 'idea_id');
+    }
 }
