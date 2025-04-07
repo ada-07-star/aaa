@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Interfaces\IdeaCommentRepositoryInterface;
 use App\Models\Idea;
 use App\Models\IdeaComment;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class IdeaCommentsRepository  implements IdeaCommentRepositoryInterface
@@ -71,6 +72,73 @@ class IdeaCommentsRepository  implements IdeaCommentRepositoryInterface
                 'name' => $comment->creator->name,
                 'email' => $comment->creator->email,
             ]
+        ];
+    }
+
+     /**
+     * ثبت نظر جدید برای ایده
+     *
+     * @param Request $request
+     * @param Idea $idea
+     * @return array
+     */
+    public function createIdeaComment(Request $request, Idea $idea): array
+    {
+        if ($idea->current_state === 'archived') {
+            return [
+                'status' => 'error',
+                'message' => 'در حال حاضر امکان ثبت نظر برای این ایده وجود ندارد',
+                'code' => 403
+            ];
+        }
+
+        $comment = IdeaComment::create([
+            'comment_text' => $request->comment_text,
+            'idea_id' => $idea->id,
+            'parent_id' => $request->parent_id ?? null,
+            'likes' => 0,
+            'status' => 'active',
+            'created_by' => $idea->id,
+        ]);
+
+        return [
+            'status' => 'success',
+            'message' => 'نظر با موفقیت ثبت شد',
+            'data' => [
+                'comment' => $this->formatNewComment($comment, $idea)
+            ],
+            'code' => 201
+        ];
+    }
+
+     /**
+     * فرمت دهی اطلاعات نظر جدید
+     *
+     * @param IdeaComment $comment
+     * @param Idea $idea
+     * @return array
+     */
+    private function formatNewComment(IdeaComment $comment, Idea $idea): array
+    {
+        return [
+            'id' => $comment->id,
+            'idea' => [
+                'title' => $idea->title,
+                'id' => $idea->id,
+                'current_state' => $idea->current_state,
+                'participation_type' => $idea->participation_type,
+            ],
+            'comment_text' => $comment->comment_text,
+            'parent_id' => $comment->parent_id,
+            'likes' => $comment->likes,
+            'created_at' => $comment->created_at->format('Y-m-d H:i:s'),
+            'updated_at' => $comment->updated_at->format('Y-m-d H:i:s'),
+            'status' => $comment->status,
+            // 'created_by' => [
+            //     'id' => Auth::id(),
+            //     'name' => Auth::user()->name,
+            //     'email' => Auth::user()->email,
+            // ]
         ];
     }
 }

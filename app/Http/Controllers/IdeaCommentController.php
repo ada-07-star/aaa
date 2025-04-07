@@ -6,6 +6,7 @@ use App\Interfaces\IdeaCommentRepositoryInterface;
 use App\Models\Idea;
 use App\Models\IdeaComment;
 use Illuminate\Http\Request;
+
 /**
  * @OA\Tag(
  *     name="Idea Comments",
@@ -326,51 +327,12 @@ class IdeaCommentController extends Controller
      */
     public function store(Request $request, Idea $idea)
     {
-        if ($idea->current_state !== 'archived') {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'در حال حاضر امکان ثبت نظر برای این ایده وجود ندارد'
-            ], 403);
-        }
+        $response = $this->ideaCommentRepository->createIdeaComment($request, $idea);
 
-
-        $comment = IdeaComment::create([
-            'comment_text' => $request->comment_text,
-            'idea_id' => $idea->id,
-            'parent_id' => $request->parent_id ?? null,
-            'likes' => 0,
-            'status' => 'active',
-            'created_by' => $idea->id,
-        ]);
-
-        $comment->save();
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'نظر با موفقیت ثبت شد',
-            'data' => [
-                'comment' => [
-                    'id' => $comment->id,
-                    'idea' => [
-                        'title' => $idea->title,
-                        'id' => $idea->id,
-                        'current_state' => $idea->current_state,
-                        'participation_type' => $idea->participation_type,
-                    ],
-                    'comment_text' => $comment->comment_text,
-                    'parent_id' => $comment->parent_id,
-                    'likes' => $comment->likes,
-                    'created_at' => $comment->created_at->format('Y-m-d H:i:s'),
-                    'updated_at' => $comment->updated_at->format('Y-m-d H:i:s'),
-                    'status' => $comment->status,
-                    // 'created_by' => [
-                    //     'id' => auth()->id,
-                    //     'name' => auth()->name,
-                    //     'email' => auth()->email,
-                    // ]
-                ]
-            ]
-        ], 201);
+        return response()->json(
+            ['status' => $response['status'], 'message' => $response['message'], 'data' => $response['data']],
+            $response['code']
+        );
     }
 
     public function show(IdeaComment $ideaComment)
