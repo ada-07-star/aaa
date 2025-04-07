@@ -13,6 +13,142 @@
     ],
     "paths": {
         "/api/v1/app/idea/{idea}/comment": {
+            "get": {
+                "tags": [
+                    "Idea Comments"
+                ],
+                "summary": "Get list of comments for an idea",
+                "description": "Returns list of published comments and user's unpublished comments",
+                "operationId": "getIdeaComments",
+                "parameters": [
+                    {
+                        "name": "idea",
+                        "in": "path",
+                        "description": "ID of the idea",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "لیست نظرات با موفقیت دریافت شد"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "comments": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 32323
+                                                            },
+                                                            "idea": {
+                                                                "properties": {
+                                                                    "title": {
+                                                                        "type": "string",
+                                                                        "example": "موضوعات عام"
+                                                                    },
+                                                                    "id": {
+                                                                        "type": "integer",
+                                                                        "example": 32323
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            },
+                                                            "comment_text": {
+                                                                "type": "string",
+                                                                "example": "رواق کودک"
+                                                            },
+                                                            "likes": {
+                                                                "type": "integer",
+                                                                "example": 0
+                                                            },
+                                                            "created_at": {
+                                                                "type": "string",
+                                                                "format": "date-time",
+                                                                "example": "2025-02-12 16:27:01"
+                                                            },
+                                                            "status": {
+                                                                "properties": {
+                                                                    "title": {
+                                                                        "type": "string",
+                                                                        "example": "پیش نویس"
+                                                                    },
+                                                                    "slug": {
+                                                                        "type": "string",
+                                                                        "example": "draft"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            },
+                                                            "created_by": {
+                                                                "properties": {
+                                                                    "name": {
+                                                                        "type": "string",
+                                                                        "example": "نام"
+                                                                    },
+                                                                    "family": {
+                                                                        "type": "string",
+                                                                        "example": "نام خانوادگی"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "این ایده منتشر نشده است"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
             "post": {
                 "tags": [
                     "Idea Comments"
@@ -45,7 +181,7 @@
                                         "type": "string",
                                         "maxLength": 1000,
                                         "minLength": 3,
-                                        "example": "این یک نظر تستی 2 است"
+                                        "example": "این یک نظر تستی است"
                                     },
                                     "parent_id": {
                                         "description": "ID of parent comment if this is a reply",

@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Interfaces\IdeaCommentRepositoryInterface;
 use App\Models\Idea;
 use App\Models\IdeaComment;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-
 /**
  * @OA\Tag(
  *     name="Idea Comments",
@@ -15,11 +14,152 @@ use Illuminate\Support\Facades\Auth;
  */
 class IdeaCommentController extends Controller
 {
+    private $ideaCommentRepository;
 
-    public function index()
+    public function __construct(IdeaCommentRepositoryInterface $ideaCommentRepository)
     {
-        //
+        $this->ideaCommentRepository = $ideaCommentRepository;
     }
+
+    /**
+     * @OA\Get(
+     *     path="/api/v1/app/idea/{idea}/comment",
+     *     operationId="getIdeaComments",
+     *     tags={"Idea Comments"},
+     *     summary="Get list of comments for an idea",
+     *     description="Returns list of published comments and user's unpublished comments",
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="idea",
+     *         in="path",
+     *         description="ID of the idea",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="status",
+     *                 type="string",
+     *                 example="success"
+     *             ),
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="لیست نظرات با موفقیت دریافت شد"
+     *             ),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="comments",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         @OA\Property(
+     *                             property="id",
+     *                             type="integer",
+     *                             example=32323
+     *                         ),
+     *                         @OA\Property(
+     *                             property="idea",
+     *                             type="object",
+     *                             @OA\Property(
+     *                                 property="title",
+     *                                 type="string",
+     *                                 example="موضوعات عام"
+     *                             ),
+     *                             @OA\Property(
+     *                                 property="id",
+     *                                 type="integer",
+     *                                 example=32323
+     *                             )
+     *                         ),
+     *                         @OA\Property(
+     *                             property="comment_text",
+     *                             type="string",
+     *                             example="رواق کودک"
+     *                         ),
+     *                         @OA\Property(
+     *                             property="likes",
+     *                             type="integer",
+     *                             example=0
+     *                         ),
+     *                         @OA\Property(
+     *                             property="created_at",
+     *                             type="string",
+     *                             format="date-time",
+     *                             example="2025-02-12 16:27:01"
+     *                         ),
+     *                         @OA\Property(
+     *                             property="status",
+     *                             type="object",
+     *                             @OA\Property(
+     *                                 property="title",
+     *                                 type="string",
+     *                                 example="پیش نویس"
+     *                             ),
+     *                             @OA\Property(
+     *                                 property="slug",
+     *                                 type="string",
+     *                                 example="draft"
+     *                             )
+     *                         ),
+     *                         @OA\Property(
+     *                             property="created_by",
+     *                             type="object",
+     *                             @OA\Property(
+     *                                 property="name",
+     *                                 type="string",
+     *                                 example="نام"
+     *                             ),
+     *                             @OA\Property(
+     *                                 property="family",
+     *                                 type="string",
+     *                                 example="نام خانوادگی"
+     *                             )
+     *                         )
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Forbidden",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="status",
+     *                 type="string",
+     *                 example="error"
+     *             ),
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="این ایده منتشر نشده است"
+     *             )
+     *         )
+     *     )
+     * )
+     */
+    public function index(Idea $idea)
+    {
+        $response = $this->ideaCommentRepository->getIdeaComments($idea);
+
+        if ($response['status'] === 'error') {
+            return response()->json([
+                'status' => $response['status'],
+                'message' => $response['message']
+            ], $response['code']);
+        }
+
+        return response()->json($response);
+    }
+
 
     /**
      * @OA\Post(
@@ -191,7 +331,6 @@ class IdeaCommentController extends Controller
                 'status' => 'error',
                 'message' => 'در حال حاضر امکان ثبت نظر برای این ایده وجود ندارد'
             ], 403);
-
         }
 
 
