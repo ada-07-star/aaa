@@ -68,6 +68,7 @@ return [
             /*
              * Route for accessing parsed swagger annotations.
              */
+            'api' => 'api/documentation',
             'docs' => 'docs',
 
             /*
@@ -184,6 +185,12 @@ return [
         */
         'securityDefinitions' => [
             'securitySchemes' => [
+                'bearerAuth' => [
+                    'type' => 'http',
+                    'scheme' => 'bearer',
+                    'bearerFormat' => 'JWT',
+                    'description' => 'Enter your JWT Bearer token in the format **Bearer {your token}**',
+                ],  
                 /*
                  * Examples of Security schemes
                  */
@@ -235,6 +242,7 @@ return [
                  * Examples of Securities
                  */
                 [
+                    'bearerAuth' => []
                     /*
                     'oauth2_security_example' => [
                         'read',

@@ -7,8 +7,60 @@ use App\Models\Idea;
 use App\Http\Requests\StoreIdeaRequest;
 use App\Http\Requests\UpdateIdeaRequest;
 use App\Interfaces\IdeaRepositoryInterface;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
+/**
+ * @OA\Schema(
+ *     schema="IdeaResponse",
+ *     type="object",
+ *     @OA\Property(property="status", type="string", example="success"),
+ *     @OA\Property(property="message", type="string", example="ایده با موفقیت ثبت شد."),
+ *     @OA\Property(
+ *         property="data",
+ *         type="object",
+ *         @OA\Property(
+ *             property="idea",
+ *             type="object",
+ *             @OA\Property(property="id", type="integer", example=1),
+ *             @OA\Property(
+ *                 property="topic",
+ *                 type="object",
+ *                 @OA\Property(property="title", type="string", example="Technology"),
+ *                 @OA\Property(property="id", type="integer", example=1)
+ *             ),
+ *             @OA\Property(property="title", type="string", example="New Product Idea"),
+ *             @OA\Property(property="description", type="string", example="Detailed description"),
+ *             @OA\Property(property="is_published", type="boolean", example=true),
+ *             @OA\Property(property="created_at", type="string", format="date-time", example="2023-01-01 12:00:00"),
+ *             @OA\Property(
+ *                 property="current_state",
+ *                 type="object",
+ *                 @OA\Property(property="title", type="string", example="draft"),
+ *                 @OA\Property(property="slug", type="string", example="draft")
+ *             ),
+ *             @OA\Property(
+ *                 property="participation_type",
+ *                 type="object",
+ *                 @OA\Property(property="title", type="string", example="open"),
+ *                 @OA\Property(property="slug", type="string", example="open")
+ *             ),
+ *             @OA\Property(
+ *                 property="users",
+ *                 type="array",
+ *                 @OA\Items(
+ *                     type="object",
+ *                     @OA\Property(property="uuid", type="string", format="uuid"),
+ *                     @OA\Property(property="name", type="string"),
+ *                     @OA\Property(property="email", type="string", format="email")
+ *                 )
+ *             )
+ *         )
+ *     )
+ * )
+ */
 class IdeaController extends Controller
 {
     protected $ideaRepository;
@@ -23,9 +75,35 @@ class IdeaController extends Controller
      */
     public function index()
     {
-        //
+
+        // dd(auth()->user());
+        // User::where('id', 1)->update([
+        //     'email' => 'davood@gmail.com',
+        //     'password' => Hash::make('12345678'),
+        // ]);
     }
 
+    public function into(string $in)
+    {
+
+        $item = [
+            'id' => 1,
+            'name' => 'name',
+            'adress' => 'adress',
+            'contact' => [
+                'email' => 'email',
+                'phone' => 'phon',
+            ],
+            'contact1' => [
+                'email1' => 'email111',
+                'phone1' => 'phon1111',
+            ],
+            'registration_date' => 'registration_date',
+        ];
+
+
+        return ($item);
+    }
     /**
      * Show the form for creating a new resource.
      */
@@ -34,7 +112,39 @@ class IdeaController extends Controller
         //
     }
 
-
+    /**
+     * @OA\Post(
+     *     path="/api/v1/app/idea",
+     *     summary="Create a new idea",
+     *     tags={"Ideas"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"title", "description", "topic_id", "is_published", "participation_type", "final_score"},
+     *             @OA\Property(property="title", type="string", example="New Product Idea"),
+     *             @OA\Property(property="description", type="string", example="Detailed description"),
+     *             @OA\Property(property="topic_id", type="integer", example=1),
+     *             @OA\Property(property="is_published", type="boolean", example=true),
+     *             @OA\Property(property="participation_type", type="string", enum={"team", "individual"}, example="team"),
+     *             @OA\Property(property="final_score", type="number", format="float", example=0.0),
+     *             @OA\Property(property="users", type="array", @OA\Items(type="string", format="uuid", example="6e6e3ba7-6819-43c1-935a-f4a296e201ba"))
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Idea created successfully",
+     *         @OA\JsonContent(ref="#/components/schemas/IdeaResponse")
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
+     *         )
+     *     )
+     * )
+     */
     public function store(StoreIdeaRequest $request): JsonResponse
     {
         $validatedData = $request->validated();
@@ -46,7 +156,7 @@ class IdeaController extends Controller
         return response()->json($response, 201);
     }
 
-        /**
+    /**
      * @OA\Get(
      *     path="/api/v1/app/idea/{id}",
      *     tags={"Ideas"},
@@ -113,7 +223,7 @@ class IdeaController extends Controller
     /**
      * @OA\Put(
      *     path="/api/v1/app/idea/{ideaId}",
-     *     tags={"Idea"},
+     *     tags={"Ideas"},
      *     summary="به‌روزرسانی ایده",
      *     description="این endpoint برای به‌روزرسانی عنوان ایده با شناسه مشخص استفاده می‌شود.",
      *     operationId="updateIdea",
@@ -216,18 +326,18 @@ class IdeaController extends Controller
      */
     public function update(UpdateIdeaRequest $request, $ideaId)
     {
-        // $idea = Idea::findOrFail($ideaId);
+        $idea = Idea::findOrFail($ideaId)->users()->first()->id;
 
-        // if ($ideaId == Auth::user()->id) {
+        if ($idea == Auth::user()->id) {
 
-        $ideaUpdate = $this->ideaRepository->updateIdea($request->all(), $ideaId);
+            $ideaUpdate = $this->ideaRepository->updateIdea($request->all(), $ideaId);
 
-        $results = $this->ideaRepository->formatUpdateIdea($ideaUpdate);
+            $results = $this->ideaRepository->formatUpdateIdea($ideaUpdate);
 
-        return response()->json($results, 200);
-        // } else {
-        //     throw new \Exception('شما مجاز به ویرایش این ایده نیستید.', 403);
-        // }
+            return response()->json($results, 200);
+        } else {
+            return response()->json('شما مجاز به ویرایش این ایده نیستید.', 422);
+        }
     }
 
     /**

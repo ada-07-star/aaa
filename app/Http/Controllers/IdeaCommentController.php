@@ -8,9 +8,14 @@ use App\Models\IdeaComment;
 use Illuminate\Http\Request;
 
 /**
- * @OA\Tag(
- *     name="Idea Comments",
- *     description="Operations about idea comments"
+ * @OA\Schema(
+ *     schema="IdeaComment",
+ *     type="object",
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="content", type="string", example="This is a comment"),
+ *     @OA\Property(property="likes", type="integer", example=5),
+ *     @OA\Property(property="created_at", type="string", format="date-time"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time")
  * )
  */
 class IdeaCommentController extends Controller
@@ -333,6 +338,147 @@ class IdeaCommentController extends Controller
             ['status' => $response['status'], 'message' => $response['message'], 'data' => $response['data']],
             $response['code']
         );
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/v1/app/idea/{ideaId}/comment_rate",
+     *     summary="Toggle like on a comment",
+     *     description="Like or unlike a comment and return the updated comment",
+     *     tags={"Comments"},
+     *     security={{"bearerAuth": {}}},
+     *     
+     *     @OA\Parameter(
+     *         name="ideaId",
+     *         in="path",
+     *         description="ID of the idea",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"comment_id"},
+     *             @OA\Property(
+     *                 property="comment_id",
+     *                 type="integer",
+     *                 description="ID of the comment to like/unlike",
+     *                 example=4
+     *             )
+     *         )
+     *     ),
+     *     
+     *     @OA\Response(
+     *         response=200,
+     *         description="Like status toggled successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="status",
+     *                 type="string",
+     *                 example="success"
+     *             ),
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="تصمیم شما ثبت شد."
+     *             ),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="comment",
+     *                     ref="#/components/schemas/IdeaComment"
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     
+     *     @OA\Response(
+     *         response=404,
+     *         description="Comment not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="status",
+     *                 type="string",
+     *                 example="error"
+     *             ),
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="نظر یافت نشد."
+     *             )
+     *         )
+     *     ),
+     *     
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="The given data was invalid."
+     *             ),
+     *             @OA\Property(
+     *                 property="errors",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="comment_id",
+     *                     type="array",
+     *                     @OA\Items(type="string")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Unauthenticated."
+     *             )
+     *         )
+     *     )
+     * )
+     */
+    public function toggleLike(Request $request, $ideaId)
+    {
+        $request->validate([
+            'comment_id' => 'required|integer|exists:idea_comments,id',
+        ]);
+
+        $comment = IdeaComment::find($request->comment_id);
+
+        if ($comment) {
+
+            $isLiked = $comment->likes > 0;
+
+            if ($isLiked) {
+                $comment->decrement('likes');
+            } else {
+                $comment->increment('likes');
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'تصمیم شما ثبت شد.',
+                'data' => [
+                    'comment' => $comment->fresh()
+                ],
+            ]);
+        }
+
+        return response()->json([
+            'status' => 'error',
+            'message' => 'نظر یافت نشد.'
+        ], 404);
     }
 
     public function show(IdeaComment $ideaComment)

@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\IdeaComment;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 class IdeaCommentFactory extends Factory
 {
@@ -23,11 +24,11 @@ class IdeaCommentFactory extends Factory
     {
         return [
             'comment_text' => $this->faker->paragraph,
-            'idea_id' => \App\Models\Idea::factory(),
+            'idea_id' => \App\Models\Idea::all()->random()->id,
             'parent_id' => null,
             'likes' => $this->faker->numberBetween(0, 100),
-            'status' => $this->faker->randomElement(['active', 'DRAFT']),
-            'created_by' => \App\Models\User::factory(),
+            'status' => $this->faker->randomElement(['published', 'draft']),
+            'created_by' =>\App\Models\User::all()->random()->id,
         ];
     }
 }

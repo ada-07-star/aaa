@@ -4,7 +4,7 @@ namespace App\Interfaces;
 
 interface IdeaRepositoryInterface
 {
-    public function createIdea(array $data);
+    public function createIdea($data);
     public function formatIdeaResponse($idea);
     public function updateIdea(array $data, $ideaId);
     public function formatUpdateIdea($ideaUpdate);

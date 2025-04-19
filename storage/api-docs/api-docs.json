@@ -12,6 +12,128 @@
         }
     ],
     "paths": {
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Login user and retrieve JWT token",
+                "description": "This endpoint allows the user to login by providing email and password. A JWT token will be returned upon successful authentication.",
+                "operationId": "a3b306d14572d1f4bd6c064b3233e7b8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "davood@gmail.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "12345678"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully authenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "type": "string",
+                                            "example": "YOUR_JWT_TOKEN"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid credentials",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - Could not create token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "could_not_create_token"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/me": {
+            "get": {
+                "summary": "Get authenticated user information",
+                "operationId": "a39fa66a3964c041ce760a10f06a4be5",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Bearer YOUR_JWT_TOKEN"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
         "/api/v1/app/idea/{idea}/comment": {
             "get": {
                 "tags": [
@@ -328,6 +450,245 @@
                 }
             }
         },
+        "/api/v1/app/idea/{ideaId}/comment_rate": {
+            "post": {
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "Toggle like on a comment",
+                "description": "Like or unlike a comment and return the updated comment",
+                "operationId": "396d860029980f068fa8d3445af8c84f",
+                "parameters": [
+                    {
+                        "name": "ideaId",
+                        "in": "path",
+                        "description": "ID of the idea",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "comment_id"
+                                ],
+                                "properties": {
+                                    "comment_id": {
+                                        "description": "ID of the comment to like/unlike",
+                                        "type": "integer",
+                                        "example": 4
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Like status toggled successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "تصمیم شما ثبت شد."
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "comment": {
+                                                    "$ref": "#/components/schemas/IdeaComment"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Comment not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "نظر یافت نشد."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "comment_id": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/app/idea": {
+            "post": {
+                "tags": [
+                    "Ideas"
+                ],
+                "summary": "Create a new idea",
+                "operationId": "75d8a137aef82edad487e9e61bc8acbd",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "description",
+                                    "topic_id",
+                                    "is_published",
+                                    "participation_type",
+                                    "final_score"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "New Product Idea"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Detailed description"
+                                    },
+                                    "topic_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "is_published": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "participation_type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "team",
+                                            "individual"
+                                        ],
+                                        "example": "team"
+                                    },
+                                    "final_score": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 0
+                                    },
+                                    "users": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "uuid",
+                                            "example": "6e6e3ba7-6819-43c1-935a-f4a296e201ba"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Idea created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/IdeaResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/v1/app/idea/{id}": {
             "get": {
                 "tags": [
@@ -396,7 +757,7 @@
         "/api/v1/app/idea/{ideaId}": {
             "put": {
                 "tags": [
-                    "Idea"
+                    "Ideas"
                 ],
                 "summary": "به‌روزرسانی ایده",
                 "description": "این endpoint برای به‌روزرسانی عنوان ایده با شناسه مشخص استفاده می‌شود.",
@@ -602,6 +963,152 @@
     },
     "components": {
         "schemas": {
+            "UserResponse": {
+                "required": [
+                    "id",
+                    "name",
+                    "email"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "IdeaComment": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "content": {
+                        "type": "string",
+                        "example": "This is a comment"
+                    },
+                    "likes": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "IdeaResponse": {
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "success"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "ایده با موفقیت ثبت شد."
+                    },
+                    "data": {
+                        "properties": {
+                            "idea": {
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "topic": {
+                                        "properties": {
+                                            "title": {
+                                                "type": "string",
+                                                "example": "Technology"
+                                            },
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "example": "New Product Idea"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Detailed description"
+                                    },
+                                    "is_published": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "created_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2023-01-01 12:00:00"
+                                    },
+                                    "current_state": {
+                                        "properties": {
+                                            "title": {
+                                                "type": "string",
+                                                "example": "draft"
+                                            },
+                                            "slug": {
+                                                "type": "string",
+                                                "example": "draft"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    "participation_type": {
+                                        "properties": {
+                                            "title": {
+                                                "type": "string",
+                                                "example": "open"
+                                            },
+                                            "slug": {
+                                                "type": "string",
+                                                "example": "open"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    "users": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "uuid": {
+                                                    "type": "string",
+                                                    "format": "uuid"
+                                                },
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "format": "email"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
             "Idea": {
                 "properties": {
                     "id": {
@@ -615,20 +1122,37 @@
                 },
                 "type": "object"
             }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT",
+                "description": "Enter your JWT Bearer token in the format **Bearer {your token}**"
+            }
         }
     },
     "tags": [
         {
+            "name": "Authentication",
+            "description": "Authentication"
+        },
+        {
             "name": "Idea Comments",
-            "description": "Operations about idea comments"
+            "description": "Idea Comments"
+        },
+        {
+            "name": "Comments",
+            "description": "Comments"
         },
         {
             "name": "Ideas",
             "description": "Ideas"
-        },
+        }
+    ],
+    "security": [
         {
-            "name": "Idea",
-            "description": "Idea"
+            "bearerAuth": []
         }
     ]
 }

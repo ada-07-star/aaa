@@ -2,8 +2,6 @@
 
 namespace App\Repositories;
 
-use App\Enums\CurrentStateEnum;
-use App\Enums\ParticipationTypeEnum;
 use App\Interfaces\IdeaRepositoryInterface;
 use App\Models\Idea;
 use App\Models\IdeaLog;
@@ -137,8 +135,8 @@ class IdeaRepository implements IdeaRepositoryInterface
             'description' => $idea->description,
             'is_published' => $idea->is_published,
             'created_at' => $idea->created_at,
-            'current_state' =>$idea->current_state,
-            'participation_type' =>$idea->participation_type,
+            'current_state' => $idea->current_state,
+            'participation_type' => $idea->participation_type,
             'users' => $idea->users->map(function ($user) {
                 return [
                     'uuid' => $user->uuid,

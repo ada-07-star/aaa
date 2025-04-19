@@ -21,14 +21,9 @@ class IdeaCommentsRepository  implements IdeaCommentRepositoryInterface
         }
 
         $comments = IdeaComment::where('idea_id', $idea->id)
-            ->where(function ($query) {
-                $query->where('status', 'active')
-                    ->orWhere(function ($q) {
-                        $q->where('status', '!=', 'published')
-                            ->where('created_by', Auth::id());
-                    });
+            ->Where(function ($q) {
+                $q->where('status', '!=', 'published');
             })
-            ->with(['idea', 'creator'])
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -47,7 +42,7 @@ class IdeaCommentsRepository  implements IdeaCommentRepositoryInterface
     {
         $titles = [
             'draft' => 'پیش نویس',
-            'active' => 'قابل انتشار',
+            'published' => 'قابل انتشار',
         ];
 
         return $titles[$status] ?? $status;
@@ -75,7 +70,7 @@ class IdeaCommentsRepository  implements IdeaCommentRepositoryInterface
         ];
     }
 
-     /**
+    /**
      * ثبت نظر جدید برای ایده
      *
      * @param Request $request
@@ -97,8 +92,8 @@ class IdeaCommentsRepository  implements IdeaCommentRepositoryInterface
             'idea_id' => $idea->id,
             'parent_id' => $request->parent_id ?? null,
             'likes' => 0,
-            'status' => 'active',
-            'created_by' => $idea->id,
+            'status' => 'draft',
+            'created_by' => Auth::id(),
         ]);
 
         return [
@@ -111,7 +106,7 @@ class IdeaCommentsRepository  implements IdeaCommentRepositoryInterface
         ];
     }
 
-     /**
+    /**
      * فرمت دهی اطلاعات نظر جدید
      *
      * @param IdeaComment $comment
@@ -129,16 +124,17 @@ class IdeaCommentsRepository  implements IdeaCommentRepositoryInterface
                 'participation_type' => $idea->participation_type,
             ],
             'comment_text' => $comment->comment_text,
-            'parent_id' => $comment->parent_id,
             'likes' => $comment->likes,
             'created_at' => $comment->created_at->format('Y-m-d H:i:s'),
-            'updated_at' => $comment->updated_at->format('Y-m-d H:i:s'),
-            'status' => $comment->status,
-            // 'created_by' => [
-            //     'id' => Auth::id(),
-            //     'name' => Auth::user()->name,
-            //     'email' => Auth::user()->email,
-            // ]
+            'status' => [
+                'title' => $this->getStatusTitle($comment->status),
+                'slug' => $comment->status,
+            ],
+            'created_by' => [
+                'uuid' => Auth::user()->uuid,
+                'name' => Auth::user()->name,
+                'email' => Auth::user()->email,
+            ]
         ];
     }
 }
