@@ -248,7 +248,6 @@ class IdeaController extends Controller
                     'ideas' => $ideas
                 ]
             ], 200, [], JSON_PRETTY_PRINT);
-
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -257,7 +256,8 @@ class IdeaController extends Controller
             ], 500);
         }
     }
-    }
+
+
 
     /**
      * Show the form for creating a new resource.

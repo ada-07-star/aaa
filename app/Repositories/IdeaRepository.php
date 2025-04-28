@@ -38,7 +38,7 @@ class IdeaRepository implements IdeaRepositoryInterface
                 'slug' => $idea->current_state
             ],
             'participation_type' => [
-                'title' => $idea->participation_type_title,
+                'title' => $idea->participation_type,
                 'slug' => $idea->participation_type
             ],
             'users' => $idea->users->map(function ($user) {
