@@ -7,6 +7,7 @@ use App\Models\Idea;
 use App\Http\Requests\StoreIdeaRequest;
 use App\Http\Requests\UpdateIdeaRequest;
 use App\Interfaces\IdeaRepositoryInterface;
+use App\Models\Topic;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
@@ -71,39 +72,193 @@ class IdeaController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * @OA\Get(
+     *     path="/api/v1/app/topics/{topic}/ideas",
+     *     summary="دریافت لیست ایده‌های یک موضوع خاص",
+     *     description="این endpoint لیست ایده‌های منتشر شده یا قابل انتشار یک موضوع خاص را برمی‌گرداند.",
+     *     tags={"topics"},
+     *     @OA\Parameter(
+     *         name="topic",
+     *         in="path",
+     *         description="شناسه موضوع",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="عملیات موفق",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="status",
+     *                 type="string",
+     *                 example="success"
+     *             ),
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Ideas retrieved successfully"
+     *             ),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="ideas",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         @OA\Property(
+     *                             property="id",
+     *                             type="integer",
+     *                             example=32323
+     *                         ),
+     *                         @OA\Property(
+     *                             property="topic",
+     *                             type="object",
+     *                             @OA\Property(
+     *                                 property="title",
+     *                                 type="string",
+     *                                 example="موضوعات عام"
+     *                             ),
+     *                             @OA\Property(
+     *                                 property="id",
+     *                                 type="integer",
+     *                                 example=32323
+     *                             )
+     *                         ),
+     *                         @OA\Property(
+     *                             property="title",
+     *                             type="string",
+     *                             example="رواق کودک"
+     *                         ),
+     *                         @OA\Property(
+     *                             property="description",
+     *                             type="string",
+     *                             example="رواق کودک"
+     *                         ),
+     *                         @OA\Property(
+     *                             property="is_published",
+     *                             type="boolean",
+     *                             example=false
+     *                         ),
+     *                         @OA\Property(
+     *                             property="created_at",
+     *                             type="string",
+     *                             format="date-time",
+     *                             example="2025-02-12 16:27:01"
+     *                         ),
+     *                         @OA\Property(
+     *                             property="current_state",
+     *                             type="object",
+     *                             @OA\Property(
+     *                                 property="title",
+     *                                 type="string",
+     *                                 example="active"
+     *                             ),
+     *                             @OA\Property(
+     *                                 property="slug",
+     *                                 type="string",
+     *                                 example="active"
+     *                             )
+     *                         ),
+     *                         @OA\Property(
+     *                             property="participation_type",
+     *                             type="object",
+     *                             @OA\Property(
+     *                                 property="title",
+     *                                 type="string",
+     *                                 example="فردی"
+     *                             ),
+     *                             @OA\Property(
+     *                                 property="slug",
+     *                                 type="string",
+     *                                 example="individual"
+     *                             )
+     *                         ),
+     *                         @OA\Property(
+     *                             property="users",
+     *                             type="array",
+     *                             @OA\Items(
+     *                                 @OA\Property(
+     *                                     property="uuid",
+     *                                     type="string",
+     *                                     example="sasa-4343kmn43k4-4343m4km34=434"
+     *                                 ),
+     *                                 @OA\Property(
+     *                                     property="name",
+     *                                     type="string",
+     *                                     example="نام"
+     *                                 ),
+     *                                 @OA\Property(
+     *                                     property="email",
+     *                                     type="string",
+     *                                     example="davood@gmail.com"
+     *                                 )
+     *                             )
+     *                         )
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="موضوع یافت نشد",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="status",
+     *                 type="string",
+     *                 example="error"
+     *             ),
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Topic not found"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="خطای سرور",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="status",
+     *                 type="string",
+     *                 example="error"
+     *             ),
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Internal server error"
+     *             )
+     *         )
+     *     )
+     * )
      */
-    public function index()
+    public function index(Topic $topic)
     {
+        try {
+            $ideas = $this->ideaRepository->getPublishedIdeasForTopic($topic);
 
-        // dd(auth()->user());
-        // User::where('id', 1)->update([
-        //     'email' => 'davood@gmail.com',
-        //     'password' => Hash::make('12345678'),
-        // ]);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Ideas retrieved successfully',
+                'data' => [
+                    'ideas' => $ideas
+                ]
+            ], 200, [], JSON_PRETTY_PRINT);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Server Error',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
     }
 
-    public function into(string $in)
-    {
-
-        $item = [
-            'id' => 1,
-            'name' => 'name',
-            'adress' => 'adress',
-            'contact' => [
-                'email' => 'email',
-                'phone' => 'phon',
-            ],
-            'contact1' => [
-                'email1' => 'email111',
-                'phone1' => 'phon1111',
-            ],
-            'registration_date' => 'registration_date',
-        ];
-
-
-        return ($item);
-    }
     /**
      * Show the form for creating a new resource.
      */

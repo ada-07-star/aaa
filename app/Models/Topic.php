@@ -5,12 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Topic extends Model
 {
     /** @use HasFactory<\Database\Factories\TopicFactory> */
     use HasFactory;
-    
+
     protected $fillable = [
         'title',
         'department_id',
@@ -40,4 +41,8 @@ class Topic extends Model
         return $this->belongsToMany(Category::class, 'topic_categories');
     }
 
+    public function ideas(): HasMany
+    {
+        return $this->hasMany(Idea::class);
+    }
 }

@@ -590,6 +590,183 @@
                 ]
             }
         },
+        "/api/v1/app/topics/{topic}/ideas": {
+            "get": {
+                "tags": [
+                    "topics"
+                ],
+                "summary": "دریافت لیست ایده‌های یک موضوع خاص",
+                "description": "این endpoint لیست ایده‌های منتشر شده یا قابل انتشار یک موضوع خاص را برمی‌گرداند.",
+                "operationId": "e8289c8ec67d5e8fff0d801bba5cbf4f",
+                "parameters": [
+                    {
+                        "name": "topic",
+                        "in": "path",
+                        "description": "شناسه موضوع",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "عملیات موفق",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ideas retrieved successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "ideas": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 32323
+                                                            },
+                                                            "topic": {
+                                                                "properties": {
+                                                                    "title": {
+                                                                        "type": "string",
+                                                                        "example": "موضوعات عام"
+                                                                    },
+                                                                    "id": {
+                                                                        "type": "integer",
+                                                                        "example": 32323
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            },
+                                                            "title": {
+                                                                "type": "string",
+                                                                "example": "رواق کودک"
+                                                            },
+                                                            "description": {
+                                                                "type": "string",
+                                                                "example": "رواق کودک"
+                                                            },
+                                                            "is_published": {
+                                                                "type": "boolean",
+                                                                "example": false
+                                                            },
+                                                            "created_at": {
+                                                                "type": "string",
+                                                                "format": "date-time",
+                                                                "example": "2025-02-12 16:27:01"
+                                                            },
+                                                            "current_state": {
+                                                                "properties": {
+                                                                    "title": {
+                                                                        "type": "string",
+                                                                        "example": "active"
+                                                                    },
+                                                                    "slug": {
+                                                                        "type": "string",
+                                                                        "example": "active"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            },
+                                                            "participation_type": {
+                                                                "properties": {
+                                                                    "title": {
+                                                                        "type": "string",
+                                                                        "example": "فردی"
+                                                                    },
+                                                                    "slug": {
+                                                                        "type": "string",
+                                                                        "example": "individual"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            },
+                                                            "users": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "properties": {
+                                                                        "uuid": {
+                                                                            "type": "string",
+                                                                            "example": "sasa-4343kmn43k4-4343m4km34=434"
+                                                                        },
+                                                                        "name": {
+                                                                            "type": "string",
+                                                                            "example": "نام"
+                                                                        },
+                                                                        "email": {
+                                                                            "type": "string",
+                                                                            "example": "davood@gmail.com"
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                }
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "موضوع یافت نشد",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Topic not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "خطای سرور",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Internal server error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/app/idea": {
             "post": {
                 "tags": [
@@ -1144,6 +1321,10 @@
         {
             "name": "Comments",
             "description": "Comments"
+        },
+        {
+            "name": "topics",
+            "description": "topics"
         },
         {
             "name": "Ideas",
