@@ -1,9 +1,9 @@
 <?php
 
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\IdeaCommentController;
-use App\Http\Controllers\IdeaController;
-use App\Http\Controllers\TopicController;
+use App\Http\Controllers\v1\AuthController;
+use App\Http\Controllers\v1\IdeaCommentController;
+use App\Http\Controllers\v1\IdeaController;
+use App\Http\Controllers\v1\TopicController;
 use Illuminate\Support\Facades\Route;
 
 

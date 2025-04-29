@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\v1;
 
-use App\Models\IdeaUser;
-use App\Http\Requests\StoreIdeaUserRequest;
-use App\Http\Requests\UpdateIdeaUserRequest;
+use App\Http\Controllers\Controller;
+use App\Models\DepartmentAccess;
+use App\Http\Requests\StoreDepartmentAccessRequest;
+use App\Http\Requests\UpdateDepartmentAccessRequest;
 
-class IdeaUserController extends Controller
+class DepartmentAccessController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -27,7 +28,7 @@ class IdeaUserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreIdeaUserRequest $request)
+    public function store(StoreDepartmentAccessRequest $request)
     {
         //
     }
@@ -35,7 +36,7 @@ class IdeaUserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(IdeaUser $ideaUser)
+    public function show(DepartmentAccess $departmentAccess)
     {
         //
     }
@@ -43,7 +44,7 @@ class IdeaUserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(IdeaUser $ideaUser)
+    public function edit(DepartmentAccess $departmentAccess)
     {
         //
     }
@@ -51,7 +52,7 @@ class IdeaUserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateIdeaUserRequest $request, IdeaUser $ideaUser)
+    public function update(UpdateDepartmentAccessRequest $request, DepartmentAccess $departmentAccess)
     {
         //
     }
@@ -59,7 +60,7 @@ class IdeaUserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(IdeaUser $ideaUser)
+    public function destroy(DepartmentAccess $departmentAccess)
     {
         //
     }

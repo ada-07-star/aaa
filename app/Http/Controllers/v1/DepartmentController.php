@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\v1;
 
-use App\Models\IdeaLog;
-use App\Http\Requests\StoreIdeaLogRequest;
-use App\Http\Requests\UpdateIdeaLogRequest;
+use App\Http\Controllers\Controller;
+use App\Models\Department;
+use App\Http\Requests\StoreDepartmentRequest;
+use App\Http\Requests\UpdateDepartmentRequest;
 
-class IdeaLogController extends Controller
+class DepartmentController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -27,7 +28,7 @@ class IdeaLogController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreIdeaLogRequest $request)
+    public function store(StoreDepartmentRequest $request)
     {
         //
     }
@@ -35,7 +36,7 @@ class IdeaLogController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(IdeaLog $ideaLog)
+    public function show(Department $department)
     {
         //
     }
@@ -43,7 +44,7 @@ class IdeaLogController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(IdeaLog $ideaLog)
+    public function edit(Department $department)
     {
         //
     }
@@ -51,7 +52,7 @@ class IdeaLogController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateIdeaLogRequest $request, IdeaLog $ideaLog)
+    public function update(UpdateDepartmentRequest $request, Department $department)
     {
         //
     }
@@ -59,7 +60,7 @@ class IdeaLogController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(IdeaLog $ideaLog)
+    public function destroy(Department $department)
     {
         //
     }

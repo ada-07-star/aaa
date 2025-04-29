@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\v1;
 
-use App\Models\Evaluation;
-use App\Http\Requests\StoreEvaluationRequest;
-use App\Http\Requests\UpdateEvaluationRequest;
+use App\Http\Controllers\Controller;
+use App\Models\Language;
+use App\Http\Requests\StoreLanguageRequest;
+use App\Http\Requests\UpdateLanguageRequest;
 
-class EvaluationController extends Controller
+class LanguageController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -27,7 +28,7 @@ class EvaluationController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreEvaluationRequest $request)
+    public function store(StoreLanguageRequest $request)
     {
         //
     }
@@ -35,7 +36,7 @@ class EvaluationController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Evaluation $evaluation)
+    public function show(Language $language)
     {
         //
     }
@@ -43,7 +44,7 @@ class EvaluationController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Evaluation $evaluation)
+    public function edit(Language $language)
     {
         //
     }
@@ -51,7 +52,7 @@ class EvaluationController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateEvaluationRequest $request, Evaluation $evaluation)
+    public function update(UpdateLanguageRequest $request, Language $language)
     {
         //
     }
@@ -59,7 +60,7 @@ class EvaluationController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Evaluation $evaluation)
+    public function destroy(Language $language)
     {
         //
     }

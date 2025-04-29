@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\v1;
 
-use App\Models\TopicTag;
-use App\Http\Requests\StoreTopicTagRequest;
-use App\Http\Requests\UpdateTopicTagRequest;
+use App\Http\Controllers\Controller;
+use App\Models\Evaluation;
+use App\Http\Requests\StoreEvaluationRequest;
+use App\Http\Requests\UpdateEvaluationRequest;
 
-class TopicTagController extends Controller
+class EvaluationController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -27,7 +28,7 @@ class TopicTagController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreTopicTagRequest $request)
+    public function store(StoreEvaluationRequest $request)
     {
         //
     }
@@ -35,7 +36,7 @@ class TopicTagController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(TopicTag $topicTag)
+    public function show(Evaluation $evaluation)
     {
         //
     }
@@ -43,7 +44,7 @@ class TopicTagController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(TopicTag $topicTag)
+    public function edit(Evaluation $evaluation)
     {
         //
     }
@@ -51,7 +52,7 @@ class TopicTagController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateTopicTagRequest $request, TopicTag $topicTag)
+    public function update(UpdateEvaluationRequest $request, Evaluation $evaluation)
     {
         //
     }
@@ -59,7 +60,7 @@ class TopicTagController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(TopicTag $topicTag)
+    public function destroy(Evaluation $evaluation)
     {
         //
     }

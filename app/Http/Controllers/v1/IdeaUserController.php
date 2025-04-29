@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
-use App\Models\TopicCategory;
-use App\Http\Requests\StoreTopicCategoryRequest;
-use App\Http\Requests\UpdateTopicCategoryRequest;
+use App\Models\IdeaUser;
+use App\Http\Requests\StoreIdeaUserRequest;
+use App\Http\Requests\UpdateIdeaUserRequest;
 
-class TopicCategoryController extends Controller
+class IdeaUserController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -28,7 +28,7 @@ class TopicCategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreTopicCategoryRequest $request)
+    public function store(StoreIdeaUserRequest $request)
     {
         //
     }
@@ -36,7 +36,7 @@ class TopicCategoryController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(TopicCategory $topicCategory)
+    public function show(IdeaUser $ideaUser)
     {
         //
     }
@@ -44,7 +44,7 @@ class TopicCategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(TopicCategory $topicCategory)
+    public function edit(IdeaUser $ideaUser)
     {
         //
     }
@@ -52,7 +52,7 @@ class TopicCategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateTopicCategoryRequest $request, TopicCategory $topicCategory)
+    public function update(UpdateIdeaUserRequest $request, IdeaUser $ideaUser)
     {
         //
     }
@@ -60,7 +60,7 @@ class TopicCategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(TopicCategory $topicCategory)
+    public function destroy(IdeaUser $ideaUser)
     {
         //
     }

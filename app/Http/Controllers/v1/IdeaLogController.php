@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\v1;
 
-use App\Models\DepartmentAccess;
-use App\Http\Requests\StoreDepartmentAccessRequest;
-use App\Http\Requests\UpdateDepartmentAccessRequest;
+use App\Http\Controllers\Controller;
+use App\Models\IdeaLog;
+use App\Http\Requests\StoreIdeaLogRequest;
+use App\Http\Requests\UpdateIdeaLogRequest;
 
-class DepartmentAccessController extends Controller
+class IdeaLogController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -27,7 +28,7 @@ class DepartmentAccessController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreDepartmentAccessRequest $request)
+    public function store(StoreIdeaLogRequest $request)
     {
         //
     }
@@ -35,7 +36,7 @@ class DepartmentAccessController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(DepartmentAccess $departmentAccess)
+    public function show(IdeaLog $ideaLog)
     {
         //
     }
@@ -43,7 +44,7 @@ class DepartmentAccessController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(DepartmentAccess $departmentAccess)
+    public function edit(IdeaLog $ideaLog)
     {
         //
     }
@@ -51,7 +52,7 @@ class DepartmentAccessController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateDepartmentAccessRequest $request, DepartmentAccess $departmentAccess)
+    public function update(UpdateIdeaLogRequest $request, IdeaLog $ideaLog)
     {
         //
     }
@@ -59,7 +60,7 @@ class DepartmentAccessController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(DepartmentAccess $departmentAccess)
+    public function destroy(IdeaLog $ideaLog)
     {
         //
     }
