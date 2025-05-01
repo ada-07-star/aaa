@@ -50,4 +50,9 @@ class Idea extends Model
     {
         return $this->hasMany(IdeaComment::class, 'idea_id');
     }
+
+    public function ratings()
+    {
+        return $this->hasMany(IdeaRating::class);
+    }
 }

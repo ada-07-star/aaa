@@ -3,9 +3,11 @@
 use App\Http\Controllers\v1\AuthController;
 use App\Http\Controllers\v1\IdeaCommentController;
 use App\Http\Controllers\v1\IdeaController;
+use App\Http\Controllers\v1\IdeaRatingController;
 use App\Http\Controllers\v1\TopicController;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/updateUser', [TopicController::class, 'updateUser']);
 
 Route::post('login', [AuthController::class, 'login']);
 Route::post('logout', [AuthController::class, 'logout']);
@@ -19,4 +21,5 @@ Route::middleware(['auth:api'])->prefix('/v1/app')->group(function () {
     Route::post('/idea/{idea}/comment', [IdeaCommentController::class, 'store']);
     Route::get('/idea/{idea}/comment', [IdeaCommentController::class, 'index']);
     Route::post('/idea/{idea}/comment_rate', [IdeaCommentController::class, 'toggleLike']);
+    Route::post('/idea/{idea}/rate', [IdeaRatingController::class, 'rate']);
 });

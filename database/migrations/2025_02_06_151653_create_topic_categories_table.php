@@ -12,10 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('topic_categories', function (Blueprint $table) {
-            $table->unsignedBigInteger('topic_id');
-            $table->foreign('topic_id')->references('id')->on('topics');
-            $table->unsignedBigInteger('category_id');
-            $table->foreign('category_id')->references('id')->on('categories');
+            $table->foreignId('topic_id')->nullable()->constrained();
+            $table->foreignId('category_id')->nullable()->constrained();
             $table->primary(['topic_id', 'category_id']);
             $table->timestamps();
         });

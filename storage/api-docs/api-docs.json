@@ -19,7 +19,7 @@
                 ],
                 "summary": "Login user and retrieve JWT token",
                 "description": "This endpoint allows the user to login by providing email and password. A JWT token will be returned upon successful authentication.",
-                "operationId": "a3b306d14572d1f4bd6c064b3233e7b8",
+                "operationId": "dccac2a5094d04cf5cc9c1582abc2e7b",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -100,7 +100,7 @@
         "/api/me": {
             "get": {
                 "summary": "Get authenticated user information",
-                "operationId": "a39fa66a3964c041ce760a10f06a4be5",
+                "operationId": "bd53222775f6bc33782e35b570c71615",
                 "parameters": [
                     {
                         "name": "Authorization",
@@ -457,7 +457,7 @@
                 ],
                 "summary": "Toggle like on a comment",
                 "description": "Like or unlike a comment and return the updated comment",
-                "operationId": "396d860029980f068fa8d3445af8c84f",
+                "operationId": "22a72d74b98dbb1f7e3a03beebbb7dc5",
                 "parameters": [
                     {
                         "name": "ideaId",
@@ -597,7 +597,7 @@
                 ],
                 "summary": "دریافت لیست ایده‌های یک موضوع خاص",
                 "description": "این endpoint لیست ایده‌های منتشر شده یا قابل انتشار یک موضوع خاص را برمی‌گرداند.",
-                "operationId": "e8289c8ec67d5e8fff0d801bba5cbf4f",
+                "operationId": "c57e9baffa3fdabfd8f74f9cf45bd278",
                 "parameters": [
                     {
                         "name": "topic",
@@ -773,7 +773,7 @@
                     "Ideas"
                 ],
                 "summary": "Create a new idea",
-                "operationId": "75d8a137aef82edad487e9e61bc8acbd",
+                "operationId": "1208a900bd8b85c39507e7969cd32a45",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1105,10 +1105,89 @@
                 }
             }
         },
+        "/api/v1/app/idea/{idea}/rate": {
+            "post": {
+                "tags": [
+                    "Ideas"
+                ],
+                "summary": "ثبت امتیاز برای یک ایده",
+                "description": "کاربر نهایی می‌تواند به ایده‌ای امتیاز بدهد و آمار امتیازات را دریافت کند.",
+                "operationId": "bf83c77b79aa2d4b81677ffc7aaf049d",
+                "parameters": [
+                    {
+                        "name": "idea",
+                        "in": "path",
+                        "description": "شناسه ایده",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "rateNumber"
+                                ],
+                                "properties": {
+                                    "rateNumber": {
+                                        "description": "امتیاز ارائه شده (مثلاً از 1 تا 5)",
+                                        "type": "integer",
+                                        "example": 2
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "حالت موفق",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "totalRates": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "personRate": {
+                                                    "type": "integer",
+                                                    "example": 5
+                                                },
+                                                "avgRate": {
+                                                    "type": "number",
+                                                    "format": "float",
+                                                    "example": 3.5
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "درخواست نادرست"
+                    },
+                    "401": {
+                        "description": "عدم احراز هویت"
+                    }
+                }
+            }
+        },
         "/api/v1/app/topics": {
             "get": {
                 "summary": "Get list of topics",
-                "operationId": "af108928cdfcc146382601a04660c13d",
+                "operationId": "4d0c48b9adfdb3f8f30cd2703d141b7e",
                 "responses": {
                     "200": {
                         "description": "List of topics"
@@ -1119,7 +1198,7 @@
         "/api/v1/app/topics/{id}": {
             "get": {
                 "summary": "Get a specific topic",
-                "operationId": "f54bb1b5ca83b09ff882e82b9dbf2808",
+                "operationId": "9c2195f8fead4eaf3eee92f544246939",
                 "parameters": [
                     {
                         "name": "id",

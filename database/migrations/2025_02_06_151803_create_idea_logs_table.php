@@ -13,8 +13,7 @@ return new class extends Migration
     {
         Schema::create('idea_logs', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('idea_id')->nullable();
-            $table->foreign('idea_id')->references('id')->on('ideas');
+            $table->foreignId('idea_id')->constrained();
             $table->text('description');
             $table->timestamps();
         });

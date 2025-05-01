@@ -13,12 +13,9 @@ return new class extends Migration
     {
         Schema::create('department_accesses', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->unsignedBigInteger('role_id');
-            $table->foreign('role_id')->references('id')->on('roles');
-            $table->unsignedBigInteger('department_id')->nullable();
-            $table->foreign('department_id')->references('id')->on('departments');
+            $table->foreignId('user_id')->constrained();
+            $table->foreignId('role_id')->constrained();
+            $table->foreignId('department_id')->constrained();
             $table->boolean('status');
             $table->bigInteger('created_by');
             $table->bigInteger('updated_by');

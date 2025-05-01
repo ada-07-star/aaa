@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('idea_ratings', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('idea_id')->nullable();
-            $table->foreign('idea_id')->references('id')->on('ideas');
-            $table->unsignedBigInteger('rate_number');
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreignId('user_id')->constrained();
+            $table->foreignId('idea_id')->constrained();
+            $table->tinyInteger('rate_number')->unsigned();
             $table->timestamps();
+
+            $table->unique(['user_id', 'idea_id']);
         });
     }
 

@@ -14,14 +14,11 @@ return new class extends Migration
         Schema::create('idea_comments', function (Blueprint $table) {
             $table->id();
             $table->text('comment_text');
-            $table->unsignedBigInteger('idea_id');
-            $table->foreign('idea_id')->references('id')->on('ideas');
-            $table->unsignedBigInteger('parent_id')->nullable();
-            $table->foreign('parent_id')->references('id')->on('idea_comments');
+            $table->foreignId('idea_id')->constrained();
+            $table->foreignId('parent_id')->nullable()->constrained('idea_comments');
             $table->integer('likes')->nullable();
             $table->enum('status', ['published', 'draft'])->default('draft');
-            $table->unsignedBigInteger('created_by');
-            $table->foreign('created_by')->references('id')->on('users');
+            $table->foreignId('created_by')->constrained('users');
             $table->timestamps();
         });
     }

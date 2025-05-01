@@ -15,8 +15,7 @@ return new class extends Migration
     {
         Schema::create('ideas', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('topic_id');
-            $table->foreign('topic_id')->references('id')->on('topics');
+            $table->foreignId('topic_id')->constrained();
             $table->string('title', 500);
             $table->text('description');
             $table->Boolean('is_published');

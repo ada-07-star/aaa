@@ -12,10 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('topic_tags', function (Blueprint $table) {
-            $table->unsignedBigInteger('topic_id')->nullable();
-            $table->foreign('topic_id')->references('id')->on('topics');
-            $table->unsignedBigInteger('tag_id');
-            $table->foreign('tag_id')->references('id')->on('tags');
+            $table->foreignId('topic_id')->nullable()->constrained();
+            $table->foreignId('tag_id')->constrained();
             $table->primary(['topic_id', 'tag_id']);
             $table->timestamps();
         });

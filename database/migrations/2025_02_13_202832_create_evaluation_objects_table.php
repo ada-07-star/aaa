@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('evaluation_objects', function (Blueprint $table) {
             $table->id();
             $table->string('title', 500);
-            $table->unsignedBigInteger('department_id');
-            $table->foreign('department_id')->references('id')->on('departments');
+            $table->foreignId('department_id')->constrained();
             $table->text('description')->nullable();
             $table->boolean('status');
             $table->bigInteger('created_by');

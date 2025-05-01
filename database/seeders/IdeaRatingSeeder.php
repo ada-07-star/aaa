@@ -13,6 +13,6 @@ class IdeaRatingSeeder extends Seeder
      */
     public function run(): void
     {
-        IdeaRating::factory()->count(10)->create();
+        IdeaRating::factory()->count(20)->create();
     }
 }

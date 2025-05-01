@@ -15,10 +15,8 @@ return new class extends Migration
         Schema::create('topics', function (Blueprint $table) {
             $table->id();
             $table->string('title', 500);
-            $table->unsignedBigInteger('department_id');
-            $table->foreign('department_id')->references('id')->on('departments');
-            $table->unsignedBigInteger('language_id');
-            $table->foreign('language_id')->references('id')->on('languages');
+            $table->foreignId('department_id')->constrained();
+            $table->foreignId('language_id')->constrained();
             $table->string('age_range');
             $table->bigInteger('gender')->nullable();
             $table->string('thumb_image', 500)->nullable();
@@ -32,8 +30,7 @@ return new class extends Migration
             $table->string('current_state', 50);
             $table->integer('judge_number');
             $table->integer('minimum_score');
-            $table->unsignedBigInteger('evaluation_id')->nullable();
-            $table->foreign('evaluation_id')->references('id')->on('evaluations');
+            $table->foreignId('evaluation_id')->nullable()->constrained();
             $table->Boolean('status');
             $table->Boolean('is_archive');
             $table->bigInteger('created_by');

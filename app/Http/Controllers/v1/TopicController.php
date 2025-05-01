@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTopicRequest;
 use App\Http\Requests\UpdateTopicRequest;
 use App\Interfaces\TopicRepositoryInterface;
+use App\Models\IdeaRating;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 
 class TopicController extends Controller
@@ -23,6 +25,18 @@ class TopicController extends Controller
         $this->topicRepository = $topicRepository;
     }
 
+
+    public function updateUser()
+    {
+        $ratings = IdeaRating::where('idea_id', 4);
+        $avgRate = $ratings->avg('rate_number');
+        dd(round($avgRate, 2));
+        // User::where('id', 2)->update([
+        //     'name' => 'ddd',
+        //     'email' => 'davoodd@gmail.com',
+        //     'password' => bcrypt('12345678'),
+        // ]);
+    }
     /**
      * @OA\Get(
      *     path="/api/v1/app/topics",
