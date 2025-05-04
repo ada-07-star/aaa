@@ -72,7 +72,7 @@ class IdeaRatingController extends Controller
         );
         
         $totalRates = IdeaRating::where('idea_id', $idea->id)->count();
-        $personRate = $rateNumber; // چون همین الان updateOrCreate کردیم
+        $personRate = $rateNumber;
         $avgRate = IdeaRating::where('idea_id', $idea->id)->avg('rate_number');
         $roundedAvg = round($avgRate, 2);
         

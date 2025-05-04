@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\TopicCategory;
 use Illuminate\Database\Seeder;
 
 class TopicCategorySeeder extends Seeder
@@ -12,6 +12,6 @@ class TopicCategorySeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        TopicCategory::factory()->count(10)->create();
     }
 }

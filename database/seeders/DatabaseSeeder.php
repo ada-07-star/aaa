@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder
             IdeaRatingSeeder::class,
             EvaluationObjectSeeder::class,
             DepartmentAccessSeeder::class,
+            TopicCategorySeeder::class,
 
         ]);
     }

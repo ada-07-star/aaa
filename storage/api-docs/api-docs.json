@@ -12,14 +12,292 @@
         }
     ],
     "paths": {
-        "/api/login": {
+        "/api/v1/admin/topics": {
+            "get": {
+                "tags": [
+                    "Admin - Topics"
+                ],
+                "summary": "لیست موضوعات",
+                "description": "لیست تمامی موضوعات با امکان فیلتر بر اساس دپارتمان، زبان، وضعیت، دسته بندی و جستجوی کلیدواژه. امکان مرتب سازی بر اساس تاریخ ثبت وجود دارد.",
+                "operationId": "adminTopicsList",
+                "parameters": [
+                    {
+                        "name": "department_id",
+                        "in": "query",
+                        "description": "فیلتر بر اساس آیدی دپارتمان",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 12
+                        }
+                    },
+                    {
+                        "name": "language_id",
+                        "in": "query",
+                        "description": "فیلتر بر اساس آیدی زبان",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "فیلتر بر اساس وضعیت",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "keyword",
+                        "in": "query",
+                        "description": "جستجو بر اساس کلیدواژه در عنوان",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "طرح"
+                        }
+                    },
+                    {
+                        "name": "category_id",
+                        "in": "query",
+                        "description": "فیلتر بر اساس آیدی دسته بندی",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "sort_by",
+                        "in": "query",
+                        "description": "فیلد برای مرتب سازی",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "created_at",
+                            "enum": [
+                                "created_at",
+                                "updated_at",
+                                "title"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "sort_direction",
+                        "in": "query",
+                        "description": "جهت مرتب سازی",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "desc",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "شماره صفحه",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1,
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "تعداد آیتم در هر صفحه",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10,
+                            "maximum": 100,
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "عملیات موفق",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "لیست موضوعات با موفقیت بارگذاری شد"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "topics": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 32323
+                                                            },
+                                                            "categories": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "properties": {
+                                                                        "title": {
+                                                                            "type": "string",
+                                                                            "example": "موضوعات عام"
+                                                                        },
+                                                                        "id": {
+                                                                            "type": "integer",
+                                                                            "example": 32323
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                }
+                                                            },
+                                                            "title": {
+                                                                "type": "string",
+                                                                "example": "رواق ود"
+                                                            },
+                                                            "current_state": {
+                                                                "properties": {
+                                                                    "title": {
+                                                                        "type": "string",
+                                                                        "example": "ثبت ایده"
+                                                                    },
+                                                                    "slug": {
+                                                                        "type": "string",
+                                                                        "example": "add_idea"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            },
+                                                            "submit_date_from": {
+                                                                "type": "string",
+                                                                "format": "date-time",
+                                                                "example": "2025-04-28 14:08:04"
+                                                            },
+                                                            "submit_date_to": {
+                                                                "type": "string",
+                                                                "format": "date-time",
+                                                                "example": "2025-04-28 14:08:04"
+                                                            },
+                                                            "language": {
+                                                                "properties": {
+                                                                    "title": {
+                                                                        "type": "string",
+                                                                        "example": "فارسی"
+                                                                    },
+                                                                    "id": {
+                                                                        "type": "string",
+                                                                        "example": "22"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            },
+                                                            "department": {
+                                                                "properties": {
+                                                                    "title": {
+                                                                        "type": "string",
+                                                                        "example": "معاونت تبلیغات"
+                                                                    },
+                                                                    "id": {
+                                                                        "type": "string",
+                                                                        "example": "12"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "pagination": {
+                                                    "properties": {
+                                                        "total": {
+                                                            "type": "integer",
+                                                            "example": 15
+                                                        },
+                                                        "current_page": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "per_page": {
+                                                            "type": "integer",
+                                                            "example": 10
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "خطای درخواست",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "پارامترهای ارسالی معتبر نیستند"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "خطای سرور",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "خطای داخلی سرور"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/app/login": {
             "post": {
                 "tags": [
                     "Authentication"
                 ],
                 "summary": "Login user and retrieve JWT token",
                 "description": "This endpoint allows the user to login by providing email and password. A JWT token will be returned upon successful authentication.",
-                "operationId": "dccac2a5094d04cf5cc9c1582abc2e7b",
+                "operationId": "7f25c50933828ca9973f8ff267a6ec64",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -97,10 +375,10 @@
                 }
             }
         },
-        "/api/me": {
+        "/api/v1/app/me": {
             "get": {
                 "summary": "Get authenticated user information",
-                "operationId": "bd53222775f6bc33782e35b570c71615",
+                "operationId": "f91a0eefc59611a613147cdda66caf59",
                 "parameters": [
                     {
                         "name": "Authorization",
@@ -1389,6 +1667,10 @@
         }
     },
     "tags": [
+        {
+            "name": "Admin - Topics",
+            "description": "Admin - Topics"
+        },
         {
             "name": "Authentication",
             "description": "Authentication"

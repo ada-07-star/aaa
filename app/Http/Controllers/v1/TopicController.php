@@ -28,14 +28,19 @@ class TopicController extends Controller
 
     public function updateUser()
     {
-        $ratings = IdeaRating::where('idea_id', 4);
-        $avgRate = $ratings->avg('rate_number');
-        dd(round($avgRate, 2));
-        // User::where('id', 2)->update([
-        //     'name' => 'ddd',
-        //     'email' => 'davoodd@gmail.com',
-        //     'password' => bcrypt('12345678'),
-        // ]);
+        // $ratings = IdeaRating::where('idea_id', 4);
+        // $avgRate = $ratings->avg('rate_number');
+        // dd(round($avgRate, 2));
+        User::where('id', 2)->update([
+            'name' => 'ddd',
+            'email' => 'davoodd@gmail.com',
+            'password' => bcrypt('12345678'),
+        ]);
+        User::where('id', 1)->update([
+            'name' => 'ali',
+            'email' => 'davood@gmail.com',
+            'password' => bcrypt('12345678'),
+        ]);
     }
     /**
      * @OA\Get(

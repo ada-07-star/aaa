@@ -40,7 +40,7 @@ class AuthController extends Controller
 
     /**  
      * @OA\Post(  
-     *     path="/api/login",  
+     *     path="/api/v1/app/login",  
      *     summary="Login user and retrieve JWT token",  
      *     description="This endpoint allows the user to login by providing email and password. A JWT token will be returned upon successful authentication.",  
      *     tags={"Authentication"},  
@@ -92,7 +92,7 @@ class AuthController extends Controller
 
     /**  
      * @OA\Get(  
-     *     path="/api/me",  
+     *     path="/api/v1/app/me",  
      *     summary="Get authenticated user information",  
      *     security={{"Bearer": {}}},
      *     @OA\Parameter(  
