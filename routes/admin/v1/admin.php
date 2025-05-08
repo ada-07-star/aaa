@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\v1\AdminController; // مثال کنترلر
+use App\Http\Controllers\Admin\v1\AdminDepartmentController;
 use App\Http\Controllers\admin\v1\AdminTopicController;
 
 // Route::get('/', function () {
@@ -10,4 +11,5 @@ use App\Http\Controllers\admin\v1\AdminTopicController;
 
 // مثال روت با کنترلر
 Route::get('dashboard', [AdminController::class, 'dashboard']);
-Route::get('/topics', [AdminTopicController::class, 'index'])->name('list');
+Route::resource('/topics', AdminTopicController::class);
+Route::resource('/department', AdminDepartmentController::class);

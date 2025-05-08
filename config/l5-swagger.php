@@ -8,20 +8,22 @@ return [
                 'url' => env('SWAGGER_API_URL', 'http://localhost:8000/api'),
                 'title' => 'L5 Swagger UI',
             ],
-
+            'schemas' => [
+                app_path('Http/Resources/Swagger'),
+            ],
             'routes' => [
                 /*
                  * Route for accessing api documentation interface
                  */
-                    'api' => 'api/documentation',
-                    'docs' => 'docs',
-                    'oauth2_callback' => 'api/oauth2-callback',
-                    'middleware' => [
-                        'api' => [],
-                        'asset' => [],
-                        'docs' => [],
-                        'oauth2_callback' => [],
-                    ],
+                'api' => 'api/documentation',
+                'docs' => 'docs',
+                'oauth2_callback' => 'api/oauth2-callback',
+                'middleware' => [
+                    'api' => [],
+                    'asset' => [],
+                    'docs' => [],
+                    'oauth2_callback' => [],
+                ],
             ],
             'paths' => [
                 /*
@@ -123,8 +125,8 @@ return [
              * @link https://zircote.github.io/swagger-php/reference/processors.html
              */
             'default_processors_configuration' => [
-            /** Example */
-            /**
+                /** Example */
+                /**
              * 'operationId.hash' => true,
              * 'pathFilter' => [
              * 'tags' => [
@@ -190,7 +192,7 @@ return [
                     'scheme' => 'bearer',
                     'bearerFormat' => 'JWT',
                     'description' => 'Enter your JWT Bearer token in the format **Bearer {your token}**',
-                ],  
+                ],
                 /*
                  * Examples of Security schemes
                  */

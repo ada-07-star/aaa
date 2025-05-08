@@ -12,6 +12,397 @@
         }
     ],
     "paths": {
+        "/api/v1/admin/department": {
+            "get": {
+                "tags": [
+                    "Departments"
+                ],
+                "summary": "دریافت لیست دپارتمان‌ها",
+                "description": "این متد برای دریافت لیست تمام دپارتمان‌های سیستم استفاده می‌شود",
+                "operationId": "2ee7646d227f35341ee900e8e96440fb",
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "تعداد رکوردها در هر صفحه (پیش‌فرض 10)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "شماره صفحه (پیش‌فرض 1)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "فیلتر بر اساس وضعیت (true/false)",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "جستجو در عنوان و توضیحات",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "عملیات موفق",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "لیست دپارتمان‌ها با موفقیت دریافت شد"
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 100
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "عدم احراز هویت",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "خطای سرور",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "خطای سرور داخلی"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Departments"
+                ],
+                "summary": "ایجاد دپارتمان جدید",
+                "description": "این متد برای ایجاد یک دپارتمان جدید توسط کاربران با نقش ادمین استفاده می‌شود",
+                "operationId": "20a7201d0d753a2fbf089c11b7bc8b73",
+                "requestBody": {
+                    "description": "اطلاعات دپارتمان جدید",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "status",
+                                    "created_by"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "maxLength": 500,
+                                        "example": "حوزه فناوری اطلاعات"
+                                    },
+                                    "descriptions": {
+                                        "type": "string",
+                                        "example": "مسئولیت‌های مربوط به توسعه نرم‌افزار"
+                                    },
+                                    "status": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "created_by": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "عملیات موفق",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "دپارتمان با موفقیت ایجاد شد"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "خطای اعتبارسنجی",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "خطا در اعتبارسنجی داده‌ها"
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "title": {
+                                                    "type": "string",
+                                                    "example": "عنوان دپارتمان الزامی است"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "دسترسی غیرمجاز",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "شما مجوز ایجاد دپارتمان را ندارید"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "خطای سرور",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "خطای سرور داخلی"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "خطای پایگاه داده"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/department/{id}": {
+            "delete": {
+                "tags": [
+                    "Departments"
+                ],
+                "summary": "حذف دپارتمان",
+                "description": "این متد برای حذف یک دپارتمان توسط کاربران با نقش ادمین استفاده می‌شود",
+                "operationId": "8bc33c0206da019717b58074aebe4039",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "شناسه دپارتمان",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "عملیات موفق",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "دپارتمان با موفقیت حذف شد"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "دسترسی غیرمجاز",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "شما مجوز حذف دپارتمان را ندارید"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "دپارتمان یافت نشد",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "دپارتمان مورد نظر یافت نشد"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "خطای سرور",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "خطا در حذف دپارتمان"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "خطای پایگاه داده"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/v1/admin/topics": {
             "get": {
                 "tags": [
@@ -288,6 +679,239 @@
                         }
                     }
                 }
+            },
+            "post": {
+                "tags": [
+                    "Admin - Topics"
+                ],
+                "summary": "Create a new topic",
+                "description": "Endpoint for creating a new topic with all required fields",
+                "operationId": "59ffae113137cccf2f0b17db522f909d",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "department_id",
+                                    "language_id",
+                                    "age_range",
+                                    "current_state",
+                                    "judge_number",
+                                    "minimum_score",
+                                    "status",
+                                    "is_archive",
+                                    "created_by",
+                                    "submit_date_from"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "maxLength": 500,
+                                        "example": "عنوان موضوع نمونه"
+                                    },
+                                    "department_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "language_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "age_range": {
+                                        "type": "string",
+                                        "example": "18-25"
+                                    },
+                                    "gender": {
+                                        "type": "integer",
+                                        "example": 1,
+                                        "nullable": true
+                                    },
+                                    "thumb_image": {
+                                        "type": "string",
+                                        "maxLength": 500,
+                                        "example": "path/to/thumb.jpg",
+                                        "nullable": true
+                                    },
+                                    "cover_image": {
+                                        "type": "string",
+                                        "maxLength": 500,
+                                        "example": "path/to/cover.jpg",
+                                        "nullable": true
+                                    },
+                                    "submit_date_from": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2023-01-01 00:00:00"
+                                    },
+                                    "submit_date_to": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2023-12-31 23:59:59",
+                                        "nullable": true
+                                    },
+                                    "consideration_date_from": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2023-02-01 00:00:00",
+                                        "nullable": true
+                                    },
+                                    "consideration_date_to": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2023-02-28 23:59:59",
+                                        "nullable": true
+                                    },
+                                    "plan_date_from": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2023-03-01 00:00:00",
+                                        "nullable": true
+                                    },
+                                    "plan_date_to": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2023-03-31 23:59:59",
+                                        "nullable": true
+                                    },
+                                    "current_state": {
+                                        "type": "string",
+                                        "maxLength": 50,
+                                        "example": "draft"
+                                    },
+                                    "judge_number": {
+                                        "type": "integer",
+                                        "example": 3
+                                    },
+                                    "minimum_score": {
+                                        "type": "integer",
+                                        "example": 50
+                                    },
+                                    "evaluation_id": {
+                                        "type": "integer",
+                                        "example": 1,
+                                        "nullable": true
+                                    },
+                                    "status": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "is_archive": {
+                                        "type": "boolean",
+                                        "example": false
+                                    },
+                                    "created_by": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "updated_by": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Topic created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Topic created successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "title": {
+                                                    "type": "string",
+                                                    "example": "عنوان موضوع نمونه"
+                                                },
+                                                "department_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "current_state": {
+                                                    "type": "string",
+                                                    "example": "draft"
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2023-01-01T00:00:00Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "title": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The title field is required."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/api/v1/app/login": {
@@ -1667,6 +2291,10 @@
         }
     },
     "tags": [
+        {
+            "name": "Departments",
+            "description": "Departments"
+        },
         {
             "name": "Admin - Topics",
             "description": "Admin - Topics"
