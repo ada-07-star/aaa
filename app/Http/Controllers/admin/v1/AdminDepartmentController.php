@@ -229,6 +229,138 @@ class AdminDepartmentController extends Controller
     }
 
     /**
+     * به‌روزرسانی اطلاعات دپارتمان
+     *
+     * @OA\Put(
+     *     path="/api/v1/admin/department/{id}",
+     *     summary="به‌روزرسانی دپارتمان",
+     *     description="این متد برای به‌روزرسانی اطلاعات یک دپارتمان توسط کاربران با نقش ادمین استفاده می‌شود",
+     *     tags={"Departments"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="شناسه دپارتمان",
+     *         required=true,
+     *         @OA\Schema(type="integer", format="int64")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="اطلاعات جدید دپارتمان",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="title", type="string", maxLength=500, example="عنوان جدید"),
+     *             @OA\Property(property="descriptions", type="string", example="توضیحات جدید"),
+     *             @OA\Property(property="status", type="boolean", example=true)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="عملیات موفق",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="دپارتمان با موفقیت به‌روزرسانی شد"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="title", type="string", example="توسعه نرم‌افزار"),
+     *                 @OA\Property(property="descriptions", type="text", example="توسعه نرم‌افزار جهت بهبود"),
+     *                 @OA\Property(property="created_by", type="integer", example="1"),
+     *                 @OA\Property(property="updated_by", type="integer", example="1"),
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="خطای اعتبارسنجی",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="خطا در اعتبارسنجی داده‌ها"),
+     *             @OA\Property(
+     *                 property="errors",
+     *                 type="object",
+     *                 @OA\Property(property="title", type="string", example="عنوان دپارتمان الزامی است")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="دسترسی غیرمجاز",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="شما مجوز به‌روزرسانی دپارتمان را ندارید")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="دپارتمان یافت نشد",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="دپارتمان مورد نظر یافت نشد")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="خطای سرور",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="خطا در به‌روزرسانی دپارتمان"),
+     *             @OA\Property(property="error", type="string", example="پیغام خطا")
+     *         )
+     *     )
+     * )
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update(Request $request, $id)
+    {
+        try {
+            $department = Department::find($id);
+
+            if (!$department) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'بخش مورد نظر یافت نشد',
+                ], 400);
+            }
+                $validator = Validator::make($request->all(), [
+                    'title' => 'sometimes|string|max:500',
+                    'descriptions' => 'nullable|string',
+                    'status' => 'sometimes|boolean',
+                ]);
+
+                if ($validator->fails()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'خطا در اعتبارسنجی داده‌ها',
+                        'errors' => $validator->errors()
+                    ], 400);
+                }
+
+                $department->update([
+                    'title' => $request->input('title', $department->title),
+                    'descriptions' => $request->input('descriptions', $department->descriptions),
+                    'status' => $request->input('status', $department->status),
+                    'updated_by' => Auth::id()
+                ]);
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'بخش با موفقیت بروزرسانی شد.',
+                    'data' => $department
+                ], 200);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'خطا در بروزرسانی بخش',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
      * حذف یک دپارتمان از سیستم
      *
      * @OA\Delete(
