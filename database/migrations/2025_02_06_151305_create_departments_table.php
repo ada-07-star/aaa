@@ -18,6 +18,7 @@ return new class extends Migration
             $table->boolean('status');
             $table->bigInteger('created_by');
             $table->bigInteger('updated_by');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

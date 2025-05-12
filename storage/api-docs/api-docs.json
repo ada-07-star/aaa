@@ -291,6 +291,133 @@
             }
         },
         "/api/v1/admin/department/{id}": {
+            "get": {
+                "tags": [
+                    "Departments"
+                ],
+                "summary": "نمایش جزئیات یک بخش",
+                "description": "نمایش اطلاعات کامل یک بخش بر اساس شناسه",
+                "operationId": "ef71e10106b5aa0ec2b3d7556fa37aef",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "شناسه بخش",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "عملیات موفق",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "جزئیات بخش با موفقیت دریافت شد"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "title": {
+                                                    "type": "string",
+                                                    "example": "بخش فناوری اطلاعات"
+                                                },
+                                                "descriptions": {
+                                                    "type": "string",
+                                                    "example": "توضیحات مربوط به بخش فناوری اطلاعات"
+                                                },
+                                                "status": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "created_by": {
+                                                    "type": "integer",
+                                                    "example": "5"
+                                                },
+                                                "updated_by": {
+                                                    "type": "integer",
+                                                    "example": "9"
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "بخش یافت نشد",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "بخش مورد نظر یافت نشد"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "خطای سرور",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "خطا در دریافت جزئیات بخش"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "متن خطا"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
             "put": {
                 "tags": [
                     "Departments"
@@ -367,11 +494,11 @@
                                                 },
                                                 "created_by": {
                                                     "type": "integer",
-                                                    "example": "1"
+                                                    "example": "5"
                                                 },
                                                 "updated_by": {
                                                     "type": "integer",
-                                                    "example": "1"
+                                                    "example": "9"
                                                 }
                                             },
                                             "type": "object"

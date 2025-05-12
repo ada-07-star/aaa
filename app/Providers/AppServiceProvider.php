@@ -2,9 +2,11 @@
 
 namespace App\Providers;
 
+use App\Interfaces\DepartmentRepositoryInterface;
 use App\Interfaces\IdeaCommentRepositoryInterface;
 use App\Interfaces\IdeaRepositoryInterface;
 use App\Interfaces\TopicRepositoryInterface;
+use App\Repositories\DepartmentRepository;
 use App\Repositories\IdeaCommentsRepository;
 use App\Repositories\IdeaRepository;
 use App\Repositories\TopicRepository;
@@ -17,7 +19,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-
+        $this->app->bind(
+            DepartmentRepositoryInterface::class,
+            DepartmentRepository::class
+        );
 
         $this->app->bind(
             TopicRepositoryInterface::class,

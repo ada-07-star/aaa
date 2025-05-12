@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTopicRequest;
 use App\Http\Requests\UpdateTopicRequest;
 use App\Interfaces\TopicRepositoryInterface;
-use App\Models\IdeaRating;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 
