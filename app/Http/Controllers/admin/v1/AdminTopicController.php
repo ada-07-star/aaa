@@ -4,10 +4,8 @@ namespace App\Http\Controllers\Admin\v1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Topic;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rule;
 
 
 class AdminTopicController extends Controller

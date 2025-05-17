@@ -1,0 +1,36 @@
+<?php
+
+namespace App\Http\Resources;
+
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class AdminDepartmentResource extends JsonResource
+{
+    /**
+     * Transform the resource into an array.
+     *
+     * @return array<string, mixed>
+     */
+    public function toArray(Request $request): array
+    {
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'descriptions' => $this->descriptions,
+            'status' => $this->status,
+            'created_by' => $this->creator ? [
+                'id' => $this->creator->id,
+                'name' => $this->creator->name,
+                'email' => $this->creator->email
+            ] : null,
+            'update_by' => $this->updater ? [
+                'id' => $this->updater->id,
+                'name' => $this->updater->name,
+                'email' => $this->updater->email
+            ] : null,
+            'created_at' => $this->created_at->toDateTimeString(),
+            'updated_at' => $this->updated_at->toDateTimeString(),
+        ];
+    }
+}

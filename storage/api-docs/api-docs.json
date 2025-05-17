@@ -73,21 +73,41 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "لیست دپارتمان‌ها با موفقیت دریافت شد"
+                                            "example": "جزئیات بخش با موفقیت دریافت شد"
                                         },
-                                        "meta": {
+                                        "data": {
                                             "properties": {
-                                                "current_page": {
+                                                "id": {
                                                     "type": "integer",
                                                     "example": 1
                                                 },
-                                                "per_page": {
-                                                    "type": "integer",
-                                                    "example": 10
+                                                "title": {
+                                                    "type": "string",
+                                                    "example": "بخش فناوری اطلاعات"
                                                 },
-                                                "total": {
+                                                "descriptions": {
+                                                    "type": "string",
+                                                    "example": "توضیحات مربوط به بخش فناوری اطلاعات"
+                                                },
+                                                "status": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "created_by": {
                                                     "type": "integer",
-                                                    "example": 100
+                                                    "example": "5"
+                                                },
+                                                "updated_by": {
+                                                    "type": "integer",
+                                                    "example": "9"
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
                                                 }
                                             },
                                             "type": "object"

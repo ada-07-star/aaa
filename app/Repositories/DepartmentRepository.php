@@ -2,11 +2,11 @@
 
 namespace App\Repositories;
 
+use App\Http\Resources\AdminDepartmentResource;
 use App\Interfaces\DepartmentRepositoryInterface;
 use App\Models\Department;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
 
 /**
  * Class DepartmentRepository.
@@ -38,11 +38,10 @@ class DepartmentRepository implements DepartmentRepositoryInterface
 
         $perPage = $request->input('per_page', 10);
         $departments = $query->orderBy('created_at', 'desc')->paginate($perPage);
-
         return [
             'success' => true,
             'message' => 'لیست دپارتمان‌ها با موفقیت دریافت شد',
-            'data' => $departments->items(),
+            'data' => AdminDepartmentResource::collection($departments),
             'meta' => [
                 'current_page' => $departments->currentPage(),
                 'per_page' => $departments->perPage(),
@@ -69,49 +68,35 @@ class DepartmentRepository implements DepartmentRepositoryInterface
 
     public function getDepartmentById($id)
     {
-        $department = $this->find($id);
-        if (!$department) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException('بخش مورد نظر یافت نشد');
-        }
-        return $department;
+        $department = $this->model->with(['creator', 'updater'])->findOrFail($id);
+
+        return  $department;
     }
 
     public function updateDepartment($id, array $data, $updatedBy)
     {
-        $department = $this->find($id);
-        if (!$department) {
-            return false;
-        }
+        $department = $this->model->findOrFail($id);
 
-        $validator = Validator::make($data, [
+        $validated = Validator::validate($data, [
             'title' => 'sometimes|string|max:500',
             'descriptions' => 'nullable|string',
             'status' => 'sometimes|boolean',
         ]);
 
-        if ($validator->fails()) {
-            throw new ValidationException($validator);
-        }
-
-        $updateData = [
-            'title' => $data['title'] ?? $department->title,
-            'descriptions' => $data['descriptions'] ?? $department->descriptions,
-            'status' => $data['status'] ?? $department->status,
-            'updated_by' => $updatedBy
-        ];
+        $updateData = array_merge(
+            array_filter($validated),
+            ['updated_by' => $updatedBy]
+        );
 
         $department->update($updateData);
 
-        return $department;
+        return $department->fresh();
     }
 
     public function softDelete($id)
     {
-        $department = Department::find($id);
-
-        if (!$department) {
-            return false;
-        }
+        $department = $this->model->findOrFail($id);
+        
         $department->delete();
         return true;
     }

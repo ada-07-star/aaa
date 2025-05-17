@@ -2,17 +2,22 @@
 
 namespace App\Http\Controllers\Admin\v1;
 
-use App\Http\Controllers\Controller;
-use App\Interfaces\DepartmentRepositoryInterface;
-use App\Repositories\DepartmentRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
+use App\Interfaces\DepartmentRepositoryInterface;
+use App\Http\Resources\AdminDepartmentResource;
 use Illuminate\Validation\ValidationException;
+use App\Repositories\DepartmentRepository;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use App\Traits\HasCreatorUpdater;
+use Illuminate\Http\Request;
+use Throwable;
 
 class AdminDepartmentController extends Controller
 {
+    use HasCreatorUpdater;
+    
     protected $departmentRepo;
 
     public function __construct(DepartmentRepositoryInterface $departmentRepo)
@@ -61,13 +66,18 @@ class AdminDepartmentController extends Controller
      *         description="عملیات موفق",
      *         @OA\JsonContent(
      *             @OA\Property(property="success", type="boolean", example=true),
-     *             @OA\Property(property="message", type="string", example="لیست دپارتمان‌ها با موفقیت دریافت شد"),
+     *             @OA\Property(property="message", type="string", example="جزئیات بخش با موفقیت دریافت شد"),
      *             @OA\Property(
-     *                 property="meta",
+     *                 property="data",
      *                 type="object",
-     *                 @OA\Property(property="current_page", type="integer", example=1),
-     *                 @OA\Property(property="per_page", type="integer", example=10),
-     *                 @OA\Property(property="total", type="integer", example=100)
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="title", type="string", example="بخش فناوری اطلاعات"),
+     *                 @OA\Property(property="descriptions", type="string", example="توضیحات مربوط به بخش فناوری اطلاعات"),
+     *                 @OA\Property(property="status", type="boolean", example=true),
+     *                 @OA\Property(property="created_by", type="integer", example="5"),
+     *                 @OA\Property(property="updated_by", type="integer", example="9"),
+     *                 @OA\Property(property="created_at", type="string", format="date-time"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time")
      *             )
      *         )
      *     ),
@@ -97,12 +107,8 @@ class AdminDepartmentController extends Controller
         try {
             $result = $this->departmentRepo->getAll($request);
             return response()->json($result);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'خطای سرور داخلی',
-                'error' => $e->getMessage()
-            ], 500);
+        } catch (Throwable $exception) {
+            return exception_response_exception($request, $exception);
         }
     }
 
@@ -191,22 +197,13 @@ class AdminDepartmentController extends Controller
                 Auth::id()
             );
 
-            return response()->json([
-                'success' => true,
-                'message' => 'بخش مورد نظر با موفقیت ثبت گردید.',
-                'data' => $department->only([
-                    'id',
-                    'title',
-                    'descriptions',
-                    'created_by',
-                    'updated_by'
-                ])
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'خطا در ایجاد دپارتمان'
-            ], 500);
+            return (new AdminDepartmentResource($department))
+                ->additional([
+                    'success' => true,
+                    'message' => 'جزئیات بخش با موفقیت ثبت شد'
+                ], 200);
+        } catch (Throwable $exception) {
+            return exception_response_exception($request, $exception);
         }
     }
 
@@ -232,7 +229,7 @@ class AdminDepartmentController extends Controller
      *             @OA\Property(property="message", type="string", example="جزئیات بخش با موفقیت دریافت شد"),
      *             @OA\Property(
      *                 property="data",
-     *                 type="object",
+     *                  type="object",
      *                 @OA\Property(property="id", type="integer", example=1),
      *                 @OA\Property(property="title", type="string", example="بخش فناوری اطلاعات"),
      *                 @OA\Property(property="descriptions", type="string", example="توضیحات مربوط به بخش فناوری اطلاعات"),
@@ -267,23 +264,15 @@ class AdminDepartmentController extends Controller
     {
         try {
             $department = $this->departmentRepo->getDepartmentById($id);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'جزئیات بخش با موفقیت دریافت شد',
-                'data' => $department,
-            ], 200);
+            return (new AdminDepartmentResource($department))
+                ->additional([
+                    'success' => true,
+                    'message' => 'جزئیات بخش با موفقیت دریافت شد'
+                ], 200);
         } catch (ModelNotFoundException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'بخش مورد نظر یافت نشد',
-            ], 404);
+            return exception_response_exception(request(), $e);
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'خطا در بروزرسانی بخش',
-                'error' => $e->getMessage()
-            ], 500);
+            return exception_response_exception(request(), $e);
         }
     }
 
@@ -375,35 +364,23 @@ class AdminDepartmentController extends Controller
     public function update(Request $request, $id, DepartmentRepository $departmentRepo)
     {
         try {
-            $department = $departmentRepo->updateDepartment(
+            $updatedDepartment = $departmentRepo->updateDepartment(
                 $id,
                 $request->all(),
                 Auth::id()
             );
 
-            if (!$department) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'بخش مورد نظر یافت نشد',
-                ], 400);
-            }
-            return response()->json([
-                'success' => true,
-                'message' => 'بخش با موفقیت بروزرسانی شد.',
-                'data' => $department
-            ], 200);
+            return (new AdminDepartmentResource($updatedDepartment))
+                ->additional([
+                    'success' => true,
+                    'message' => 'بخش با موفقیت بروزرسانی شد.'
+                ]);
+        } catch (ModelNotFoundException $e) {
+            return exception_response_exception(request(), $e);
         } catch (ValidationException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'خطا در اعتبارسنجی داده‌ها',
-                'errors' => $e->validator->errors()
-            ], 400);
+            return exception_response_exception(request(), $e);
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'خطا در بروزرسانی بخش',
-                'error' => $e->getMessage()
-            ], 500);
+            return exception_response_exception(request(), $e);
         }
     }
 
@@ -467,22 +444,15 @@ class AdminDepartmentController extends Controller
             $deleted = $this->departmentRepo->softDelete($id);
 
             if (!$deleted) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'دپارتمان مورد نظر یافت نشد'
-                ], 404);
+                throw new \Exception('Deletion failed');
             }
 
             return response()->json([
                 'success' => true,
                 'message' => 'دپارتمان با موفقیت حذف شد'
-            ]);
+            ], 200);
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'خطا در حذف دپارتمان',
-                'error' => $e->getMessage()
-            ], 500);
+            return exception_response_exception(request(), $e);
         }
     }
 }
