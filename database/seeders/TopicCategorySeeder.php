@@ -12,6 +12,6 @@ class TopicCategorySeeder extends Seeder
      */
     public function run(): void
     {
-        TopicCategory::factory()->count(10)->create();
+        TopicCategory::factory()->count(5)->create();
     }
 }

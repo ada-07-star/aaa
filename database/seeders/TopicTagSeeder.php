@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\TopicTag;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -12,6 +13,6 @@ class TopicTagSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        TopicTag::factory()->count(5)->create();
     }
 }

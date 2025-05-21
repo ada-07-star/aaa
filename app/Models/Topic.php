@@ -46,13 +46,18 @@ class Topic extends Model
         return $this->hasMany(Idea::class);
     }
 
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany(Tag::class, 'topic_tags');
+    }
+
     public function language()
     {
         return $this->belongsTo(Language::class);
     }
 
     public function department()
-{
-    return $this->belongsTo(Department::class);
-}
+    {
+        return $this->belongsTo(Department::class);
+    }
 }

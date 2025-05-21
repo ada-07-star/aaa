@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\TopicIndexRequest;
+use App\Interfaces\TopicRepositoryInterface;
 use App\Models\Topic;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -10,6 +12,17 @@ use Illuminate\Support\Facades\DB;
 
 class AdminTopicController extends Controller
 {
+    protected $topicRepository;
+
+    /**
+     * Constructor.
+     *
+     * @param TopicRepositoryInterface $topicRepository
+     */
+    public function __construct(TopicRepositoryInterface $topicRepository)
+    {
+        $this->topicRepository = $topicRepository;
+    }
     /**
      * @OA\Get(
      *     path="/api/v1/admin/topics",
@@ -163,86 +176,12 @@ class AdminTopicController extends Controller
      *     )
      * )
      */
-    public function index(Request $request)
+    public function index(TopicIndexRequest $request)
     {
-        $validated = $request->validate([
-            'department_id' => 'sometimes|integer',
-            'language_id' => 'sometimes|integer',
-            'status' => 'sometimes|integer',
-            'category_id' => 'sometimes|integer',
-            'keyword' => 'sometimes|string',
-            'sort_by' => 'sometimes|in:created_at,updated_at,title',
-            'sort_direction' => 'sometimes|in:asc,desc',
-            'page' => 'sometimes|integer|min:1',
-            'per_page' => 'sometimes|integer|min:1|max:100'
-        ]);
-
-        $query = Topic::with(['categories', 'language', 'department'])
-            ->when($request->filled('keyword'), function ($q) use ($request) {
-                $q->where('title', 'like', '%' . $request->keyword . '%');
-            })
-            ->when($request->filled('department_id'), function ($q) use ($request) {
-                $departments = explode(',', $request->department_id);
-                $q->whereIn('department_id', $departments);
-            })
-            ->when($request->filled('language_id'), function ($q) use ($request) {
-                $q->where('language_id', $request->language_id);
-            })
-            ->when($request->filled('status'), function ($q) use ($request) {
-                $q->where('status', $request->status);
-            })
-            ->when($request->filled('category_id'), function ($q) use ($request) {
-                $categories = explode(',', $request->category_id);
-                $q->whereHas('categories', function ($subQ) use ($categories) {
-                    $subQ->whereIn('categories.id', $categories);
-                });
-            });
-
-        $sortBy = $request->sort_by ?? 'created_at';
-        $sortDirection = $request->sort_direction ?? 'desc';
-        $query->orderBy($sortBy, $sortDirection);
-
+        $validated = $request->validated();
         $perPage = $request->per_page ?? 10;
-        $topics = $query->paginate($perPage);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'لیست موضوعات با موفقیت بارگذاری شد',
-            'code' => 200,
-            'data' => [
-                'topics' => $topics->map(function ($topic) {
-                    return [
-                        'id' => $topic->id,
-                        'categories' => $topic->categories->map(function ($category) {
-                            return [
-                                'id' => $category->id,
-                                'title' => $category->title,
-                            ];
-                        }),
-                        'title' => $topic->title,
-                        'current_state' => [
-                            'title' => $topic->current_state,
-                            'slug' => $topic->current_state,
-                        ],
-                        'submit_date_from' => $topic->submit_date_from ?? $topic->plan_date_from,
-                        'submit_date_to' => $topic->submit_date_to ?? $topic->plan_date_to,
-                        'language' => $topic->language ? [
-                            'name' => $topic->language->name,
-                            'id' => $topic->language->id,
-                        ] : null,
-                        'department' => [
-                            'id' => $topic->department->id,
-                            'title' => $topic->department->title,
-                        ],
-                    ];
-                }),
-                'pagination' => [
-                    'total' => $topics->total(),
-                    'current_page' => $topics->currentPage(),
-                    'per_page' => $topics->perPage(),
-                ],
-            ],
-        ]);
+        return $this->topicRepository->getAllFilteredTopics($validated, $perPage);
     }
 
     /**
@@ -391,13 +330,7 @@ class AdminTopicController extends Controller
                 ]
             ], 201);
         } catch (\Exception $e) {
-            DB::rollBack();
-
-            return response()->json([
-                'status' => 'error',
-                'message' => 'خطا در ایجاد موضوع',
-                'error' => $e->getMessage()
-            ], 500);
+            return exception_response_exception(request(), $e);
         }
     }
 

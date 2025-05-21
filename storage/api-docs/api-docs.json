@@ -2426,34 +2426,254 @@
         },
         "/api/v1/app/topics": {
             "get": {
-                "summary": "Get list of topics",
+                "tags": [
+                    "Topics - User"
+                ],
+                "summary": "دریافت لیست موضوعات برای کاربران عادی",
+                "description": "این endpoint لیست موضوعات فعال را با امکان فیلتر بر اساس دسته‌بندی بازمی‌گرداند.",
                 "operationId": "4d0c48b9adfdb3f8f30cd2703d141b7e",
-                "responses": {
-                    "200": {
-                        "description": "List of topics"
-                    }
-                }
-            }
-        },
-        "/api/v1/app/topics/{id}": {
-            "get": {
-                "summary": "Get a specific topic",
-                "operationId": "9c2195f8fead4eaf3eee92f544246939",
                 "parameters": [
                     {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
+                        "name": "category_id",
+                        "in": "query",
+                        "description": "فیلتر بر اساس ID دسته‌بندی (اختیاری)",
+                        "required": false,
                         "schema": {
                             "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "شماره صفحه برای صفحه‌بندی (اختیاری)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "تعداد آیتم‌ها در هر صفحه (اختیاری، حداکثر 20)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10,
+                            "maximum": 20
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Topic details"
+                        "description": "عملیات موفق",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "لیست موضوعات با موفقیت بارگذاری شد"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "topics": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/TopicResource"
+                                                    }
+                                                },
+                                                "pagination": {
+                                                    "properties": {
+                                                        "total": {
+                                                            "type": "integer",
+                                                            "example": 100
+                                                        },
+                                                        "current_page": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "per_page": {
+                                                            "type": "integer",
+                                                            "example": 10
+                                                        },
+                                                        "last_page": {
+                                                            "type": "integer",
+                                                            "example": 10
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "عدم احراز هویت",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "دسترسی ممنوع",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Forbidden."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/app/topics/{id}": {
+            "get": {
+                "tags": [
+                    "Topics - User"
+                ],
+                "summary": "Get single topic details",
+                "description": "Retrieves detailed information about a specific topic",
+                "operationId": "getTopicById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of topic to return",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "جزئیات موضوع با موفقیت دریافت شد"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/ClientTopicResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Topic not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Topic not found"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 404
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Server Error"
+                                        },
+                                        "exception": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         }
     },
@@ -2605,6 +2825,169 @@
                 },
                 "type": "object"
             },
+            "ClientTopicResource": {
+                "description": "Topic resource for client application",
+                "properties": {
+                    "id": {
+                        "description": "Unique identifier of the topic",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title": {
+                        "description": "Title of the topic",
+                        "type": "string",
+                        "example": "عنوان موضوع نمونه"
+                    },
+                    "current_state": {
+                        "description": "Current state of the topic",
+                        "properties": {
+                            "title": {
+                                "type": "string",
+                                "example": "در حال بررسی"
+                            },
+                            "slug": {
+                                "type": "string",
+                                "example": "in-review"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "submit_date_from": {
+                        "description": "Formatted start date for idea submission",
+                        "type": "string",
+                        "format": "date",
+                        "example": "1402-01-15"
+                    },
+                    "submit_date_to": {
+                        "description": "Formatted end date for idea submission",
+                        "type": "string",
+                        "format": "date",
+                        "example": "1402-02-15"
+                    },
+                    "tags": {
+                        "description": "List of tags associated with the topic",
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer",
+                                    "example": 1
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "example": "تگ نمونه"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "steps": {
+                        "description": "Timeline of important dates in the topic lifecycle",
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "title": {
+                                    "type": "string",
+                                    "example": "تاریخ شروع ثبت ایده"
+                                },
+                                "submit_date_from": {
+                                    "type": "string",
+                                    "format": "date",
+                                    "example": "1402-01-15"
+                                },
+                                "isCurrent": {
+                                    "type": "string",
+                                    "enum": [
+                                        "yes",
+                                        "no"
+                                    ],
+                                    "example": "no"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "TopicResource": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "عنوان موضوع نمونه"
+                    },
+                    "current_state": {
+                        "properties": {
+                            "title": {
+                                "type": "string",
+                                "example": "فعال"
+                            },
+                            "slug": {
+                                "type": "string",
+                                "example": "active"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "submit_date_from": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-01-01 00:00:00"
+                    },
+                    "submit_date_to": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-12-31 23:59:59"
+                    },
+                    "language": {
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "example": "فارسی"
+                            },
+                            "id": {
+                                "type": "integer",
+                                "example": 1
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "department": {
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "title": {
+                                "type": "string",
+                                "example": "دپارتمان نمونه"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "categories": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer",
+                                    "example": 1
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "example": "دسته‌بندی نمونه"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
             "Idea": {
                 "properties": {
                     "id": {
@@ -2656,6 +3039,10 @@
         {
             "name": "Ideas",
             "description": "Ideas"
+        },
+        {
+            "name": "Topics - User",
+            "description": "Topics - User"
         }
     ],
     "security": [

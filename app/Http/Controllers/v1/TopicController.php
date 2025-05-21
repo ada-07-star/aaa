@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers\v1;
 
-use App\Models\Topic;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreTopicRequest;
-use App\Http\Requests\UpdateTopicRequest;
+use App\Http\Resources\Client\TopicResource as ClientTopicResource;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Interfaces\TopicRepositoryInterface;
+use App\Http\Requests\UpdateTopicRequest;
+use App\Http\Requests\StoreTopicRequest;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\TopicCollection;
+use Illuminate\Http\Request;
+use App\Models\Topic;
 use App\Models\User;
-use Illuminate\Http\JsonResponse;
 
 class TopicController extends Controller
 {
@@ -27,9 +30,6 @@ class TopicController extends Controller
 
     public function updateUser()
     {
-        // $ratings = IdeaRating::where('idea_id', 4);
-        // $avgRate = $ratings->avg('rate_number');
-        // dd(round($avgRate, 2));
         User::where('id', 2)->update([
             'name' => 'ddd',
             'email' => 'davoodd@gmail.com',
@@ -41,27 +41,89 @@ class TopicController extends Controller
             'password' => bcrypt('12345678'),
         ]);
     }
+
     /**
      * @OA\Get(
      *     path="/api/v1/app/topics",
-     *     summary="Get list of topics",
+     *     summary="دریافت لیست موضوعات برای کاربران عادی",
+     *     description="این endpoint لیست موضوعات فعال را با امکان فیلتر بر اساس دسته‌بندی بازمی‌گرداند.",
+     *     tags={"Topics - User"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="category_id",
+     *         in="query",
+     *         description="فیلتر بر اساس ID دسته‌بندی (اختیاری)",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="شماره صفحه برای صفحه‌بندی (اختیاری)",
+     *         required=false,
+     *         @OA\Schema(type="integer", default=1)
+     *     ),
+     *     @OA\Parameter(
+     *         name="per_page",
+     *         in="query",
+     *         description="تعداد آیتم‌ها در هر صفحه (اختیاری، حداکثر 20)",
+     *         required=false,
+     *         @OA\Schema(type="integer", default=10, maximum=20)
+     *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="List of topics"
+     *         description="عملیات موفق",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="لیست موضوعات با موفقیت بارگذاری شد"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="topics",
+     *                     type="array",
+     *                     @OA\Items(ref="#/components/schemas/TopicResource")
+     *                 ),
+     *                 @OA\Property(
+     *                     property="pagination",
+     *                     type="object",
+     *                     @OA\Property(property="total", type="integer", example=100),
+     *                     @OA\Property(property="current_page", type="integer", example=1),
+     *                     @OA\Property(property="per_page", type="integer", example=10),
+     *                     @OA\Property(property="last_page", type="integer", example=10)
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="عدم احراز هویت",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="دسترسی ممنوع",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Forbidden.")
+     *         )
      *     )
      * )
      */
-    public function index(): JsonResponse
+    public function index(Request $request)
     {
-        $topics = $this->topicRepository->getTopicsList();
+        $filters = ['status' => 1]; // پیش‌فرض برای کاربران عادی
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'با موفقیت انجام شد.',
-            'data' => [
-                'topics' => $topics,
-            ],
-        ]);
+        if ($request->has('category_id')) {
+            $filters['category_id'] = $request->category_id;
+        }
+
+        $topics = $this->topicRepository->getAllFilteredTopics($filters);
+
+        return new TopicCollection($topics);
     }
 
 
@@ -84,36 +146,79 @@ class TopicController extends Controller
     /**
      * @OA\Get(
      *     path="/api/v1/app/topics/{id}",
-     *     summary="Get a specific topic",
+     *     summary="Get single topic details",
+     *     description="Retrieves detailed information about a specific topic",
+     *     operationId="getTopicById",
+     *     tags={"Topics - User"},
+     *     security={{"bearerAuth": {}}},
+     *     
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
+     *         description="ID of topic to return",
      *         required=true,
-     *         @OA\Schema(type="integer")
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
      *     ),
+     *     
      *     @OA\Response(
      *         response=200,
-     *         description="Topic details"
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="جزئیات موضوع با موفقیت دریافت شد"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 ref="#/components/schemas/ClientTopicResource"
+     *             )
+     *         )
+     *     ),
+     *     
+     *     @OA\Response(
+     *         response=404,
+     *         description="Topic not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Topic not found"),
+     *             @OA\Property(property="code", type="integer", example=404)
+     *         )
+     *     ),
+     *     
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
+     *         )
+     *     ),
+     *     
+     *     @OA\Response(
+     *         response=500,
+     *         description="Server error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Server Error"),
+     *             @OA\Property(property="exception", type="string")
+     *         )
      *     )
      * )
      */
     public function show($id)
     {
-        $topic = $this->topicRepository->getTopicDetails($id);
-        if (!$topic) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'موضوع مورد نظر یافت نشد.',
-            ], 404);
-        }
+        try {
+            $topic =  $this->topicRepository->getTopicDetails($id);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'جزئیات موضوع با موفقیت دریافت شد.',
-            'data' => [
-                'topic' => $topic,
-            ],
-        ]);
+            return (new ClientTopicResource($topic))
+            ->additional([
+                'success' => true,
+                'message' => 'اطلاعات بخش با موفقیت دریافت شد.'
+            ]);
+        } catch (ModelNotFoundException $e) {
+            return exception_response_exception(request(), $e);
+        } catch (\Exception $e) {
+            return exception_response_exception(request(), $e);
+        }
     }
 
     /**

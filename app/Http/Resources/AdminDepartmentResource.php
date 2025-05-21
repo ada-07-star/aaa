@@ -2,8 +2,9 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Request;
+use Morilog\Jalali\Jalalian;
 
 class AdminDepartmentResource extends JsonResource
 {
@@ -29,8 +30,8 @@ class AdminDepartmentResource extends JsonResource
                 'name' => $this->updater->name,
                 'email' => $this->updater->email
             ] : null,
-            'created_at' => $this->created_at->toDateTimeString(),
-            'updated_at' => $this->updated_at->toDateTimeString(),
+            'created_at' => Jalalian::fromDateTime( $this->created_at)->format('Y/m/d'),
+            'updated_at' => Jalalian::fromDateTime( $this->updated_at)->format('Y/m/d'),
         ];
     }
 }
