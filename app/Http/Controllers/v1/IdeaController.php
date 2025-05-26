@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\v1;
 
-use App\Models\Idea;
-use App\Models\Topic;
-use Illuminate\Http\JsonResponse;
+use App\Interfaces\IdeaRepositoryInterface;
+use App\Http\Resources\Client\IdeaResource;
+use App\Http\Requests\UpdateIdeaRequest;
+use App\Http\Requests\StoreIdeaRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreIdeaRequest;
-use App\Http\Requests\UpdateIdeaRequest;
-use App\Interfaces\IdeaRepositoryInterface;
-
+use Illuminate\Http\JsonResponse;
+use App\Traits\ApiResponse;
+use App\Models\Idea;
+use Throwable;
 
 /**
  * @OA\Schema(
@@ -63,6 +64,8 @@ use App\Interfaces\IdeaRepositoryInterface;
  */
 class IdeaController extends Controller
 {
+    use ApiResponse;
+
     protected $ideaRepository;
 
     public function __construct(IdeaRepositoryInterface $ideaRepository)
@@ -75,7 +78,7 @@ class IdeaController extends Controller
      *     path="/api/v1/app/topics/{topic}/ideas",
      *     summary="دریافت لیست ایده‌های یک موضوع خاص",
      *     description="این endpoint لیست ایده‌های منتشر شده یا قابل انتشار یک موضوع خاص را برمی‌گرداند.",
-     *     tags={"topics"},
+     *     tags={"ایده - user"},
      *     @OA\Parameter(
      *         name="topic",
      *         in="path",
@@ -235,28 +238,18 @@ class IdeaController extends Controller
      *     )
      * )
      */
-    public function index(Topic $topic)
+    public function index($topic)
     {
         try {
             $ideas = $this->ideaRepository->getPublishedIdeasForTopic($topic);
-
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Ideas retrieved successfully',
-                'data' => [
-                    'ideas' => $ideas
-                ]
-            ], 200, [], JSON_PRETTY_PRINT);
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Server Error',
-                'error' => $e->getMessage()
-            ], 500);
+            return $this->successResponse(
+                ['ideas' => IdeaResource::collection($ideas)],
+                'ایده‌ها با موفقیت دریافت شدند'
+            );
+        } catch (Throwable $exception) {
+            return exception_response_exception(request(), $exception);
         }
     }
-
-
 
     /**
      * Show the form for creating a new resource.
@@ -269,20 +262,20 @@ class IdeaController extends Controller
     /**
      * @OA\Post(
      *     path="/api/v1/app/idea",
-     *     summary="Create a new idea",
-     *     tags={"Ideas"},
+     *     summary="ایده جدید ثبت کنید",
+     *     tags={"ایده - user"},
      *     security={{"bearerAuth": {}}},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             required={"title", "description", "topic_id", "is_published", "participation_type", "final_score"},
+     *             required={"title", "description", "topic_id", "is_published", "participation_type", "final_score", "id"},
      *             @OA\Property(property="title", type="string", example="New Product Idea"),
      *             @OA\Property(property="description", type="string", example="Detailed description"),
      *             @OA\Property(property="topic_id", type="integer", example=1),
      *             @OA\Property(property="is_published", type="boolean", example=true),
      *             @OA\Property(property="participation_type", type="string", enum={"team", "individual"}, example="team"),
      *             @OA\Property(property="final_score", type="number", format="float", example=0.0),
-     *             @OA\Property(property="users", type="array", @OA\Items(type="string", format="uuid", example="6e6e3ba7-6819-43c1-935a-f4a296e201ba"))
+     *             @OA\Property(property="id", type="integer", example=1)
      *         )
      *     ),
      *     @OA\Response(
@@ -302,47 +295,75 @@ class IdeaController extends Controller
     public function store(StoreIdeaRequest $request): JsonResponse
     {
         $validatedData = $request->validated();
-
         $idea = $this->ideaRepository->createIdea($validatedData);
 
-        $response = $this->ideaRepository->formatIdeaResponse($idea);
-
-        return response()->json($response, 201);
+        return $this->successResponse(
+            new IdeaResource($idea),
+            'ایده با موفقیت ثبت شد.',
+            201
+        );
     }
 
     /**
      * @OA\Get(
      *     path="/api/v1/app/idea/{id}",
-     *     tags={"Ideas"},
-     *     summary="نمایش جزئیات ایده",
-     *     description="نمایش کامل اطلاعات یک ایده بر اساس شناسه",
-     *     operationId="showIdea",
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
+     *     tags={"ایده - user"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\RequestBody(
      *         required=true,
-     *         description="شناسه یکتای ایده",
-     *         @OA\Schema(
-     *             type="integer",
-     *             format="int64",
-     *             example=1
+     *         description="Idea data including related users",
+     *         @OA\JsonContent(
+     *             required={"title", "description", "topic_id", "is_published", "participation_type", "final_score"},
+     *             @OA\Property(property="title", type="string", example="New Product Idea", maxLength=255),
+     *             @OA\Property(property="description", type="string", example="Detailed description"),
+     *             @OA\Property(property="topic_id", type="integer", example=1),
+     *             @OA\Property(property="is_published", type="boolean", example=true),
+     *             @OA\Property(
+     *                 property="participation_type", 
+     *                 type="string", 
+     *                 enum={"team", "individual"}, 
+     *                 example="team"
+     *             ),
+     *             @OA\Property(property="final_score", type="number", format="float", example=0.0),
+     *             @OA\Property(
+     *                 property="users",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="integer",
+     *                     format="int64",
+     *                     description="User IDs to associate with the idea",
+     *                     example=1
+     *                 ),
+     *                 description="Array of user IDs to associate with the idea"
+     *             )
      *         )
      *     ),
      *     @OA\Response(
-     *         response=200,
-     *         description="عملیات موفق",
+     *         response=201,
+     *         description="Idea created successfully",
+     *         @OA\JsonContent(ref="#/components/schemas/IdeaResponse")
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
      *         @OA\JsonContent(
-     *             @OA\Property(property="status", type="string", example="success"),
-     *             @OA\Property(property="message", type="string", example="جزئیات موضوع با موفقیت دریافت شد."),
-     *            
+     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
      *         )
      *     ),
      *     @OA\Response(
-     *         response=404,
-     *         description="ایده یافت نشد",
+     *         response=422,
+     *         description="Validation error",
      *         @OA\JsonContent(
-     *             @OA\Property(property="status", type="string", example="error"),
-     *             @OA\Property(property="message", type="string", example="موضوع مورد نظر یافت نشد.")
+     *             @OA\Property(property="message", type="string", example="The given data was invalid."),
+     *             @OA\Property(
+     *                 property="errors",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="field_name",
+     *                     type="array",
+     *                     @OA\Items(type="string", example="The field name is required.")
+     *                 )
+     *             )
      *         )
      *     )
      * )
@@ -351,19 +372,10 @@ class IdeaController extends Controller
     {
         $results = $this->ideaRepository->showIdeaRepository($id);
         if (!$results) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'موضوع مورد نظر یافت نشد.',
-            ], 404);
+            return $this->notFoundResponse('موضوع مورد نظر یافت نشد.');
         }
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'جزئیات موضوع با موفقیت دریافت شد.',
-            'data' => [
-                'results' => $results,
-            ],
-        ]);
+        return $this->successResponse($results, 'اطلاعات با موفقیت دریافت شد.');
     }
 
     /**
@@ -377,7 +389,7 @@ class IdeaController extends Controller
     /**
      * @OA\Put(
      *     path="/api/v1/app/idea/{ideaId}",
-     *     tags={"Ideas"},
+     *     tags={"ایده - user"},
      *     summary="به‌روزرسانی ایده",
      *     description="این endpoint برای به‌روزرسانی عنوان ایده با شناسه مشخص استفاده می‌شود.",
      *     operationId="updateIdea",
@@ -483,15 +495,12 @@ class IdeaController extends Controller
         $idea = Idea::findOrFail($ideaId)->users()->first()->id;
 
         if ($idea == Auth::user()->id) {
-
             $ideaUpdate = $this->ideaRepository->updateIdea($request->all(), $ideaId);
-
             $results = $this->ideaRepository->formatUpdateIdea($ideaUpdate);
-
-            return response()->json($results, 200);
-        } else {
-            return response()->json('شما مجاز به ویرایش این ایده نیستید.', 422);
+            return $this->successResponse($results, 'ایده با موفقیت به‌روزرسانی شد.');
         }
+
+        return $this->errorResponse('شما مجاز به ویرایش این ایده نیستید.', 422);
     }
 
     /**

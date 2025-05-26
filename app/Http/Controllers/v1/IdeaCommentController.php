@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers\v1;
 
-use App\Http\Controllers\Controller;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use App\Http\Resources\Client\IdeaCommentResource;
 use App\Interfaces\IdeaCommentRepositoryInterface;
-use App\Models\Idea;
-use App\Models\IdeaComment;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\IdeaComment;
+use App\Traits\ApiResponse;
+use App\Models\Idea;
+use Throwable;
 
 /**
  * @OA\Schema(
@@ -21,6 +25,7 @@ use Illuminate\Http\Request;
  */
 class IdeaCommentController extends Controller
 {
+    use ApiResponse;
     private $ideaCommentRepository;
 
     public function __construct(IdeaCommentRepositoryInterface $ideaCommentRepository)
@@ -153,18 +158,21 @@ class IdeaCommentController extends Controller
      *     )
      * )
      */
-    public function index(Idea $idea)
+    public function index($id)
     {
-        $response = $this->ideaCommentRepository->getIdeaComments($idea);
-
-        if ($response['status'] === 'error') {
-            return response()->json([
-                'status' => $response['status'],
-                'message' => $response['message']
-            ], $response['code']);
+        try {
+            $response = $this->ideaCommentRepository->getIdeaComments($id);
+            return $this->successResponse(
+                IdeaCommentResource::collection($response),
+                'لیست نظرات با موفقیت دریافت شد'
+            );
+        } 
+        catch (NotFoundHttpException $exception) {
+            return $this->notFoundResponse($exception->getMessage());
         }
-
-        return response()->json($response);
+        catch (Throwable $exception) {
+            return exception_response_exception(request(), $exception);
+        }
     }
 
 
@@ -333,12 +341,22 @@ class IdeaCommentController extends Controller
      */
     public function store(Request $request, Idea $idea)
     {
-        $response = $this->ideaCommentRepository->createIdeaComment($request, $idea);
+        try {
+            $validated = $request->validate([
+                'comment_text' => 'required|string|min:3|max:1000',
+                'parent_id' => 'nullable|integer|exists:idea_comments,id'
+            ]);
 
-        return response()->json(
-            ['status' => $response['status'], 'message' => $response['message'], 'data' => $response['data']],
-            $response['code']
-        );
+            $comment = $this->ideaCommentRepository->createIdeaComment($request, $idea);
+            
+            return $this->successResponse(
+                new IdeaCommentResource($comment),
+                'نظر با موفقیت ثبت شد',
+                201
+            );
+        } catch (Throwable $exception) {
+            return exception_response_exception(request(), $exception);
+        }
     }
 
     /**
@@ -458,7 +476,6 @@ class IdeaCommentController extends Controller
         $comment = IdeaComment::find($request->comment_id);
 
         if ($comment) {
-
             $isLiked = $comment->likes > 0;
 
             if ($isLiked) {
@@ -467,19 +484,13 @@ class IdeaCommentController extends Controller
                 $comment->increment('likes');
             }
 
-            return response()->json([
-                'status' => 'success',
-                'message' => 'تصمیم شما ثبت شد.',
-                'data' => [
-                    'comment' => $comment->fresh()
-                ],
-            ]);
+            return $this->successResponse(
+                ['comment' => $comment->fresh()],
+                'تصمیم شما ثبت شد.'
+            );
         }
 
-        return response()->json([
-            'status' => 'error',
-            'message' => 'نظر یافت نشد.'
-        ], 404);
+        return $this->notFoundResponse('نظر یافت نشد.');
     }
 
     public function show(IdeaComment $ideaComment)

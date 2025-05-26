@@ -25,6 +25,11 @@ class IdeaComment extends Model
         return $this->belongsTo(Idea::class, 'idea_id');
     }
 
+    public function users(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
     public function creator()
     {
         return $this->belongsTo(User::class, 'created_by');

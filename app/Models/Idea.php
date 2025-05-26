@@ -21,6 +21,9 @@ class Idea extends Model
     /** @use HasFactory<\Database\Factories\IdeaFactory> */
     use HasFactory;
 
+    protected $table = 'ideas'; // نام جدول
+    protected $primaryKey = 'id'; // نام کلید اصلی
+    
     protected $fillable = [
         'topic_id',
         'title',

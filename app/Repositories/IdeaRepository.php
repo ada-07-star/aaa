@@ -6,51 +6,18 @@ use App\Interfaces\IdeaRepositoryInterface;
 use App\Models\Idea;
 use App\Models\IdeaLog;
 use App\Models\Topic;
-use Illuminate\Support\Collection;
 
 class IdeaRepository implements IdeaRepositoryInterface
 {
-    public function getPublishedIdeasForTopic(Topic $topic): Collection
+    public function getPublishedIdeasForTopic($topic)
     {
-        return $topic->ideas()
-            ->where('is_published', true)
-            ->with(['topic:id,title', 'users:id,name,email'])
-            ->get()
-            ->map(function ($idea) {
-                return $this->formatIdeaData($idea);
-            });
+        $topicModel = Topic::with(['ideas' => function ($query) {
+            $query->where('is_published', 1);
+        }])->find($topic);
+        
+        return $topicModel ? $topicModel->ideas : collect();
     }
 
-    protected function formatIdeaData(Idea $idea): array
-    {
-        return [
-            'id' => $idea->id,
-            'topic' => [
-                'title' => $idea->topic->title,
-                'id' => $idea->topic->id
-            ],
-            'title' => $idea->title,
-            'description' => $idea->description,
-            'is_published' => $idea->is_published,
-            'created_at' => $idea->created_at->format('Y-m-d H:i:s'),
-            'current_state' => [
-                'title' => $idea->current_state,
-                'slug' => $idea->current_state
-            ],
-            'participation_type' => [
-                'title' => $idea->participation_type,
-                'slug' => $idea->participation_type
-            ],
-            'users' => $idea->users->map(function ($user) {
-                return [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email
-                ];
-            })
-        ];
-    }
-    
     public function createIdea($data)
     {
         $idea = Idea::create([
@@ -62,46 +29,10 @@ class IdeaRepository implements IdeaRepositoryInterface
             'final_score' => $data['final_score'],
         ]);
 
-        if (isset($data['users'])) {
+        if (!empty($data['users'])) {
             $idea->users()->attach($data['users']);
         }
         return $idea;
-    }
-
-    public function formatIdeaResponse($idea)
-    {
-        return [
-            'status' => 'success',
-            'message' => 'ایده با موفقیت ثبت شد.',
-            'data' => [
-                'idea' => [
-                    'id' => $idea->id,
-                    'topic' => [
-                        'title' => $idea->topic->title,
-                        'id' => $idea->topic->id,
-                    ],
-                    'title' => $idea->title,
-                    'description' => $idea->description,
-                    'is_published' => $idea->is_published,
-                    'created_at' => $idea->created_at->format('Y-m-d H:i:s'),
-                    'current_state' =>  [
-                        'title' =>  $idea->current_state,
-                        'slug' =>  $idea->current_state,
-                    ],
-                    'participation_type' =>  [
-                        'title' =>  $idea->participation_type,
-                        'slug' =>  $idea->participation_type,
-                    ],
-                    'users' => $idea->users->map(function ($user) {
-                        return [
-                            'uuid' => $user->uuid,
-                            'name' => $user->name,
-                            'email' => $user->email,
-                        ];
-                    }),
-                ],
-            ],
-        ];
     }
 
     public function updateIdea($data, $ideaId)

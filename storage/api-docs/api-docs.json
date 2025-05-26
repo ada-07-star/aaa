@@ -1833,7 +1833,7 @@
         "/api/v1/app/topics/{topic}/ideas": {
             "get": {
                 "tags": [
-                    "topics"
+                    "ایده - user"
                 ],
                 "summary": "دریافت لیست ایده‌های یک موضوع خاص",
                 "description": "این endpoint لیست ایده‌های منتشر شده یا قابل انتشار یک موضوع خاص را برمی‌گرداند.",
@@ -2010,9 +2010,9 @@
         "/api/v1/app/idea": {
             "post": {
                 "tags": [
-                    "Ideas"
+                    "ایده - user"
                 ],
-                "summary": "Create a new idea",
+                "summary": "ایده جدید ثبت کنید",
                 "operationId": "1208a900bd8b85c39507e7969cd32a45",
                 "requestBody": {
                     "required": true,
@@ -2025,7 +2025,8 @@
                                     "topic_id",
                                     "is_published",
                                     "participation_type",
-                                    "final_score"
+                                    "final_score",
+                                    "id"
                                 ],
                                 "properties": {
                                     "title": {
@@ -2057,13 +2058,9 @@
                                         "format": "float",
                                         "example": 0
                                     },
-                                    "users": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "string",
-                                            "format": "uuid",
-                                            "example": "6e6e3ba7-6819-43c1-935a-f4a296e201ba"
-                                        }
+                                    "id": {
+                                        "type": "integer",
+                                        "example": 1
                                     }
                                 },
                                 "type": "object"
@@ -2109,38 +2106,90 @@
         "/api/v1/app/idea/{id}": {
             "get": {
                 "tags": [
-                    "Ideas"
+                    "ایده - user"
                 ],
-                "summary": "نمایش جزئیات ایده",
-                "description": "نمایش کامل اطلاعات یک ایده بر اساس شناسه",
-                "operationId": "showIdea",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "شناسه یکتای ایده",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64",
-                            "example": 1
+                "operationId": "eb1ea8b863b88575063ec200f1db8630",
+                "requestBody": {
+                    "description": "Idea data including related users",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "description",
+                                    "topic_id",
+                                    "is_published",
+                                    "participation_type",
+                                    "final_score"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "example": "New Product Idea"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Detailed description"
+                                    },
+                                    "topic_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "is_published": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "participation_type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "team",
+                                            "individual"
+                                        ],
+                                        "example": "team"
+                                    },
+                                    "final_score": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 0
+                                    },
+                                    "users": {
+                                        "description": "Array of user IDs to associate with the idea",
+                                        "type": "array",
+                                        "items": {
+                                            "description": "User IDs to associate with the idea",
+                                            "type": "integer",
+                                            "format": "int64",
+                                            "example": 1
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
                         }
                     }
-                ],
+                },
                 "responses": {
-                    "200": {
-                        "description": "عملیات موفق",
+                    "201": {
+                        "description": "Idea created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/IdeaResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "example": "success"
-                                        },
                                         "message": {
                                             "type": "string",
-                                            "example": "جزئیات موضوع با موفقیت دریافت شد."
+                                            "example": "Unauthenticated."
                                         }
                                     },
                                     "type": "object"
@@ -2148,19 +2197,27 @@
                             }
                         }
                     },
-                    "404": {
-                        "description": "ایده یافت نشد",
+                    "422": {
+                        "description": "Validation error",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "example": "error"
-                                        },
                                         "message": {
                                             "type": "string",
-                                            "example": "موضوع مورد نظر یافت نشد."
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "field_name": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The field name is required."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
                                         }
                                     },
                                     "type": "object"
@@ -2168,13 +2225,18 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/api/v1/app/idea/{ideaId}": {
             "put": {
                 "tags": [
-                    "Ideas"
+                    "ایده - user"
                 ],
                 "summary": "به‌روزرسانی ایده",
                 "description": "این endpoint برای به‌روزرسانی عنوان ایده با شناسه مشخص استفاده می‌شود.",
@@ -2348,7 +2410,7 @@
         "/api/v1/app/idea/{idea}/rate": {
             "post": {
                 "tags": [
-                    "Ideas"
+                    "ایده - user"
                 ],
                 "summary": "ثبت امتیاز برای یک ایده",
                 "description": "کاربر نهایی می‌تواند به ایده‌ای امتیاز بدهد و آمار امتیازات را دریافت کند.",
@@ -3033,12 +3095,8 @@
             "description": "Comments"
         },
         {
-            "name": "topics",
-            "description": "topics"
-        },
-        {
-            "name": "Ideas",
-            "description": "Ideas"
+            "name": "ایده - user",
+            "description": "ایده - user"
         },
         {
             "name": "Topics - User",

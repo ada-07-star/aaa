@@ -19,7 +19,7 @@ class IdeaRatingController extends Controller
      *     path="/api/v1/app/idea/{idea}/rate",
      *     summary="ثبت امتیاز برای یک ایده",
      *     description="کاربر نهایی می‌تواند به ایده‌ای امتیاز بدهد و آمار امتیازات را دریافت کند.",
-     *     tags={"Ideas"},
+     *     tags={"ایده - user"},
      *     @OA\Parameter(
      *         name="idea",
      *         in="path",

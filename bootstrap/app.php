@@ -13,7 +13,8 @@ return Application::configure(basePath: dirname(__DIR__))
         using: function () {
 
             // API Routes
-            Route::prefix('api/v1/app')
+            Route::middleware(['api', \Illuminate\Routing\Middleware\SubstituteBindings::class])
+                ->prefix('api/v1/app')
                 ->group(base_path('routes\api\v1\api.php'));
 
             // Admin Routes
@@ -24,6 +25,21 @@ return Application::configure(basePath: dirname(__DIR__))
         },
     )
     ->withMiddleware(function (Middleware $middleware) {
+        $middleware->web(append: [
+            \Illuminate\Cookie\Middleware\EncryptCookies::class,
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            \Illuminate\Session\Middleware\StartSession::class,
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class,
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        ]);
+
+        // میدلورهای API
+        $middleware->api(prepend: [
+            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        ]);
+
         $middleware->alias([
             'auth:api' => Tymon\JWTAuth\Providers\LumenServiceProvider::class,
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
