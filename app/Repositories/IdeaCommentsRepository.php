@@ -28,7 +28,7 @@ class IdeaCommentsRepository  implements IdeaCommentRepositoryInterface
      * @param Idea $idea
      * @return array
      */
-    public function createIdeaComment(Request $request, Idea $idea): array
+    public function createIdeaComment(Request $request, Idea $idea)
     {
         if ($idea->current_state === 'archived') {
             return [
@@ -47,38 +47,7 @@ class IdeaCommentsRepository  implements IdeaCommentRepositoryInterface
             'created_by' => Auth::id(),
         ]);
 
-        return $this->successResponse($this->formatNewComment($comment, $idea), 'نظر با موفقیت ثبت شد.', 201);
+        return $comment;
     }
 
-    /**
-     * فرمت دهی اطلاعات نظر جدید
-     *
-     * @param IdeaComment $comment
-     * @param Idea $idea
-     * @return array
-     */
-    private function formatNewComment(IdeaComment $comment, Idea $idea): array
-    {
-        return [
-            'id' => $comment->id,
-            'idea' => [
-                'title' => $idea->title,
-                'id' => $idea->id,
-                'current_state' => $idea->current_state,
-                'participation_type' => $idea->participation_type,
-            ],
-            'comment_text' => $comment->comment_text,
-            'likes' => $comment->likes,
-            'created_at' => $comment->created_at->format('Y-m-d H:i:s'),
-            'status' => [
-                'title' => $this->getStatusTitle($comment->status),
-                'slug' => $comment->status,
-            ],
-            'created_by' => [
-                'uuid' => Auth::user()->uuid,
-                'name' => Auth::user()->name,
-                'email' => Auth::user()->email,
-            ]
-        ];
-    }
 }

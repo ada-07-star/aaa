@@ -9,6 +9,14 @@ use Morilog\Jalali\Jalalian;
 class IdeaCommentResource extends JsonResource
 {
     /**
+     * وضعیت‌های ممکن برای نظرات
+     */
+    private const STATUS_TITLES = [
+        'draft' => 'پیش نویس',
+        'published' => 'قابل انتشار'
+    ];
+
+    /**
      * Transform the resource into an array.
      *
      * @return array<string, mixed>
@@ -28,7 +36,7 @@ class IdeaCommentResource extends JsonResource
             'likes' => $this->likes,
             'created_at' => Jalalian::fromDateTime($this->created_at)->format('Y/m/d'),
             'status' => [
-                'title' => $this->getStatusTitle($this->status),
+                'title' => $this->getStatusTitle(),
                 'slug' => $this->status,
             ],
             'created_by' => [
@@ -49,5 +57,6 @@ class IdeaCommentResource extends JsonResource
             return 'نامشخص';
         }
 
+        return self::STATUS_TITLES[$this->status] ?? $this->status;
     }
 }
