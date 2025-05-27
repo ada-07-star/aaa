@@ -95,9 +95,9 @@ class TopicRepository implements TopicRepositoryInterface
      * @param array $data
      * @return bool
      */
-    public function update(int $id, array $data): bool
+    public function update(int $id, array $validatedData): bool
     {
-        return $this->model->find($id)->update($data);
+        return $this->model->find($id)->update($validatedData);
     }
 
     /**

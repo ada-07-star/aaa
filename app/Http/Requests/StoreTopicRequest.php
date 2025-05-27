@@ -40,9 +40,6 @@ class StoreTopicRequest extends FormRequest
             'minimum_score' => 'required|integer|min:0',
             'evaluation_id' => 'nullable|exists:evaluations,id',
             'status' => 'required|boolean',
-            'is_archive' => 'required|boolean',
-            'created_by' => 'required|exists:users,id',
-            'updated_by' => 'required|exists:users,id'
         ];
     }
 }

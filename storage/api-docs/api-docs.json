@@ -913,12 +913,12 @@
                                                             "submit_date_from": {
                                                                 "type": "string",
                                                                 "format": "date-time",
-                                                                "example": "2025-04-28 14:08:04"
+                                                                "example": "2025-06-10T23:59:59Z"
                                                             },
                                                             "submit_date_to": {
                                                                 "type": "string",
                                                                 "format": "date-time",
-                                                                "example": "2025-04-28 14:08:04"
+                                                                "example": "2025-06-10T23:59:59Z"
                                                             },
                                                             "language": {
                                                                 "properties": {
@@ -1327,8 +1327,8 @@
                                                     "example": "teen"
                                                 },
                                                 "gender": {
-                                                    "type": "string",
-                                                    "example": "both"
+                                                    "type": "integer",
+                                                    "example": "1"
                                                 },
                                                 "thumb_image": {
                                                     "type": "string",
@@ -1441,6 +1441,233 @@
                                         "message": {
                                             "type": "string",
                                             "example": "موضوع مورد نظر یافت نشد"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "خطای سرور",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "خطای داخلی سرور"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Admin - Topics"
+                ],
+                "summary": "ویرایش موضوع",
+                "description": "ویرایش اطلاعات یک رکورد موضوع",
+                "operationId": "a5aa9eec08f7cfcf0394d2771165bc14",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "شناسه موضوع",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "department_id",
+                                    "language_id",
+                                    "age_range",
+                                    "current_state",
+                                    "judge_number",
+                                    "minimum_score",
+                                    "status",
+                                    "submit_date_from"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "maxLength": 500,
+                                        "example": "ایده‌های زیست‌محیطی"
+                                    },
+                                    "department_id": {
+                                        "type": "integer",
+                                        "example": 3
+                                    },
+                                    "language_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "age_range": {
+                                        "type": "string",
+                                        "example": "teen"
+                                    },
+                                    "is_archive": {
+                                        "type": "integer",
+                                        "example": "0"
+                                    },
+                                    "gender": {
+                                        "type": "integer",
+                                        "example": "1"
+                                    },
+                                    "thumb_image": {
+                                        "type": "string",
+                                        "maxLength": 500,
+                                        "example": "thumb.jpg",
+                                        "nullable": true
+                                    },
+                                    "cover_image": {
+                                        "type": "string",
+                                        "maxLength": 500,
+                                        "example": "cover.jpg",
+                                        "nullable": true
+                                    },
+                                    "submit_date_from": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2025-02-12 16:27:01"
+                                    },
+                                    "submit_date_to": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2025-02-12 16:27:01",
+                                        "nullable": true
+                                    },
+                                    "consideration_date_from": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2025-02-12 16:27:01",
+                                        "nullable": true
+                                    },
+                                    "consideration_date_to": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2025-02-12 16:27:01",
+                                        "nullable": true
+                                    },
+                                    "plan_date_from": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2025-02-12 16:27:01",
+                                        "nullable": true
+                                    },
+                                    "plan_date_to": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2025-02-12 16:27:01",
+                                        "nullable": true
+                                    },
+                                    "current_state": {
+                                        "type": "string",
+                                        "maxLength": 50,
+                                        "example": "submission"
+                                    },
+                                    "judge_number": {
+                                        "type": "integer",
+                                        "example": 3
+                                    },
+                                    "minimum_score": {
+                                        "type": "integer",
+                                        "example": 75
+                                    },
+                                    "evaluation_id": {
+                                        "type": "integer",
+                                        "example": 2,
+                                        "nullable": true
+                                    },
+                                    "status": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "updated_by": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "عملیات موفق",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 124
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "موضوع یافت نشد",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "موضوع مورد نظر یافت نشد"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "خطای اعتبارسنجی",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "داده‌های ارسالی معتبر نیستند"
                                         }
                                     },
                                     "type": "object"

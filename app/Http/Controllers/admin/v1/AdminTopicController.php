@@ -134,8 +134,8 @@ class AdminTopicController extends Controller
      *                             @OA\Property(property="title", type="string", example="ثبت ایده"),
      *                             @OA\Property(property="slug", type="string", example="add_idea")
      *                         ),
-     *                         @OA\Property(property="submit_date_from", type="string", format="date-time", example="2025-04-28 14:08:04"),
-     *                         @OA\Property(property="submit_date_to", type="string", format="date-time", example="2025-04-28 14:08:04"),
+     *                         @OA\Property(property="submit_date_from", type="string", format="date-time", example="2025-06-10T23:59:59Z"),
+     *                         @OA\Property(property="submit_date_to", type="string", format="date-time", example="2025-06-10T23:59:59Z"),
      *                         @OA\Property(
      *                             property="language",
      *                             type="object",
@@ -312,7 +312,7 @@ class AdminTopicController extends Controller
      *                 @OA\Property(property="department_id", type="integer", example=3),
      *                 @OA\Property(property="language_id", type="integer", example=1),
      *                 @OA\Property(property="age_range", type="string", example="teen"),
-     *                 @OA\Property(property="gender", type="string", example="both"),
+     *                 @OA\Property(property="gender", type="integer", example="1"),
      *                 @OA\Property(property="thumb_image", type="string", example="thumb.jpg"),
      *                 @OA\Property(property="cover_image", type="string", example="cover.jpg"),
      *                 @OA\Property(property="submit_date_from", type="string", format="date-time", example="2025-06-01T00:00:00Z"),
@@ -376,11 +376,103 @@ class AdminTopicController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * @OA\Put(
+     *     path="/api/v1/admin/topics/{id}",
+     *     summary="ویرایش موضوع",
+     *     description="ویرایش اطلاعات یک رکورد موضوع",
+     *     tags={"Admin - Topics"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="شناسه موضوع",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"title", "department_id", "language_id", "age_range", "current_state", "judge_number", "minimum_score", "status", "submit_date_from"},
+     *             @OA\Property(property="title", type="string", maxLength=500, example="ایده‌های زیست‌محیطی"),
+     *             @OA\Property(property="department_id", type="integer", example=3),
+     *             @OA\Property(property="language_id", type="integer", example=1),
+     *             @OA\Property(property="age_range", type="string", example="teen"),
+     *             @OA\Property(property="is_archive", type="integer", example="0"),
+     *             @OA\Property(property="gender", type="integer", example="1"),
+     *             @OA\Property(property="thumb_image", type="string", maxLength=500, nullable=true, example="thumb.jpg"),
+     *             @OA\Property(property="cover_image", type="string", maxLength=500, nullable=true, example="cover.jpg"),
+     *             @OA\Property(property="submit_date_from", type="string", format="date-time", example="2025-02-12 16:27:01"),
+     *             @OA\Property(property="submit_date_to", type="string", format="date-time", nullable=true, example="2025-02-12 16:27:01"),
+     *             @OA\Property(property="consideration_date_from", type="string", format="date-time", nullable=true, example="2025-02-12 16:27:01"),
+     *             @OA\Property(property="consideration_date_to", type="string", format="date-time", nullable=true, example="2025-02-12 16:27:01"),
+     *             @OA\Property(property="plan_date_from", type="string", format="date-time", nullable=true, example="2025-02-12 16:27:01"),
+     *             @OA\Property(property="plan_date_to", type="string", format="date-time", nullable=true, example="2025-02-12 16:27:01"),
+     *             @OA\Property(property="current_state", type="string", maxLength=50, example="submission"),
+     *             @OA\Property(property="judge_number", type="integer", example=3),
+     *             @OA\Property(property="minimum_score", type="integer", example=75),
+     *             @OA\Property(property="evaluation_id", type="integer", nullable=true, example=2),
+     *             @OA\Property(property="status", type="boolean", example=true),
+     *             @OA\Property(property="updated_by", type="integer", example=1)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="عملیات موفق",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="id", type="integer", example=124)
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="موضوع یافت نشد",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="موضوع مورد نظر یافت نشد")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="خطای اعتبارسنجی",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="داده‌های ارسالی معتبر نیستند")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="خطای سرور",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="خطای داخلی سرور")
+     *         )
+     *     )
+     * )
      */
-    public function update(Request $request, string $id)
+    public function update(StoreTopicRequest $request, string $id)
     {
-        //
+        try {
+            $topic = $this->topicRepository->findById($id);
+            
+            if (!$topic) {
+                return $this->errorResponse('موضوع مورد نظر یافت نشد', 404);
+            }
+            $validatedData = $request->validated();
+
+            $this->topicRepository->update($id, $validatedData);
+
+            return $this->successResponse(
+                ['id' => (int)$id],
+                'موضوع با موفقیت بروزرسانی شد'
+            );
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return $this->errorResponse('داده‌های ارسالی معتبر نیستند', 422, $e->errors());
+        } catch (\Exception $e) {
+            return exception_response_exception(request(), $e);
+        }
     }
 
     /**
