@@ -50,10 +50,10 @@ class TopicRepository implements TopicRepositoryInterface
      * @param int $id
      * @return array|null
      */
-    public function find(int $id): ?array
+    public function findById(int $id)
     {
         $topic = $this->model->with('categories')->find($id);
-        return $topic ? $topic->toArray() : null;
+        return $topic;
     }
 
     /**

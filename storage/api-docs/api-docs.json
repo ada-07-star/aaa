@@ -1274,6 +1274,203 @@
                 ]
             }
         },
+        "/api/v1/admin/topics/{id}": {
+            "get": {
+                "tags": [
+                    "Admin - Topics"
+                ],
+                "summary": "مشاهده جزئیات موضوع",
+                "description": "برگرداندن اطلاعات کامل یک موضوع بر اساس شناسه",
+                "operationId": "58361e5576a958858c6fb931cbbd7393",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "شناسه موضوع",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "عملیات موفق",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 124
+                                                },
+                                                "title": {
+                                                    "type": "string",
+                                                    "example": "ایده‌های زیست‌محیطی"
+                                                },
+                                                "department_id": {
+                                                    "type": "integer",
+                                                    "example": 3
+                                                },
+                                                "language_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "age_range": {
+                                                    "type": "string",
+                                                    "example": "teen"
+                                                },
+                                                "gender": {
+                                                    "type": "string",
+                                                    "example": "both"
+                                                },
+                                                "thumb_image": {
+                                                    "type": "string",
+                                                    "example": "thumb.jpg"
+                                                },
+                                                "cover_image": {
+                                                    "type": "string",
+                                                    "example": "cover.jpg"
+                                                },
+                                                "submit_date_from": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2025-06-01T00:00:00Z"
+                                                },
+                                                "submit_date_to": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2025-06-10T23:59:59Z"
+                                                },
+                                                "consideration_date_from": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2025-06-11T00:00:00Z"
+                                                },
+                                                "consideration_date_to": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2025-06-20T23:59:59Z"
+                                                },
+                                                "plan_date_from": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2025-06-21T00:00:00Z"
+                                                },
+                                                "plan_date_to": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2025-06-30T23:59:59Z"
+                                                },
+                                                "current_state": {
+                                                    "type": "string",
+                                                    "example": "جدید"
+                                                },
+                                                "judge_number": {
+                                                    "type": "integer",
+                                                    "example": 3
+                                                },
+                                                "minimum_score": {
+                                                    "type": "integer",
+                                                    "example": 75
+                                                },
+                                                "Evaluation": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 6
+                                                        },
+                                                        "title": {
+                                                            "type": "string",
+                                                            "example": "سیستم ارزشیابی یک"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "status": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "is_archive": {
+                                                    "type": "boolean",
+                                                    "example": false
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2025-05-18T10:00:00Z"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2025-05-18T12:00:00Z"
+                                                },
+                                                "created_by": {
+                                                    "type": "integer",
+                                                    "example": 101
+                                                },
+                                                "updated_by": {
+                                                    "type": "integer",
+                                                    "example": 101
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "موضوع یافت نشد",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "موضوع مورد نظر یافت نشد"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "خطای سرور",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "خطای داخلی سرور"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/app/login": {
             "post": {
                 "tags": [

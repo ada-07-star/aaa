@@ -272,10 +272,12 @@ class AdminTopicController extends Controller
         // اعتبارسنجی داده‌های ورودی
         $validatedData = $request->validated();
         try {
-            // ایجاد موضوع جدید
             $topic = $this->topicRepository->create($validatedData);
+
+            $topicArray = $this->topicRepository->findById($topic->id);
+
             return $this->successResponse(
-                new TopicResource($topic),
+                $topicArray,
                 'ایده با موفقیت ثبت شد.',
                 201
             );
@@ -285,11 +287,92 @@ class AdminTopicController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * @OA\Get(
+     *     path="/api/v1/admin/topics/{id}",
+     *     summary="مشاهده جزئیات موضوع",
+     *     description="برگرداندن اطلاعات کامل یک موضوع بر اساس شناسه",
+     *     tags={"Admin - Topics"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="شناسه موضوع",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="عملیات موفق",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="id", type="integer", example=124),
+     *                 @OA\Property(property="title", type="string", example="ایده‌های زیست‌محیطی"),
+     *                 @OA\Property(property="department_id", type="integer", example=3),
+     *                 @OA\Property(property="language_id", type="integer", example=1),
+     *                 @OA\Property(property="age_range", type="string", example="teen"),
+     *                 @OA\Property(property="gender", type="string", example="both"),
+     *                 @OA\Property(property="thumb_image", type="string", example="thumb.jpg"),
+     *                 @OA\Property(property="cover_image", type="string", example="cover.jpg"),
+     *                 @OA\Property(property="submit_date_from", type="string", format="date-time", example="2025-06-01T00:00:00Z"),
+     *                 @OA\Property(property="submit_date_to", type="string", format="date-time", example="2025-06-10T23:59:59Z"),
+     *                 @OA\Property(property="consideration_date_from", type="string", format="date-time", example="2025-06-11T00:00:00Z"),
+     *                 @OA\Property(property="consideration_date_to", type="string", format="date-time", example="2025-06-20T23:59:59Z"),
+     *                 @OA\Property(property="plan_date_from", type="string", format="date-time", example="2025-06-21T00:00:00Z"),
+     *                 @OA\Property(property="plan_date_to", type="string", format="date-time", example="2025-06-30T23:59:59Z"),
+     *                 @OA\Property(property="current_state", type="string", example="جدید"),
+     *                 @OA\Property(property="judge_number", type="integer", example=3),
+     *                 @OA\Property(property="minimum_score", type="integer", example=75),
+     *                 @OA\Property(
+     *                     property="Evaluation",
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=6),
+     *                     @OA\Property(property="title", type="string", example="سیستم ارزشیابی یک")
+     *                 ),
+     *                 @OA\Property(property="status", type="boolean", example=true),
+     *                 @OA\Property(property="is_archive", type="boolean", example=false),
+     *                 @OA\Property(property="created_at", type="string", format="date-time", example="2025-05-18T10:00:00Z"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time", example="2025-05-18T12:00:00Z"),
+     *                 @OA\Property(property="created_by", type="integer", example=101),
+     *                 @OA\Property(property="updated_by", type="integer", example=101)
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="موضوع یافت نشد",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="موضوع مورد نظر یافت نشد")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="خطای سرور",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="خطای داخلی سرور")
+     *         )
+     *     )
+     * )
      */
     public function show(string $id)
     {
-        //
+        try {
+            $topic = $this->topicRepository->findById($id);
+
+            if (!$topic) {
+                return $this->errorResponse('موضوع مورد نظر یافت نشد', 404);
+            }
+
+            return $this->successResponse(
+                new TopicResource($topic),
+                'اطلاعات موضوع با موفقیت دریافت شد'
+            );
+        } catch (\Exception $e) {
+            return exception_response_exception(request(), $e);
+        }
     }
 
     /**
