@@ -476,10 +476,61 @@ class AdminTopicController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * @OA\Delete(
+     *     path="/api/v1/admin/topics/{id}",
+     *     summary="حذف منطقی موضوع",
+     *     description="حذف منطقی یک موضوع از طریق آرشیو کردن",
+     *     tags={"Admin - Topics"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="شناسه موضوع",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="عملیات موفق",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="موضوع با موفقیت آرشیو شد")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="موضوع یافت نشد",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="موضوع مورد نظر یافت نشد")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="خطای سرور",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="خطای داخلی سرور")
+     *         )
+     *     )
+     * )
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            $topic = $this->topicRepository->findById($id);
+            
+            if (!$topic) {
+                return $this->errorResponse('موضوع مورد نظر یافت نشد', 404);
+            }
+
+            $this->topicRepository->update($id, ['is_archive' => true]);
+
+            return $this->successResponse(
+                null,
+                'موضوع با موفقیت آرشیو شد'
+            );
+        } catch (\Exception $e) {
+            return exception_response_exception(request(), $e);
+        }
     }
 }

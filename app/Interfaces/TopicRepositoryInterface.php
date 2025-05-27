@@ -10,6 +10,4 @@ interface TopicRepositoryInterface
     public function findById(int $id);
     public function create(array $data);
     public function update(int $id, array $validatedData): bool;
-    public function delete(int $id): bool;
-    public function getTopicDetails(int $id);
 }

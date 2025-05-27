@@ -99,24 +99,4 @@ class TopicRepository implements TopicRepositoryInterface
     {
         return $this->model->find($id)->update($validatedData);
     }
-
-    /**
-     *
-     * @param int $id
-     * @return bool
-     */
-    public function delete(int $id): bool
-    {
-        return $this->model->find($id)->delete();
-    }
-
-    /**
-     *
-     * @param int $id
-     * @return array
-     */
-    public function getTopicDetails(int $id)
-    {
-        return $this->model->with(['categories', 'tags'])->findOrFail($id);
-    }
 }
