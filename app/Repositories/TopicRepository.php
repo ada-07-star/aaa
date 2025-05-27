@@ -43,7 +43,6 @@ class TopicRepository implements TopicRepositoryInterface
 
         $topics = $query->paginate($perPage);
         return $topics;
-        // return new TopicCollection($topics);
     }
 
     /**
@@ -62,10 +61,32 @@ class TopicRepository implements TopicRepositoryInterface
      * @param array $data
      * @return array
      */
-    public function create(array $data): array
+    public function create(array $data)
     {
-        $topic = $this->model->create($data);
-        return $topic->toArray();
+        $topic = $this->model->create([
+            'title' => $data['title'],
+            'department_id' => $data['department_id'],
+            'language_id' => $data['language_id'],
+            'age_range' => $data['age_range'],
+            'gender' => $data['gender'] ?? null,
+            'thumb_image' => $data['thumb_image'] ?? null,
+            'cover_image' => $data['cover_image'] ?? null,
+            'submit_date_from' => $data['submit_date_from'],
+            'submit_date_to' => $data['submit_date_to'] ?? null,
+            'consideration_date_from' => $data['consideration_date_from'] ?? null,
+            'consideration_date_to' => $data['consideration_date_to'] ?? null,
+            'plan_date_from' => $data['plan_date_from'] ?? null,
+            'plan_date_to' => $data['plan_date_to'] ?? null,
+            'current_state' => $data['current_state'],
+            'judge_number' => $data['judge_number'],
+            'minimum_score' => $data['minimum_score'],
+            'evaluation_id' => $data['evaluation_id'] ?? null,
+            'status' => $data['status'],
+            'is_archive' => $data['is_archive'],
+            'created_by' => $data['created_by'],
+            'updated_by' => $data['updated_by']
+        ]);
+        return $topic;
     }
 
     /**

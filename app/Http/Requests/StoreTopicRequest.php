@@ -11,7 +11,7 @@ class StoreTopicRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,27 @@ class StoreTopicRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'title' => 'required|string|max:500',
+            'department_id' => 'required|exists:departments,id',
+            'language_id' => 'required|exists:languages,id',
+            'age_range' => 'required|string',
+            'gender' => 'nullable|integer',
+            'thumb_image' => 'nullable|string|max:500',
+            'cover_image' => 'nullable|string|max:500',
+            'submit_date_from' => 'required|date',
+            'submit_date_to' => 'nullable|date|after_or_equal:submit_date_from',
+            'consideration_date_from' => 'nullable|date|after_or_equal:submit_date_from',
+            'consideration_date_to' => 'nullable|date|after_or_equal:consideration_date_from',
+            'plan_date_from' => 'nullable|date',
+            'plan_date_to' => 'nullable|date|after_or_equal:plan_date_from',
+            'current_state' => 'required|string|max:50',
+            'judge_number' => 'required|integer|min:1',
+            'minimum_score' => 'required|integer|min:0',
+            'evaluation_id' => 'nullable|exists:evaluations,id',
+            'status' => 'required|boolean',
+            'is_archive' => 'required|boolean',
+            'created_by' => 'required|exists:users,id',
+            'updated_by' => 'required|exists:users,id'
         ];
     }
 }

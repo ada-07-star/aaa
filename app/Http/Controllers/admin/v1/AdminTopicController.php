@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers\Admin\v1;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\TopicIndexRequest;
 use App\Interfaces\TopicRepositoryInterface;
-use App\Models\Topic;
+use App\Http\Requests\TopicIndexRequest;
+use App\Http\Requests\StoreTopicRequest;
+use App\Http\Resources\TopicResource;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Traits\ApiResponse;
 
 
 class AdminTopicController extends Controller
 {
+    use ApiResponse;
     protected $topicRepository;
 
     /**
@@ -230,7 +232,12 @@ class AdminTopicController extends Controller
      *                 @OA\Property(property="id", type="integer", example=1),
      *                 @OA\Property(property="title", type="string", example="عنوان موضوع نمونه"),
      *                 @OA\Property(property="department_id", type="integer", example=1),
-     *                 @OA\Property(property="current_state", type="string", example="draft"),
+     *                 @OA\Property(property="language_id", type="integer", example=2),
+     *                 @OA\Property(property="submit_date_from", type="string", format="date-time", example="2023-01-01T00:00:00Z"),
+     *                 @OA\Property(property="submit_date_to", type="string", format="date-time", example="2023-01-01T00:00:00Z"),
+     *                 @OA\Property(property="current_state", type="boolean", example="false"),
+     *                 @OA\Property(property="status", type="string", example="پیش نویس"),
+     *                 @OA\Property(property="is_archive", type="boolean", example="false"),
      *                 @OA\Property(property="created_at", type="string", format="date-time", example="2023-01-01T00:00:00Z")
      *             )
      *         )
@@ -260,75 +267,18 @@ class AdminTopicController extends Controller
      *     )
      * )
      */
-    public function store(Request $request)
+    public function store(StoreTopicRequest $request)
     {
         // اعتبارسنجی داده‌های ورودی
-        $validatedData = $request->validate([
-            'title' => 'required|string|max:500',
-            'department_id' => 'required|exists:departments,id',
-            'language_id' => 'required|exists:languages,id',
-            'age_range' => 'required|string',
-            'gender' => 'nullable|integer',
-            'thumb_image' => 'nullable|string|max:500',
-            'cover_image' => 'nullable|string|max:500',
-            'submit_date_from' => 'required|date',
-            'submit_date_to' => 'nullable|date|after_or_equal:submit_date_from',
-            'consideration_date_from' => 'nullable|date|after_or_equal:submit_date_from',
-            'consideration_date_to' => 'nullable|date|after_or_equal:consideration_date_from',
-            'plan_date_from' => 'nullable|date',
-            'plan_date_to' => 'nullable|date|after_or_equal:plan_date_from',
-            'current_state' => 'required|string|max:50',
-            'judge_number' => 'required|integer|min:1',
-            'minimum_score' => 'required|integer|min:0',
-            'evaluation_id' => 'nullable|exists:evaluations,id',
-            'status' => 'required|boolean',
-            'is_archive' => 'required|boolean',
-            'created_by' => 'required|exists:users,id',
-            'updated_by' => 'required|exists:users,id'
-        ]);
-
+        $validatedData = $request->validated();
         try {
-            DB::beginTransaction();
-
             // ایجاد موضوع جدید
-            $topic = Topic::create([
-                'title' => $validatedData['title'],
-                'department_id' => $validatedData['department_id'],
-                'language_id' => $validatedData['language_id'],
-                'age_range' => $validatedData['age_range'],
-                'gender' => $validatedData['gender'] ?? null,
-                'thumb_image' => $validatedData['thumb_image'] ?? null,
-                'cover_image' => $validatedData['cover_image'] ?? null,
-                'submit_date_from' => $validatedData['submit_date_from'],
-                'submit_date_to' => $validatedData['submit_date_to'] ?? null,
-                'consideration_date_from' => $validatedData['consideration_date_from'] ?? null,
-                'consideration_date_to' => $validatedData['consideration_date_to'] ?? null,
-                'plan_date_from' => $validatedData['plan_date_from'] ?? null,
-                'plan_date_to' => $validatedData['plan_date_to'] ?? null,
-                'current_state' => $validatedData['current_state'],
-                'judge_number' => $validatedData['judge_number'],
-                'minimum_score' => $validatedData['minimum_score'],
-                'evaluation_id' => $validatedData['evaluation_id'] ?? null,
-                'status' => $validatedData['status'],
-                'is_archive' => $validatedData['is_archive'],
-                'created_by' => $validatedData['created_by'],
-                'updated_by' => $validatedData['updated_by']
-            ]);
-
-            DB::commit();
-
-            return response()->json([
-                'status' => 'success',
-                'message' => 'موضوع با موفقیت ایجاد شد',
-                'data' => [
-                    'id' => $topic->id,
-                    'title' => $topic->title,
-                    'department_id' => $topic->department_id,
-                    'current_state' => $topic->current_state,
-                    'submit_date_from' => $topic->submit_date_from,
-                    'created_at' => $topic->created_at->format('Y-m-d H:i:s')
-                ]
-            ], 201);
+            $topic = $this->topicRepository->create($validatedData);
+            return $this->successResponse(
+                new TopicResource($topic),
+                'ایده با موفقیت ثبت شد.',
+                201
+            );
         } catch (\Exception $e) {
             return exception_response_exception(request(), $e);
         }

@@ -10,7 +10,7 @@ class AdminMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (!auth()->check() ) {
+        if (!auth()->check()) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Unauthorized'
