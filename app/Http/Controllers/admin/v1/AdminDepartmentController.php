@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin\v1;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Interfaces\DepartmentRepositoryInterface;
-use App\Http\Resources\AdminDepartmentResource;
+use App\Http\Resources\Admin\AdminDepartmentResource;
 use Illuminate\Validation\ValidationException;
 use App\Repositories\DepartmentRepository;
 use Illuminate\Support\Facades\Validator;

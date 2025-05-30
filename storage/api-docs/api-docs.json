@@ -15,7 +15,7 @@
         "/api/v1/admin/categories": {
             "get": {
                 "tags": [
-                    "categories"
+                    "Admin - categories"
                 ],
                 "summary": "لیست دسته‌بندی‌ها",
                 "description": "لیست دسته‌بندی‌ها با قابلیت فیلتر بر اساس شناسه مجموعه و مرتب‌سازی بر اساس زمان ایجاد",
@@ -98,7 +98,7 @@
             },
             "post": {
                 "tags": [
-                    "categories"
+                    "Admin - categories"
                 ],
                 "summary": "ایجاد دسته‌بندی جدید",
                 "description": "ایجاد یک دسته‌بندی جدید در سیستم",
@@ -239,7 +239,7 @@
         "/api/v1/admin/categories/{id}": {
             "get": {
                 "tags": [
-                    "categories"
+                    "Admin - categories"
                 ],
                 "summary": "مشاهده جزئیات دسته بندی",
                 "description": "برگرداندن اطلاعات کامل یک دسته‌بندی بر اساس شناسه",
@@ -328,7 +328,7 @@
             },
             "put": {
                 "tags": [
-                    "categories"
+                    "Admin - categories"
                 ],
                 "summary": "ویرایش دسته‌بندی",
                 "description": "ویرایش اطلاعات یک رکورد دسته‌بندی",
@@ -474,7 +474,7 @@
             },
             "delete": {
                 "tags": [
-                    "categories"
+                    "Admin - categories"
                 ],
                 "summary": "حذف منطقی دسته‌بندی",
                 "description": "حذف منطقی یک دسته‌بندی از طریق آرشیو کردن",
@@ -1281,6 +1281,519 @@
                         "bearerAuth": []
                     }
                 ]
+            }
+        },
+        "/api/v1/admin/tags": {
+            "get": {
+                "tags": [
+                    "Admin - tags"
+                ],
+                "summary": "لیست تگ‌ها",
+                "description": "این متد برای دریافت لیست تمام تگ‌های سیستم استفاده می‌شود",
+                "operationId": "7f69738c0e68242251076360f6a3d582",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "جستجو بر اساس عنوان تگ",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "description": "فیلد مرتب‌سازی",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "created_at"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "عملیات موفق",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "تگ‌ها با موفقیت دریافت شدند"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/TagIndexResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "خطای سرور",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "خطا در دریافت اطلاعات"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Admin - tags"
+                ],
+                "summary": "ایجاد تگ جدید",
+                "description": "ایجاد یک تگ جدید در سیستم",
+                "operationId": "storeTag",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "status",
+                                    "created_at"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "تگ جدید"
+                                    },
+                                    "created_at": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "توضیحات تگ",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "تگ با موفقیت ایجاد شد",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "tag": {
+                                                    "$ref": "#/components/schemas/TagStoreResource"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "تگ با موفقیت ایجاد شد"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "خطای اعتبارسنجی",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "خطا در اعتبارسنجی داده‌ها"
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "title": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "عنوان تگ الزامی است"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "خطای سرور",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "خطای داخلی سرور"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/admin/tags/{id}": {
+            "get": {
+                "tags": [
+                    "Admin - tags"
+                ],
+                "summary": "مشاهده جزئیات تگ",
+                "description": "برگرداندن اطلاعات کامل یک تگ بر اساس شناسه",
+                "operationId": "8fc088d0a7ea787e939a2818cdc22bcb",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "شناسه تگ",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "عملیات موفق",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "tag": {
+                                                    "$ref": "#/components/schemas/TagShowResource"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "تگ با موفقیت دریافت شد"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "تگ یافت نشد",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "تگ مورد نظر یافت نشد"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "خطای سرور",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "خطای داخلی سرور"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Admin - tags"
+                ],
+                "summary": "ویرایش تگ",
+                "description": "ویرایش اطلاعات یک رکورد تگ",
+                "operationId": "de7eb1161dbf8284f243005d6cc3947f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "شناسه تگ",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "description",
+                                    "updated_by"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "maxLength": 500,
+                                        "example": "تگ جدید"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "توضیحات تگ",
+                                        "nullable": true
+                                    },
+                                    "updated_by": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "عملیات موفق",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "تگ یافت نشد",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "تگ مورد نظر یافت نشد"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "خطای اعتبارسنجی",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "داده‌های ارسالی معتبر نیستند"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "خطای سرور",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "خطای داخلی سرور"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Admin - tags"
+                ],
+                "summary": "حذف تگ",
+                "description": "حذف  یک تگ",
+                "operationId": "e70c8d586302382601cc4c0e509751af",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "شناسه تگ",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "عملیات موفق",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "تگ با موفقیت حذف شد"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "تگ یافت نشد",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "تگ مورد نظر یافت نشد"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "خطای سرور",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "خطای داخلی سرور"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/api/v1/admin/topics": {
@@ -2291,6 +2804,205 @@
                                         "message": {
                                             "type": "string",
                                             "example": "موضوع مورد نظر یافت نشد"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "خطای سرور",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "خطای داخلی سرور"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/admin/topic-tags": {
+            "get": {
+                "tags": [
+                    "Admin - topic-tags"
+                ],
+                "summary": "لیست ارتباط موضوع و تگ",
+                "description": "نمایش لیستی از ارتباط‌های بین موضوعات و تگ‌ها با قابلیت فیلتر بر اساس topic_id یا tag_id",
+                "operationId": "topicTagsList",
+                "parameters": [
+                    {
+                        "name": "topic_id",
+                        "in": "query",
+                        "description": "فیلتر بر اساس آیدی موضوع",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "tag_id",
+                        "in": "query",
+                        "description": "فیلتر بر اساس آیدی تگ",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "عملیات موفق",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "topic_tags": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/TopicTagsIndexResource"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "خطای سرور",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "خطای داخلی سرور"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Admin - topic-tags"
+                ],
+                "summary": "ایجاد ارتباط موضوع و تگ",
+                "description": "ایجاد رکورد جدید در جدول واسط topic_tags جهت اتصال یک موضوع به یک تگ خاص",
+                "operationId": "createTopicTag",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "topic_id",
+                                    "tag_id"
+                                ],
+                                "properties": {
+                                    "topic_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "tag_id": {
+                                        "type": "integer",
+                                        "example": 3
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "عملیات موفق",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 101
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "خطای اعتبارسنجی",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "خطا در اعتبارسنجی داده‌ها"
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "topic_id": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "شناسه موضوع الزامی است"
+                                                    }
+                                                },
+                                                "tag_id": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "شناسه تگ الزامی است"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
                                         }
                                     },
                                     "type": "object"
@@ -4021,87 +4733,64 @@
                 },
                 "type": "object"
             },
-            "ClientTopicResource": {
-                "description": "Topic resource for client application",
+            "TagIndexResource": {
                 "properties": {
                     "id": {
-                        "description": "Unique identifier of the topic",
                         "type": "integer",
                         "example": 1
                     },
                     "title": {
-                        "description": "Title of the topic",
                         "type": "string",
-                        "example": "عنوان موضوع نمونه"
+                        "example": "فناوری اطلاعات"
                     },
-                    "current_state": {
-                        "description": "Current state of the topic",
+                    "status": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "1402/01/01"
+                    }
+                },
+                "type": "object"
+            },
+            "TagShowResource": {
+                "type": "object",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/TagIndexResource"
+                    },
+                    {
                         "properties": {
+                            "id": {
+                                "type": "integer",
+                                "example": "1"
+                            },
                             "title": {
                                 "type": "string",
-                                "example": "در حال بررسی"
+                                "format": "date",
+                                "example": "1402/01/01"
                             },
-                            "slug": {
+                            "description": {
                                 "type": "string",
-                                "example": "in-review"
+                                "example": "توضیحات تگ"
+                            },
+                            "created_at": {
+                                "type": "string",
+                                "format": "date",
+                                "example": 101
                             }
                         },
                         "type": "object"
-                    },
-                    "submit_date_from": {
-                        "description": "Formatted start date for idea submission",
-                        "type": "string",
-                        "format": "date",
-                        "example": "1402-01-15"
-                    },
-                    "submit_date_to": {
-                        "description": "Formatted end date for idea submission",
-                        "type": "string",
-                        "format": "date",
-                        "example": "1402-02-15"
-                    },
-                    "tags": {
-                        "description": "List of tags associated with the topic",
-                        "type": "array",
-                        "items": {
-                            "properties": {
-                                "id": {
-                                    "type": "integer",
-                                    "example": 1
-                                },
-                                "title": {
-                                    "type": "string",
-                                    "example": "تگ نمونه"
-                                }
-                            },
-                            "type": "object"
-                        }
-                    },
-                    "steps": {
-                        "description": "Timeline of important dates in the topic lifecycle",
-                        "type": "array",
-                        "items": {
-                            "properties": {
-                                "title": {
-                                    "type": "string",
-                                    "example": "تاریخ شروع ثبت ایده"
-                                },
-                                "submit_date_from": {
-                                    "type": "string",
-                                    "format": "date",
-                                    "example": "1402-01-15"
-                                },
-                                "isCurrent": {
-                                    "type": "string",
-                                    "enum": [
-                                        "yes",
-                                        "no"
-                                    ],
-                                    "example": "no"
-                                }
-                            },
-                            "type": "object"
-                        }
+                    }
+                ]
+            },
+            "TagStoreResource": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 5
                     }
                 },
                 "type": "object"
@@ -4205,6 +4894,109 @@
                 },
                 "type": "object"
             },
+            "TopicTagsIndexResource": {
+                "properties": {
+                    "topic_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "tag_id": {
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "1402/01/01"
+                    }
+                },
+                "type": "object"
+            },
+            "ClientTopicResource": {
+                "description": "Topic resource for client application",
+                "properties": {
+                    "id": {
+                        "description": "Unique identifier of the topic",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title": {
+                        "description": "Title of the topic",
+                        "type": "string",
+                        "example": "عنوان موضوع نمونه"
+                    },
+                    "current_state": {
+                        "description": "Current state of the topic",
+                        "properties": {
+                            "title": {
+                                "type": "string",
+                                "example": "در حال بررسی"
+                            },
+                            "slug": {
+                                "type": "string",
+                                "example": "in-review"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "submit_date_from": {
+                        "description": "Formatted start date for idea submission",
+                        "type": "string",
+                        "format": "date",
+                        "example": "1402-01-15"
+                    },
+                    "submit_date_to": {
+                        "description": "Formatted end date for idea submission",
+                        "type": "string",
+                        "format": "date",
+                        "example": "1402-02-15"
+                    },
+                    "tags": {
+                        "description": "List of tags associated with the topic",
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer",
+                                    "example": 1
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "example": "تگ نمونه"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "steps": {
+                        "description": "Timeline of important dates in the topic lifecycle",
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "title": {
+                                    "type": "string",
+                                    "example": "تاریخ شروع ثبت ایده"
+                                },
+                                "submit_date_from": {
+                                    "type": "string",
+                                    "format": "date",
+                                    "example": "1402-01-15"
+                                },
+                                "isCurrent": {
+                                    "type": "string",
+                                    "enum": [
+                                        "yes",
+                                        "no"
+                                    ],
+                                    "example": "no"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
             "Idea": {
                 "properties": {
                     "id": {
@@ -4230,16 +5022,24 @@
     },
     "tags": [
         {
-            "name": "categories",
-            "description": "categories"
+            "name": "Admin - categories",
+            "description": "Admin - categories"
         },
         {
             "name": "Departments",
             "description": "Departments"
         },
         {
+            "name": "Admin - tags",
+            "description": "Admin - tags"
+        },
+        {
             "name": "Admin - Topics",
             "description": "Admin - Topics"
+        },
+        {
+            "name": "Admin - topic-tags",
+            "description": "Admin - topic-tags"
         },
         {
             "name": "Authentication",

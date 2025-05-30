@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin\v1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\CategoryResource;
+use App\Http\Resources\Admin\CategoryResource;
 use App\Interfaces\CategoryRepositoryInterface;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
@@ -23,7 +23,7 @@ class AdminCategoryController extends Controller
     /**
      * @OA\Get(
      *     path="/api/v1/admin/categories",
-     *     tags={"categories"},
+     *     tags={"Admin - categories"},
      *     summary="لیست دسته‌بندی‌ها",
      *     description="لیست دسته‌بندی‌ها با قابلیت فیلتر بر اساس شناسه مجموعه و مرتب‌سازی بر اساس زمان ایجاد",
      *     operationId="categoriesList",
@@ -101,7 +101,7 @@ class AdminCategoryController extends Controller
     /**
      * @OA\Post(
      *     path="/api/v1/admin/categories",
-     *     tags={"categories"},
+     *     tags={"Admin - categories"},
      *     summary="ایجاد دسته‌بندی جدید",
      *     description="ایجاد یک دسته‌بندی جدید در سیستم",
      *     operationId="storeCategory",
@@ -186,7 +186,7 @@ class AdminCategoryController extends Controller
      *     path="/api/v1/admin/categories/{id}",
      *     summary="مشاهده جزئیات دسته بندی",
      *     description="برگرداندن اطلاعات کامل یک دسته‌بندی بر اساس شناسه",
-     *     tags={"categories"},
+     *     tags={"Admin - categories"},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
@@ -259,7 +259,7 @@ class AdminCategoryController extends Controller
      *     path="/api/v1/admin/categories/{id}",
      *     summary="ویرایش دسته‌بندی",
      *     description="ویرایش اطلاعات یک رکورد دسته‌بندی",
-     *     tags={"categories"},
+     *     tags={"Admin - categories"},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
@@ -349,7 +349,7 @@ class AdminCategoryController extends Controller
      *     path="/api/v1/admin/categories/{id}",
      *     summary="حذف منطقی دسته‌بندی",
      *     description="حذف منطقی یک دسته‌بندی از طریق آرشیو کردن",
-     *     tags={"categories"},
+     *     tags={"Admin - categories"},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",

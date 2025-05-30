@@ -5,9 +5,8 @@ namespace App\Http\Controllers\Admin\v1;
 use App\Interfaces\TopicRepositoryInterface;
 use App\Http\Requests\TopicIndexRequest;
 use App\Http\Requests\StoreTopicRequest;
-use App\Http\Resources\TopicResource;
+use App\Http\Resources\Admin\TopicResource;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Traits\ApiResponse;
 
 

@@ -2,8 +2,11 @@
 
 use App\Http\Controllers\Admin\v1\AdminCategoryController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\v1\AdminController; // مثال کنترلر
+use App\Http\Controllers\Admin\v1\AdminController;
 use App\Http\Controllers\Admin\v1\AdminDepartmentController;
+use App\Http\Controllers\Admin\v1\AdminTagController;
+use App\Http\Controllers\Admin\v1\AdminTopicCategoryController;
+use App\Http\Controllers\Admin\v1\AdminTopicTagController;
 use App\Http\Controllers\admin\v1\AdminTopicController;
 
 // Route::get('/', function () {
@@ -13,5 +16,8 @@ use App\Http\Controllers\admin\v1\AdminTopicController;
 // مثال روت با کنترلر
 Route::get('dashboard', [AdminController::class, 'dashboard']);
 Route::resource('/topics', AdminTopicController::class);
-    Route::resource('/categories', AdminCategoryController::class);
-    Route::resource('/department', AdminDepartmentController::class);
+Route::resource('/categories', AdminCategoryController::class);
+Route::resource('/department', AdminDepartmentController::class);
+Route::resource('/topic-categories', AdminTopicCategoryController::class);
+Route::resource('/topic-tags', AdminTopicTagController::class);
+Route::resource('/tags', AdminTagController::class);
