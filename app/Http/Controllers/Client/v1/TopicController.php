@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\v1;
+namespace App\Http\Controllers\Client\v1;
 
 use App\Http\Resources\Client\TopicResource as ClientTopicResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -16,7 +16,7 @@ use App\Models\User;
 class TopicController extends Controller
 {
     protected $topicRepository;
-
+    
     /**
      * Constructor.
      *

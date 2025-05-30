@@ -1,11 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\v1\AuthController;
-use App\Http\Controllers\v1\IdeaController;
-use App\Http\Controllers\v1\TopicController;
-use App\Http\Controllers\v1\IdeaRatingController;
-use App\Http\Controllers\v1\IdeaCommentController;
+use App\Http\Controllers\Client\v1\AuthController;
+use App\Http\Controllers\Client\v1\IdeaController;
+use App\Http\Controllers\Client\v1\TopicController;
+use App\Http\Controllers\Client\v1\IdeaRatingController;
+use App\Http\Controllers\Client\v1\IdeaCommentController;
 
 Route::controller(IdeaCommentController::class)->group(function () {
     Route::post('/idea/{idea}/comment', 'store');

@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\v1;
+namespace App\Http\Controllers\Client\v1;
 
 use App\Http\Controllers\Controller;
-use App\Models\Evaluation;
-use App\Http\Requests\StoreEvaluationRequest;
-use App\Http\Requests\UpdateEvaluationRequest;
+use App\Models\Category;
+use App\Http\Requests\StoreCategoryRequest;
+use App\Http\Requests\UpdateCategoryRequest;
 
-class EvaluationController extends Controller
+class CategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -28,7 +28,7 @@ class EvaluationController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreEvaluationRequest $request)
+    public function store(StoreCategoryRequest $request)
     {
         //
     }
@@ -36,7 +36,7 @@ class EvaluationController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Evaluation $evaluation)
+    public function show(Category $category)
     {
         //
     }
@@ -44,7 +44,7 @@ class EvaluationController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Evaluation $evaluation)
+    public function edit(Category $category)
     {
         //
     }
@@ -52,7 +52,7 @@ class EvaluationController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateEvaluationRequest $request, Evaluation $evaluation)
+    public function update(UpdateCategoryRequest $request, Category $category)
     {
         //
     }
@@ -60,7 +60,7 @@ class EvaluationController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Evaluation $evaluation)
+    public function destroy(Category $category)
     {
         //
     }

@@ -52,6 +52,11 @@ class AppServiceProvider extends ServiceProvider
             TagRepositoryInterface::class,
             TagRepository::class
         );
+
+        $this->app->bind(
+            IdeaRepositoryInterface::class,
+            IdeaRepository::class
+        );
     }
 
     /**

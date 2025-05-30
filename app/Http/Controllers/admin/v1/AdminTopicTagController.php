@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin\v1;
+namespace App\Http\Controllers\admin\v1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTopicTagRequest;
@@ -53,7 +53,7 @@ class AdminTopicTagController extends Controller
      *                 @OA\Property(
      *                     property="topic_tags",
      *                     type="array",
-     *                     @OA\Items(ref="#/components/schemas/TopicTagsIndexResource")
+     *                     @OA\Items(ref="#/components/schemas/TopicTagIndexResource")
      *                 )
      *             )
      *         )

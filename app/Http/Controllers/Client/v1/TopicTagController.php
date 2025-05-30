@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\v1;
+namespace App\Http\Controllers\Client\v1;
 
 use App\Http\Controllers\Controller;
-use App\Models\Language;
-use App\Http\Requests\StoreLanguageRequest;
-use App\Http\Requests\UpdateLanguageRequest;
+use App\Models\TopicTag;
+use App\Http\Requests\StoreTopicTagRequest;
+use App\Http\Requests\UpdateTopicTagRequest;
 
-class LanguageController extends Controller
+class TopicTagController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -28,7 +28,7 @@ class LanguageController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreLanguageRequest $request)
+    public function store(StoreTopicTagRequest $request)
     {
         //
     }
@@ -36,7 +36,7 @@ class LanguageController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Language $language)
+    public function show(TopicTag $topicTag)
     {
         //
     }
@@ -44,7 +44,7 @@ class LanguageController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Language $language)
+    public function edit(TopicTag $topicTag)
     {
         //
     }
@@ -52,7 +52,7 @@ class LanguageController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateLanguageRequest $request, Language $language)
+    public function update(UpdateTopicTagRequest $request, TopicTag $topicTag)
     {
         //
     }
@@ -60,7 +60,7 @@ class LanguageController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Language $language)
+    public function destroy(TopicTag $topicTag)
     {
         //
     }

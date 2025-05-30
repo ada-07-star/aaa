@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin\v1;
+namespace App\Http\Controllers\admin\v1;
 
 use App\Interfaces\TopicRepositoryInterface;
 use App\Http\Requests\TopicIndexRequest;

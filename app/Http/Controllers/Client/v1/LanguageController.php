@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\v1;
+namespace App\Http\Controllers\Client\v1;
 
 use App\Http\Controllers\Controller;
-use App\Models\EvaluationObject;
-use Illuminate\Http\Request;
+use App\Models\Language;
+use App\Http\Requests\StoreLanguageRequest;
+use App\Http\Requests\UpdateLanguageRequest;
 
-class EvaluationObjectController extends Controller
+class LanguageController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -27,7 +28,7 @@ class EvaluationObjectController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreLanguageRequest $request)
     {
         //
     }
@@ -35,7 +36,7 @@ class EvaluationObjectController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(EvaluationObject $evaluationObject)
+    public function show(Language $language)
     {
         //
     }
@@ -43,7 +44,7 @@ class EvaluationObjectController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(EvaluationObject $evaluationObject)
+    public function edit(Language $language)
     {
         //
     }
@@ -51,7 +52,7 @@ class EvaluationObjectController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, EvaluationObject $evaluationObject)
+    public function update(UpdateLanguageRequest $request, Language $language)
     {
         //
     }
@@ -59,7 +60,7 @@ class EvaluationObjectController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(EvaluationObject $evaluationObject)
+    public function destroy(Language $language)
     {
         //
     }

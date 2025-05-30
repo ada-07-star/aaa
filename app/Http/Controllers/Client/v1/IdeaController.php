@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\v1;
+namespace App\Http\Controllers\Client\v1;
 
 use App\Interfaces\IdeaRepositoryInterface;
 use App\Http\Resources\Client\IdeaResource;

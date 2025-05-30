@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin\v1;
+namespace App\Http\Controllers\admin\v1;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Interfaces\DepartmentRepositoryInterface;

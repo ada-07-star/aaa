@@ -58,4 +58,9 @@ class Idea extends Model
     {
         return $this->hasMany(IdeaRating::class);
     }
+
+    public function logs()
+    {
+        return $this->hasMany(IdeaLog::class);
+    }
 }

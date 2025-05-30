@@ -2,36 +2,50 @@
 
 namespace App\Http\Controllers\admin\v1;
 
-use App\Interfaces\TagRepositoryInterface;
-use App\Http\Resources\Admin\TagResource;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Resources\Admin\IdeaResource;
+use App\Interfaces\IdeaRepositoryInterface;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
-class AdminTagController extends Controller
+class AdminIdeaController extends Controller
 {
     use ApiResponse;
-    protected $tagRepository;
+    protected $ideaRepository;
 
-    public function __construct(TagRepositoryInterface $tagRepository)
+    public function __construct(IdeaRepositoryInterface $ideaRepository)
     {
-        $this->tagRepository = $tagRepository;
+        $this->ideaRepository = $ideaRepository;
     }
 
     /**
      * @OA\Get(
-     *     path="/api/v1/admin/tags",
-     *     summary="لیست تگ‌ها",
-     *     description="این متد برای دریافت لیست تمام تگ‌های سیستم استفاده می‌شود",
-     *     tags={"Admin - tags"},
+     *     path="/api/v1/admin/ideas",
+     *     summary="لیست ایده‌ها",
+     *     description="لیست ایده‌ها با قابلیت فیلتر بر اساس topic_id، current_state یا is_published",
+     *     tags={"Admin - ideas"},
      *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
-     *         name="search",
+     *         name="topic_id",
      *         in="query",
-     *         description="جستجو بر اساس عنوان تگ",
+     *         description="فیلتر بر اساس شناسه موضوع",
      *         required=false,
-     *         @OA\Schema(type="string")
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="current_state",
+     *         in="query",
+     *         description="فیلتر بر اساس وضعیت فعلی",
+     *         required=false,
+     *         @OA\Schema(type="string", enum={"draft", "active", "archived"})
+     *     ),
+     *     @OA\Parameter(
+     *         name="is_published",
+     *         in="query",
+     *         description="فیلتر بر اساس وضعیت انتشار",
+     *         required=false,
+     *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Parameter(
      *         name="sort",
@@ -45,11 +59,15 @@ class AdminTagController extends Controller
      *         description="عملیات موفق",
      *         @OA\JsonContent(
      *             @OA\Property(property="status", type="string", example="success"),
-     *             @OA\Property(property="message", type="string", example="تگ‌ها با موفقیت دریافت شدند"),
+     *             @OA\Property(property="message", type="string", example="ایده‌ها با موفقیت دریافت شدند"),
      *             @OA\Property(
      *                 property="data",
-     *                 type="array",
-     *                 @OA\Items(ref="#/components/schemas/TagIndexResource")
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="ideas",
+     *                     type="array",
+     *                     @OA\Items(ref="#/components/schemas/IdeaIndexResource"),
+     *                 )
      *             )
      *         )
      *     ),
@@ -62,20 +80,27 @@ class AdminTagController extends Controller
      *         )
      *     )
      * )
-     *
-     * @param Request $request
-     * @return JsonResponse
      */
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
-        $filters = [
-            'search' => $request->input('search')
-        ];
-        $sort = $request->input('sort', 'created_at');
-        $tags = $this->tagRepository->getAllTags($filters, $sort);
-        $tags = TagResource::collection($tags);
+        try {
+            $filters = [
+                'topic_id' => $request->input('topic_id'),
+                'current_state' => $request->input('current_state'),
+                'is_published' => $request->input('is_published')
+            ];
+            $sort = $request->input('sort', 'created_at');
 
-        return $this->successResponse($tags, 'تگ‌ها با موفقیت دریافت شدند');
+            $ideas = $this->ideaRepository->getAllIdeas($filters, $sort);
+            $ideas = IdeaResource::collection($ideas);
+
+            return $this->successResponse(
+                ['ideas' => $ideas],
+                'ایده‌ها با موفقیت دریافت شدند'
+            );
+        } catch (\Exception $e) {
+            return exception_response_exception($request, $e);
+        }
     }
 
     /**
@@ -88,31 +113,37 @@ class AdminTagController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/v1/admin/tags",
-     *     tags={"Admin - tags"},
-     *     summary="ایجاد تگ جدید",
-     *     description="ایجاد یک تگ جدید در سیستم",
-     *     operationId="storeTag",
+     *     path="/api/v1/admin/ideas",
+     *     tags={"Admin - ideas"},
+     *     summary="ایجاد ایده جدید",
+     *     description="ایجاد یک ایده جدید در سیستم",
+     *     operationId="storeIdea",
+     *     security={{"bearerAuth":{}}},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             required={"title", "status", "created_at"},
-     *             @OA\Property(property="title", type="string", example="تگ جدید"),
-     *             @OA\Property(property="created_at", type="integer", example=1),
-     *             @OA\Property(property="description", type="string", example="توضیحات تگ", nullable=true)
+     *             required={"topic_id", "title","description","is_published","current_state","participation_type","final_score","created_by"},
+     *             @OA\Property(property="topic_id", type="integer", example=1),
+     *             @OA\Property(property="title", type="string", example="عنوان ایده"),
+     *             @OA\Property(property="description", type="string", example="توضیحات ایده"),
+     *             @OA\Property(property="is_published", type="integer", example=1),
+     *             @OA\Property(property="current_state", type="string", example="draft"),
+     *             @OA\Property(property="participation_type", type="string", example="individual"),
+     *             @OA\Property(property="final_score", type="integer", example=5, nullable=false),
+     *             @OA\Property(property="created_by", type="integer", example=1)
      *         )
      *     ),
      *     @OA\Response(
      *         response=201,
-     *         description="تگ با موفقیت ایجاد شد",
+     *         description="ایده با موفقیت ایجاد شد",
      *         @OA\JsonContent(
      *             @OA\Property(property="status", type="string", example="success"),
      *             @OA\Property(
      *                 property="data",
      *                 type="object",
-     *                 @OA\Property(property="tag", ref="#/components/schemas/TagStoreResource")
+     *                 @OA\Property(property="idea", ref="#/components/schemas/IdeaStoreResource")
      *             ),
-     *             @OA\Property(property="message", type="string", example="تگ با موفقیت ایجاد شد")
+     *             @OA\Property(property="message", type="string", example="ایده با موفقیت ایجاد شد")
      *         )
      *     ),
      *     @OA\Response(
@@ -124,7 +155,7 @@ class AdminTagController extends Controller
      *             @OA\Property(
      *                 property="errors",
      *                 type="object",
-     *                 @OA\Property(property="title", type="array", @OA\Items(type="string", example="عنوان تگ الزامی است"))
+     *                 @OA\Property(property="name", type="array", @OA\Items(type="string", example="نام ایده الزامی است"))
      *             )
      *         )
      *     ),
@@ -143,19 +174,21 @@ class AdminTagController extends Controller
         try {
             $validated = $request->validate([
                 'title' => 'required|string|max:255',
-                'description' => 'required|string',
-                'status' => 'required|integer|max:12',
-                'created_at' => 'required|integer|max:12',
+                'topic_id' => 'required|exists:topics,id',
+                'is_published' => 'required|integer|max:12',
+                'created_by' => 'required|integer|max:12',
+                'final_score' => 'required|integer|min:0',
+                'description' => 'nullable|string'
             ]);
 
-            $tags = $this->tagRepository->createTag($validated);
-            $tagsArray = $this->tagRepository->getTagById($tags->id);
-            $tagsResource = new TagResource($tagsArray);
-            $tagsResource->additional(['mode' => 'store']);
+            $idea = $this->ideaRepository->createIdea($validated);
+            $ideaArray = $this->ideaRepository->findById($idea->id);
+            $ideasResource = new IdeaResource($ideaArray);
+            $ideasResource->additional(['mode' => 'store']);
 
             return $this->successResponse(
-                ['tag' => $tagsResource],
-                'تگ با موفقیت ایجاد شد',
+                ['idea' => $ideasResource],
+                'ایده با موفقیت ایجاد شد',
                 201
             );
         } catch (\Exception $e) {
@@ -163,16 +196,16 @@ class AdminTagController extends Controller
         }
     }
 
-  /**
+    /**
      * @OA\Get(
-     *     path="/api/v1/admin/tags/{id}",
-     *     summary="مشاهده جزئیات تگ",
-     *     description="برگرداندن اطلاعات کامل یک تگ بر اساس شناسه",
-     *     tags={"Admin - tags"},
+     *     path="/api/v1/admin/ideas/{id}",
+     *     summary="مشاهده جزئیات ایده",
+     *     description="برگرداندن اطلاعات کامل یک ایده بر اساس شناسه",
+     *     tags={"Admin - ideas"},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
-     *         description="شناسه تگ",
+     *         description="شناسه ایده",
      *         required=true,
      *         @OA\Schema(type="integer")
      *     ),
@@ -184,17 +217,17 @@ class AdminTagController extends Controller
      *             @OA\Property(
      *                 property="data",
      *                 type="object",
-     *                 @OA\Property(property="tag", ref="#/components/schemas/TagShowResource")
+     *                 @OA\Property(property="idea", ref="#/components/schemas/IdeaShowResource")
      *             ),
-     *             @OA\Property(property="message", type="string", example="تگ با موفقیت دریافت شد")
+     *             @OA\Property(property="message", type="string", example="ایده با موفقیت دریافت شد")
      *         )
      *     ),
      *     @OA\Response(
      *         response=404,
-     *         description="تگ یافت نشد",
+     *         description="ایده یافت نشد",
      *         @OA\JsonContent(
      *             @OA\Property(property="status", type="string", example="error"),
-     *             @OA\Property(property="message", type="string", example="تگ مورد نظر یافت نشد")
+     *             @OA\Property(property="message", type="string", example="اطلاعات ایده با موفقیت دریافت شد")
      *         )
      *     ),
      *     @OA\Response(
@@ -210,18 +243,18 @@ class AdminTagController extends Controller
     public function show(string $id)
     {
         try {
-            $tag = $this->tagRepository->getTagById($id);
+            $idea = $this->ideaRepository->findById($id);
 
-            if (!$tag) {
-                return $this->errorResponse('تگ مورد نظر یافت نشد', 404);
+            if (!$idea) {
+                return $this->errorResponse('ایده مورد نظر یافت نشد', 404);
             }
 
-            $tagResource = new TagResource($tag);
-            $tagResource->additional(['mode' => 'show']);
+            $ideaResource = new IdeaResource($idea);
+            $ideaResource->additional(['mode' => 'show']);
 
             return $this->successResponse(
-                ['tag' => $tagResource],
-                'اطلاعات تگ با موفقیت دریافت شد'
+                ['idea' => $ideaResource],
+                'اطلاعات ایده با موفقیت دریافت شد'
             );
         } catch (\Exception $e) {
             return exception_response_exception(request(), $e);
@@ -239,24 +272,27 @@ class AdminTagController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/api/v1/admin/tags/{id}",
-     *     summary="ویرایش تگ",
-     *     description="ویرایش اطلاعات یک رکورد تگ",
-     *     tags={"Admin - tags"},
+     *     path="/api/v1/admin/ideas/{id}",
+     *     summary="ویرایش ایده",
+     *     description="ویرایش اطلاعات یک رکورد ایده",
+     *     tags={"Admin - ideas"},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
-     *         description="شناسه تگ",
+     *         description="شناسه ایده",
      *         required=true,
      *         @OA\Schema(type="integer")
      *     ),
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             required={"title", "description", "updated_by"},
-     *             @OA\Property(property="title", type="string", maxLength=500, example="تگ جدید"),
-     *             @OA\Property(property="description", type="string", example="توضیحات تگ", nullable=true),
-     *             @OA\Property(property="updated_by", type="integer", example=1),
+     *             required={"title", "description", "is_published", "current_state", "participation_type", "final_score"},
+     *             @OA\Property(property="title", type="string", maxLength=500, example="ایده جدید"),
+     *             @OA\Property(property="description", type="string", example="توضیحات ایده", nullable=true),
+     *             @OA\Property(property="is_published", type="boolean", example=true),
+     *             @OA\Property(property="current_state", type="string", example="draft"),
+     *             @OA\Property(property="participation_type", type="string", example="individual"),
+     *             @OA\Property(property="final_score", type="integer", example=100),
      *         )
      *     ),
      *     @OA\Response(
@@ -273,10 +309,10 @@ class AdminTagController extends Controller
      *     ),
      *     @OA\Response(
      *         response=404,
-     *         description="تگ یافت نشد",
+     *         description="ایده یافت نشد",
      *         @OA\JsonContent(
      *             @OA\Property(property="status", type="string", example="error"),
-     *             @OA\Property(property="message", type="string", example="تگ مورد نظر یافت نشد")
+     *             @OA\Property(property="message", type="string", example="ایده مورد نظر یافت نشد")
      *         )
      *     ),
      *     @OA\Response(
@@ -300,39 +336,42 @@ class AdminTagController extends Controller
     public function update(Request $request, string $id): JsonResponse
     {
         try {
-            $tag = $this->tagRepository->getTagById($id);
-            
-            if (!$tag) {
-                return $this->errorResponse('تگ مورد نظر یافت نشد', 404);
+            $idea = $this->ideaRepository->findById($id);
+
+            if (!$idea) {
+                return $this->errorResponse('ایده مورد نظر یافت نشد', 404);
             }
 
             $validated = $request->validate([
                 'title' => 'required|string|max:255',
                 'description' => 'nullable|string',
-                'updated_by' => 'required|integer'
+                'is_published' => 'required|boolean',
+                'current_state' => 'required|string',
+                'participation_type' => 'required|string',
+                'final_score' => 'required|integer',
             ]);
 
-            $this->tagRepository->updateTag($id, $validated);
+            $this->ideaRepository->updateIdea($validated, $id);
 
             return $this->successResponse(
                 ['id' => (int)$id],
-                'تگ با موفقیت بروزرسانی شد'
+                'ایده با موفقیت بروزرسانی شد'
             );
         } catch (\Exception $e) {
             return exception_response_exception(request(), $e);
         }
     }
 
-/**
+    /**
      * @OA\Delete(
-     *     path="/api/v1/admin/tags/{id}",
-     *     summary="حذف تگ",
-     *     description="حذف  یک تگ",
-     *     tags={"Admin - tags"},
+     *     path="/api/v1/admin/ideas/{id}",
+     *     summary="حذف ایده",
+     *     description="حذف  یک  ایده",
+     *     tags={"Admin - ideas"},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
-     *         description="شناسه تگ",
+     *         description="شناسه ایده",
      *         required=true,
      *         @OA\Schema(type="integer")
      *     ),
@@ -341,15 +380,15 @@ class AdminTagController extends Controller
      *         description="عملیات موفق",
      *         @OA\JsonContent(
      *             @OA\Property(property="status", type="string", example="success"),
-     *             @OA\Property(property="message", type="string", example="تگ با موفقیت حذف شد")
+     *             @OA\Property(property="message", type="string", example="ایده با موفقیت حذف شد")
      *         )
      *     ),
      *     @OA\Response(
      *         response=404,
-     *         description="تگ یافت نشد",
+     *         description="ایده یافت نشد",
      *         @OA\JsonContent(
      *             @OA\Property(property="status", type="string", example="error"),
-     *             @OA\Property(property="message", type="string", example="تگ مورد نظر یافت نشد")
+     *             @OA\Property(property="message", type="string", example="ایده مورد نظر یافت نشد")
      *         )
      *     ),
      *     @OA\Response(
@@ -365,10 +404,10 @@ class AdminTagController extends Controller
     public function destroy(string $id)
     {
         try {
-            $this->tagRepository->deleteTag($id);
+            $this->ideaRepository->deleteIdea($id);
             return $this->successResponse(
                 ['id' => (int)$id],
-                'تگ با موفقیت حذف شد'
+                'ایده با موفقیت حذف شد'
             );
         } catch (\Exception $e) {
             return exception_response_exception(request(), $e);
