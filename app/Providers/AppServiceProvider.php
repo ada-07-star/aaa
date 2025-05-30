@@ -6,10 +6,12 @@ use App\Interfaces\DepartmentRepositoryInterface;
 use App\Interfaces\IdeaCommentRepositoryInterface;
 use App\Interfaces\IdeaRepositoryInterface;
 use App\Interfaces\TopicRepositoryInterface;
+use App\Interfaces\CategoryRepositoryInterface;
 use App\Repositories\DepartmentRepository;
 use App\Repositories\IdeaCommentsRepository;
 use App\Repositories\IdeaRepository;
 use App\Repositories\TopicRepository;
+use App\Repositories\CategoryRepository;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -38,6 +40,8 @@ class AppServiceProvider extends ServiceProvider
             IdeaRepositoryInterface::class,
             IdeaRepository::class
         );
+
+        $this->app->bind(CategoryRepositoryInterface::class, CategoryRepository::class);
     }
 
     /**

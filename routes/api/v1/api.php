@@ -30,6 +30,5 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('refresh', [AuthController::class, 'refresh']);
     Route::get('/topics/{topic}/ideas', [IdeaController::class, 'index'])->name('api.topics.ideas.index');
     Route::post('/idea/{idea}/rate', [IdeaRatingController::class, 'rate']);
-
    
 });

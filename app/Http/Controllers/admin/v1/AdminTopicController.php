@@ -468,8 +468,6 @@ class AdminTopicController extends Controller
                 ['id' => (int)$id],
                 'موضوع با موفقیت بروزرسانی شد'
             );
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return $this->errorResponse('داده‌های ارسالی معتبر نیستند', 422, $e->errors());
         } catch (\Exception $e) {
             return exception_response_exception(request(), $e);
         }
