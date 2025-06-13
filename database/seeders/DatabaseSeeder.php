@@ -26,10 +26,10 @@ class DatabaseSeeder extends Seeder
             IdeaUserSeeder::class,
             IdeaCommentSeeder::class,
             IdeaRatingSeeder::class,
-            EvaluationObjectSeeder::class,
+            ObjectSeeder::class,
             DepartmentAccessSeeder::class,
             TopicCategorySeeder::class,
-
+            EvaluationObjectSeeder::class,
         ]);
     }
 }
