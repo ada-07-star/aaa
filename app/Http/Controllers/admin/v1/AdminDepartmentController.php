@@ -119,7 +119,7 @@ class AdminDepartmentController extends Controller
      *     path="/api/v1/admin/department",
      *     summary="ایجاد دپارتمان جدید",
      *     description="این متد برای ایجاد یک دپارتمان جدید توسط کاربران با نقش ادمین استفاده می‌شود",
-     *     tags={"Departments"},
+     *     tags={"Admin Departments"},
      *     security={{"bearerAuth":{}}},
      *     @OA\RequestBody(
      *         required=true,
@@ -212,7 +212,7 @@ class AdminDepartmentController extends Controller
      *     path="/api/v1/admin/department/{id}",
      *     summary="نمایش جزئیات یک بخش",
      *     description="نمایش اطلاعات کامل یک بخش بر اساس شناسه",
-     *     tags={"Departments"},
+     *     tags={"Admin Departments"},
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="id",
@@ -283,7 +283,7 @@ class AdminDepartmentController extends Controller
      *     path="/api/v1/admin/department/{id}",
      *     summary="به‌روزرسانی دپارتمان",
      *     description="این متد برای به‌روزرسانی اطلاعات یک دپارتمان توسط کاربران با نقش ادمین استفاده می‌شود",
-     *     tags={"Departments"},
+     *     tags={"Admin Departments"},
      *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
      *         name="id",
@@ -391,7 +391,7 @@ class AdminDepartmentController extends Controller
      *     path="/api/v1/admin/department/{id}",
      *     summary="حذف دپارتمان",
      *     description="این متد برای حذف یک دپارتمان توسط کاربران با نقش ادمین استفاده می‌شود",
-     *     tags={"Departments"},
+     *     tags={"Admin Departments"},
      *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
      *         name="id",

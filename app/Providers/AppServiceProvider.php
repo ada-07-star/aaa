@@ -5,6 +5,8 @@ namespace App\Providers;
 use App\Interfaces\DepartmentRepositoryInterface;
 use App\Interfaces\IdeaCommentRepositoryInterface;
 use App\Interfaces\CategoryRepositoryInterface;
+use App\Interfaces\EvaluationRepositoryInterface;
+use App\Interfaces\IdeaRatingRepositoryInterface;
 use App\Interfaces\IdeaRepositoryInterface;
 use App\Interfaces\TagRepositoryInterface;
 use App\Interfaces\TopicRepositoryInterface;
@@ -15,6 +17,14 @@ use App\Repositories\TopicRepository;
 use App\Repositories\CategoryRepository;
 use App\Repositories\TagRepository;
 use Illuminate\Support\ServiceProvider;
+use App\Interfaces\IdeaUserRepositoryInterface;
+use App\Repositories\EvaluationRepository;
+use App\Repositories\IdeaRatingRepository;
+use App\Repositories\IdeaUserRepository;
+use App\Interfaces\ObjectRepositoryInterface;
+use App\Repositories\ObjectRepository;
+use App\Interfaces\EvaluationObjectRepositoryInterface;
+use App\Repositories\EvaluationObjectRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -57,6 +67,32 @@ class AppServiceProvider extends ServiceProvider
             IdeaRepositoryInterface::class,
             IdeaRepository::class
         );
+
+        $this->app->bind(
+            IdeaUserRepositoryInterface::class,
+            IdeaUserRepository::class
+        );
+
+        $this->app->bind(
+            IdeaRatingRepositoryInterface::class,
+            IdeaRatingRepository::class
+        );
+
+        $this->app->bind(
+            EvaluationRepositoryInterface::class,
+            EvaluationRepository::class
+        );
+
+        $this->app->bind(
+            ObjectRepositoryInterface::class,
+            ObjectRepository::class
+        );
+
+        $this->app->bind(
+            EvaluationObjectRepositoryInterface::class,
+            EvaluationObjectRepository::class
+        );
+
     }
 
     /**

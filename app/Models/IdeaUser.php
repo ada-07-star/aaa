@@ -9,5 +9,18 @@ class IdeaUser extends Model
 {
     /** @use HasFactory<\Database\Factories\IdeaUserFactory> */
     use HasFactory;
-    protected $table = 'idea_users';
+    protected $fillable = [
+        'idea_id',
+        'user_id',
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function idea()
+    {
+        return $this->belongsTo(Idea::class);
+    }
 }
