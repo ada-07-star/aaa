@@ -14,4 +14,9 @@ class IdeaLog extends Model
         'idea_id',
         'description',
     ];
+
+    public function idea()
+    {
+        return $this->belongsTo(Idea::class);
+    }
 }

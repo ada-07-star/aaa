@@ -12,6 +12,7 @@ use App\Http\Controllers\admin\v1\AdminIdeaUserController;
 use App\Http\Controllers\admin\v1\AdminEvaluationController;
 use App\Http\Controllers\admin\v1\AdminIdeaRatingController;
 use App\Http\Controllers\admin\v1\AdminEvaluationObjectController;
+use App\Http\Controllers\admin\v1\AdminIdeaLogsController;
 use App\Http\Controllers\admin\v1\AdminObjectController;
 
 // Route::get('/', function () {
@@ -31,3 +32,4 @@ Route::resource('/idea-ratings', AdminIdeaRatingController::class);
 Route::resource('/evaluations', AdminEvaluationController::class);
 Route::resource('/objects', AdminObjectController::class);
 Route::resource('/evaluation-objects', AdminEvaluationObjectController::class);
+Route::resource('/idea-logs', AdminIdeaLogsController::class);

@@ -4395,7 +4395,7 @@
         "/api/v1/admin/idea-logs": {
             "get": {
                 "tags": [
-                    "Admin - idea-logs"
+                    "Admin Idea-Logs"
                 ],
                 "summary": "لیست لاگ‌های ایده",
                 "description": "نمایش لیست سوابق (لاگ‌ها) ثبت‌شده برای یک ایده خاص",
@@ -4593,6 +4593,185 @@
                         }
                     }
                 }
+            }
+        },
+        "/api/v1/admin/idea-logs/{id}": {
+            "get": {
+                "tags": [
+                    "Admin Idea-Logs"
+                ],
+                "summary": "جزئیات یک لاگ ایده",
+                "description": "مشاهده جزئیات یک لاگ ایده بر اساس شناسه آن",
+                "operationId": "getIdeaLogById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the idea-log",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64",
+                            "example": 3
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "عملیات موفق",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "idea_log": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/IdeaLogShowResource"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "اطلاعات با موفقیت دریافت شدند"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "خطای احراز هویت",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "خطای سرور",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Failed to fetch idea ratings"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Admin Idea-Logs"
+                ],
+                "summary": "حذف لاگ ایده",
+                "description": "حذف یک لاگ ایده بر اساس شناسه آن",
+                "operationId": "deleteIdeaLog",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "شناسه لاگ ایده",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "عملیات موفق",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "لاگ با موفقیت حذف شد"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "لاگی یافت نشد",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "لاگی برای ایده یافت نشد"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "خطای سرور",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "خطا در حذف لاگ"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/api/v1/admin/idea-ratings": {
@@ -4821,7 +5000,7 @@
                     "Admin Idea-Ratings"
                 ],
                 "summary": "گرفتن اطلاعات امتیاز یک ایده",
-                "description": "Returns a idea ratings",
+                "description": "برگرداندن اطلاعات امتیاز مربوط به یک ایده ",
                 "operationId": "getIdeaRatings",
                 "parameters": [
                     {
@@ -4912,7 +5091,7 @@
                     "Admin Idea-Ratings"
                 ],
                 "summary": "ویرایش امتیاز ایده",
-                "description": "به‌روزرسانی امتیاز ثبت‌شده توسط یک کاربر برای یک ایده",
+                "description": "بروزرسانی امتیاز ثبت‌شده توسط یک کاربر برای یک ایده",
                 "operationId": "5c0ed33c9515aa4c9ae3b8eb16cc756b",
                 "parameters": [
                     {
@@ -7666,6 +7845,58 @@
                     }
                 ]
             },
+            "IdeaLogIndexResource": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "idea_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "وضعیت به حالت 'در حال بررسی' تغییر یافت."
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "1402/01/01"
+                    }
+                },
+                "type": "object"
+            },
+            "IdeaLogShowResource": {
+                "type": "object",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/IdeaLogShowResource"
+                    },
+                    {
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "idea_id": {
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "description": {
+                                "type": "string",
+                                "example": "وضعیت به حالت 'در حال بررسی' تغییر یافت."
+                            },
+                            "created_at": {
+                                "type": "string",
+                                "format": "date",
+                                "example": "1402/01/01"
+                            }
+                        },
+                        "type": "object"
+                    }
+                ]
+            },
             "IdeaRatingIndexResource": {
                 "properties": {
                     "id": {
@@ -8371,10 +8602,6 @@
         {
             "name": "Admin - ideas",
             "description": "Admin - ideas"
-        },
-        {
-            "name": "Admin - idea-logs",
-            "description": "Admin - idea-logs"
         },
         {
             "name": "Admin Idea-Logs",

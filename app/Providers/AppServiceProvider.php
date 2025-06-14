@@ -25,6 +25,8 @@ use App\Interfaces\ObjectRepositoryInterface;
 use App\Repositories\ObjectRepository;
 use App\Interfaces\EvaluationObjectRepositoryInterface;
 use App\Repositories\EvaluationObjectRepository;
+use App\Interfaces\IdeaLogsRepositoryInterface;
+use App\Repositories\IdeaLogsRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -91,6 +93,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             EvaluationObjectRepositoryInterface::class,
             EvaluationObjectRepository::class
+        );
+
+        $this->app->bind(
+            IdeaLogsRepositoryInterface::class,
+            IdeaLogsRepository::class
         );
 
     }
