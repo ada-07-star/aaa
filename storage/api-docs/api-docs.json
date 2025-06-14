@@ -4501,7 +4501,7 @@
             },
             "post": {
                 "tags": [
-                    "Idea Logs"
+                    "Admin Idea-Logs"
                 ],
                 "summary": "ثبت لاگ جدید برای یک ایده",
                 "description": "ثبت یک لاگ یا توضیح درباره تغییری که روی یک ایده انجام شده است",
@@ -4600,7 +4600,7 @@
                 "tags": [
                     "Admin Idea-Ratings"
                 ],
-                "summary": "Get list of idea ratings",
+                "summary": "گرفتن لیست امتیازهای ایده‌ها",
                 "description": "Returns a paginated list of idea ratings",
                 "operationId": "getIdeaRating",
                 "parameters": [
@@ -4685,6 +4685,134 @@
                         "bearerAuth": []
                     }
                 ]
+            },
+            "post": {
+                "tags": [
+                    "Admin Idea-Ratings"
+                ],
+                "summary": "ایجاد یا آپدیت امتیاز به یک ایده",
+                "operationId": "438d8c3105b806379c414f8fbbed3e6a",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "idea_id",
+                                    "user_id",
+                                    "rate_number"
+                                ],
+                                "properties": {
+                                    "idea_id": {
+                                        "description": "ID of the idea being rated",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "user_id": {
+                                        "description": "ID of the user who is rating",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "rate_number": {
+                                        "description": "Rating value (1-5)",
+                                        "type": "integer",
+                                        "maximum": 5,
+                                        "minimum": 1,
+                                        "example": 4
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "عملیات موفق",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "idea_id": [
+                                                    "The idea id field is required."
+                                                ],
+                                                "rating": [
+                                                    "The rating must be between 1 and 5."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Server error occurred"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "example": []
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/api/v1/admin/idea-ratings/{id}": {
@@ -4692,7 +4820,7 @@
                 "tags": [
                     "Admin Idea-Ratings"
                 ],
-                "summary": "Get one of idea ratings",
+                "summary": "گرفتن اطلاعات امتیاز یک ایده",
                 "description": "Returns a idea ratings",
                 "operationId": "getIdeaRatings",
                 "parameters": [
@@ -4765,6 +4893,227 @@
                                         "message": {
                                             "type": "string",
                                             "example": "Failed to fetch idea ratings"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Admin Idea-Ratings"
+                ],
+                "summary": "ویرایش امتیاز ایده",
+                "description": "به‌روزرسانی امتیاز ثبت‌شده توسط یک کاربر برای یک ایده",
+                "operationId": "5c0ed33c9515aa4c9ae3b8eb16cc756b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "شناسه امتیاز ایده",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "rate_number"
+                                ],
+                                "properties": {
+                                    "rate_number": {
+                                        "type": "integer",
+                                        "maximum": 5,
+                                        "minimum": 1,
+                                        "example": 5
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "عملیات موفق",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "امتیاز با موفقیت به‌روزرسانی شد"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "امتیاز پیدا نشد",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "اطلاعات مورد نظر پیدا نشد"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "خطای اعتبارسنجی",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "rate_number": [
+                                                    "The rate number must be between 1 and 5."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "خطای سرور",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "خطای سرور رخ داده است"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Admin Idea-Ratings"
+                ],
+                "summary": "حذف امتیاز ایده",
+                "description": "حذف امتیاز ثبت شده برای یک ایده",
+                "operationId": "deleteIdeaRating",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "شناسه امتیاز ایده",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "عملیات موفق",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "امتیاز با موفقیت حذف شد"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "امتیاز یافت نشد",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "امتیازی برای ایده یافت نشد"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "خطای سرور",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "خطا در حذف امتیاز"
                                         }
                                     },
                                     "type": "object"
@@ -4908,11 +5257,11 @@
                                 "properties": {
                                     "idea_id": {
                                         "type": "integer",
-                                        "example": 10
+                                        "example": 6
                                     },
                                     "user_id": {
                                         "type": "integer",
-                                        "example": 307
+                                        "example": 2
                                     }
                                 },
                                 "type": "object"
@@ -8028,8 +8377,8 @@
             "description": "Admin - idea-logs"
         },
         {
-            "name": "Idea Logs",
-            "description": "Idea Logs"
+            "name": "Admin Idea-Logs",
+            "description": "Admin Idea-Logs"
         },
         {
             "name": "Admin Idea-Ratings",
