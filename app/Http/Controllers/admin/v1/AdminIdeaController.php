@@ -130,7 +130,7 @@ class AdminIdeaController extends Controller
      *             @OA\Property(property="current_state", type="string", example="draft"),
      *             @OA\Property(property="participation_type", type="string", example="individual"),
      *             @OA\Property(property="final_score", type="integer", example=5, nullable=false),
-     *             @OA\Property(property="created_by", type="integer", example=1)
+     *             @OA\Property(property="user_id", type="integer", example=1)
      *         )
      *     ),
      *     @OA\Response(
@@ -175,19 +175,17 @@ class AdminIdeaController extends Controller
             $validated = $request->validate([
                 'title' => 'required|string|max:255',
                 'topic_id' => 'required|exists:topics,id',
-                'is_published' => 'required|integer|max:12',
-                'created_by' => 'required|integer|max:12',
+                'is_published' => 'required|integer|in:0,1',
+                'user_id' => 'required|integer|exists:users,id',
                 'final_score' => 'required|integer|min:0',
                 'description' => 'nullable|string'
             ]);
 
             $idea = $this->ideaRepository->createIdea($validated);
             $ideaArray = $this->ideaRepository->findById($idea->id);
-            $ideasResource = new IdeaResource($ideaArray);
-            $ideasResource->additional(['mode' => 'store']);
 
             return $this->successResponse(
-                ['idea' => $ideasResource],
+                ['idea' => $ideaArray->id],
                 'ایده با موفقیت ایجاد شد',
                 201
             );

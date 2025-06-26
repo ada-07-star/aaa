@@ -9,11 +9,21 @@ use Morilog\Jalali\Jalalian;
 class IdeaResource extends JsonResource
 {
     /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
+     * @OA\Schema(
+     *     schema="IdeaStoreResponse",
+     *     type="object",
+     *     @OA\Property(property="id", type="integer", example=1),
+     *     @OA\Property(property="title", type="string", example="فناوری اطلاعات"),
+     *     @OA\Property(property="topic_id", type="integer", example=1),
+     *     @OA\Property(property="description", type="string", example="توضیحات مربوط به یک ایده"),
+     *     @OA\Property(property="is_published", type="boolean", example=false),
+     *     @OA\Property(property="current_state", type="string", example="draft"),
+     *     @OA\Property(property="participation_type", type="string", example="individual"),
+     *     @OA\Property(property="final_score", type="integer", example=100),
+     *     @OA\Property(property="created_at", type="string", format="date", example="1402/01/01")
+     * )
      */
-    public function toArray(Request $request): array
+    public function toArray(Request $request)
     {
         return [
             'id' => $this->id,
@@ -25,12 +35,8 @@ class IdeaResource extends JsonResource
             'description' => $this->description,
             'is_published' => $this->is_published,
             'created_at' => Jalalian::fromDateTime($this->created_at)->format('Y/m/d'),
-            'current_state' => [
-                'title' => $this->current_state,
-                'slug' => $this->current_state
-            ],
             'participation_type' => [
-                'title' => $this->participation_type,
+                'title' => $this->participation_type_fa,
                 'slug' => $this->participation_type
             ],
             'users' => $this->users->map(function ($user) {

@@ -68,7 +68,7 @@ class AdminTopicTagController extends Controller
      *     )
      * )
      */
-    public function index(Request $request): JsonResponse
+    public function index(Request $request)
     {
         try {
             $filters = [

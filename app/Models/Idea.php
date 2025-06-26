@@ -4,8 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Enums\CurrentStateEnum;
-use App\Enums\ParticipationTypeEnum;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
@@ -20,10 +18,6 @@ class Idea extends Model
 {
     /** @use HasFactory<\Database\Factories\IdeaFactory> */
     use HasFactory;
-
-    protected $table = 'ideas'; // نام جدول
-    protected $primaryKey = 'id'; // نام کلید اصلی
-    
     protected $fillable = [
         'topic_id',
         'title',
@@ -34,10 +28,22 @@ class Idea extends Model
         'final_score',
     ];
 
-    protected $casts = [
-        'current_state' => CurrentStateEnum::class,
-        'participation_type' => ParticipationTypeEnum::class,
-    ];
+    public function getParticipationTypeFaAttribute()
+    {
+        return [
+            'team' => 'تیمی',
+            'individual' => 'انفرادی',
+        ][$this->participation_type];
+    }
+
+    public function getCurrentStateFaAttribute()
+    {
+        return [
+            'draft' => 'پیش نویس',
+            'active' => 'فعال',
+            'archived' => 'بایگانی شده',
+        ][$this->current_state];
+    }
 
     public function topic()
     {

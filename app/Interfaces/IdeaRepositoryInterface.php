@@ -6,6 +6,7 @@ use App\Models\Topic;
 
 interface IdeaRepositoryInterface
 {
+    public function getPublishedIdeasForTopic($topic);
     public function createIdea($data);
     public function findById($ideaId);
     public function updateIdea(array $data, $ideaId);

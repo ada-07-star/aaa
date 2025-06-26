@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Http\Resources\AdminDepartmentResource;
+use App\Http\Resources\Admin\AdminDepartmentResource;
 use App\Interfaces\DepartmentRepositoryInterface;
 use App\Models\Department;
 use Illuminate\Http\Request;

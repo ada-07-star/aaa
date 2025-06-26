@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('topic_categories', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('topic_id')->nullable()->constrained();
             $table->foreignId('category_id')->nullable()->constrained();
-            $table->primary(['topic_id', 'category_id']);
             $table->timestamps();
         });
     }

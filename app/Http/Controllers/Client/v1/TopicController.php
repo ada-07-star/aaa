@@ -2,21 +2,22 @@
 
 namespace App\Http\Controllers\Client\v1;
 
-use App\Http\Resources\Client\TopicResource as ClientTopicResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Interfaces\TopicRepositoryInterface;
 use App\Http\Requests\UpdateTopicRequest;
 use App\Http\Requests\StoreTopicRequest;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\TopicCollection;
+use App\Http\Resources\Client\TopicResource;
 use Illuminate\Http\Request;
+use App\Traits\ApiResponse;
 use App\Models\Topic;
 use App\Models\User;
 
 class TopicController extends Controller
 {
+    use ApiResponse;
     protected $topicRepository;
-    
+
     /**
      * Constructor.
      *
@@ -31,12 +32,12 @@ class TopicController extends Controller
     public function updateUser()
     {
         User::where('id', 2)->update([
-            'name' => 'ddd',
+            'name' => 'david',
             'email' => 'davoodd@gmail.com',
             'password' => bcrypt('12345678'),
         ]);
         User::where('id', 1)->update([
-            'name' => 'ali',
+            'name' => 'davood',
             'email' => 'davood@gmail.com',
             'password' => bcrypt('12345678'),
         ]);
@@ -46,94 +47,96 @@ class TopicController extends Controller
      * @OA\Get(
      *     path="/api/v1/app/topics",
      *     summary="دریافت لیست موضوعات برای کاربران عادی",
-     *     description="این endpoint لیست موضوعات فعال را با امکان فیلتر بر اساس دسته‌بندی بازمی‌گرداند.",
+     *     description="این لیست موضوعات فعال را با امکان فیلتر بر اساس دسته‌بندی، صفحه‌بندی و مرتب‌سازی بازمی‌گرداند.",
      *     tags={"Topics - User"},
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
-     *         name="category_id",
+     *         name="department_id",
      *         in="query",
-     *         description="فیلتر بر اساس ID دسته‌بندی (اختیاری)",
+     *         description="فیلتر بر اساس دپارتمان",
      *         required=false,
      *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Parameter(
-     *         name="page",
+     *         name="keyword",
      *         in="query",
-     *         description="شماره صفحه برای صفحه‌بندی (اختیاری)",
+     *         description="جستجو در عنوان موضوعات",
      *         required=false,
-     *         @OA\Schema(type="integer", default=1)
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="sort_by",
+     *         in="query",
+     *         description="فیلد برای مرتب سازی (پیش فرض: created_at)",
+     *         required=false,
+     *         @OA\Schema(type="string", enum={"created_at", "title", "updated_at"})
+     *     ),
+     *     @OA\Parameter(
+     *         name="sort_direction",
+     *         in="query",
+     *         description="جهت مرتب سازی (پیش فرض: asc)",
+     *         required=false,
+     *         @OA\Schema(type="string", enum={"asc", "desc"})
      *     ),
      *     @OA\Parameter(
      *         name="per_page",
      *         in="query",
-     *         description="تعداد آیتم‌ها در هر صفحه (اختیاری، حداکثر 20)",
+     *         description="تعداد آیتم ها در هر صفحه (پیش فرض: 10)",
      *         required=false,
-     *         @OA\Schema(type="integer", default=10, maximum=20)
+     *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Response(
      *         response=200,
      *         description="عملیات موفق",
      *         @OA\JsonContent(
-     *             @OA\Property(property="status", type="string", example="success"),
-     *             @OA\Property(property="message", type="string", example="لیست موضوعات با موفقیت بارگذاری شد"),
-     *             @OA\Property(
-     *                 property="data",
-     *                 type="object",
-     *                 @OA\Property(
-     *                     property="topics",
-     *                     type="array",
-     *                     @OA\Items(ref="#/components/schemas/TopicResource")
-     *                 ),
-     *                 @OA\Property(
-     *                     property="pagination",
-     *                     type="object",
-     *                     @OA\Property(property="total", type="integer", example=100),
-     *                     @OA\Property(property="current_page", type="integer", example=1),
-     *                     @OA\Property(property="per_page", type="integer", example=10),
-     *                     @OA\Property(property="last_page", type="integer", example=10)
-     *                 )
-     *             )
+     *             @OA\Property(property="data", type="array", @OA\Items(ref="#/components/schemas/TopicResource")),
+     *             @OA\Property(property="message", type="string", example="لیست موضوعات با موفقیت دریافت شد."),
+     *             @OA\Property(property="status", type="integer", example=200)
      *         )
      *     ),
      *     @OA\Response(
-     *         response=401,
-     *         description="عدم احراز هویت",
+     *         response=500,
+     *         description="خطای سرور",
      *         @OA\JsonContent(
-     *             @OA\Property(property="status", type="string", example="error"),
-     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=403,
-     *         description="دسترسی ممنوع",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="status", type="string", example="error"),
-     *             @OA\Property(property="message", type="string", example="Forbidden.")
+     *             @OA\Property(property="message", type="string", example="خطای سرور"),
+     *             @OA\Property(property="status", type="integer", example=500)
      *         )
      *     )
      * )
      */
     public function index(Request $request)
     {
-        $filters = ['status' => 1]; // پیش‌فرض برای کاربران عادی
+        try {
+            $filters = ['status' => 1];
 
-        if ($request->has('category_id')) {
-            $filters['category_id'] = $request->category_id;
+            if ($request->has('department_id')) {
+                $filters['department_id'] = $request->department_id;
+            }
+            if ($request->has('keyword')) {
+                $filters['keyword'] = $request->keyword;
+            }
+            $perPage = $request->per_page ?? 10;
+
+            $topics = $this->topicRepository->getAllTopicsUsers($filters, $perPage);
+
+            $topicsResource = TopicResource::collection($topics);
+            $topicsResource->additional(['mode' => 'client_index']);
+
+            return $this->successResponse(
+                ['topics' => $topicsResource],
+                'لیست موضوعات با موفقیت دریافت شد.',
+                200
+            );
+        } catch (\Exception $e) {
+            return exception_response_exception(request(), $e);
         }
-
-        $topics = $this->topicRepository->getAllFilteredTopics($filters);
-
-        return new TopicCollection($topics);
     }
 
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        //
-    }
+    public function create() {}
 
     /**
      * Store a newly created resource in storage.
@@ -171,7 +174,7 @@ class TopicController extends Controller
      *             @OA\Property(property="message", type="string", example="جزئیات موضوع با موفقیت دریافت شد"),
      *             @OA\Property(
      *                 property="data",
-     *                 ref="#/components/schemas/ClientTopicResource"
+     *                 ref="#/components/schemas/TopicResource"
      *             )
      *         )
      *     ),
@@ -207,13 +210,14 @@ class TopicController extends Controller
     public function show($id)
     {
         try {
-            $topic =  $this->topicRepository->getTopicDetails($id);
-
-            return (new ClientTopicResource($topic))
-            ->additional([
-                'success' => true,
-                'message' => 'اطلاعات بخش با موفقیت دریافت شد.'
-            ]);
+            $topic =  $this->topicRepository->findById($id);
+            $topicsResource = new TopicResource($topic);
+            $topicsResource->additional(['mode' => 'client_index']);
+            return $this->successResponse(
+                ['topics' => $topicsResource],
+                'لیست موضوعات با موفقیت دریافت شد.',
+                200
+            );
         } catch (ModelNotFoundException $e) {
             return exception_response_exception(request(), $e);
         } catch (\Exception $e) {

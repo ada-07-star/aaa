@@ -96,9 +96,8 @@ class AdminTagController extends Controller
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             required={"title", "status", "created_at"},
+     *             required={"title"},
      *             @OA\Property(property="title", type="string", example="تگ جدید"),
-     *             @OA\Property(property="created_at", type="integer", example=1),
      *             @OA\Property(property="description", type="string", example="توضیحات تگ", nullable=true)
      *         )
      *     ),
@@ -144,8 +143,6 @@ class AdminTagController extends Controller
             $validated = $request->validate([
                 'title' => 'required|string|max:255',
                 'description' => 'required|string',
-                'status' => 'required|integer|max:12',
-                'created_at' => 'required|integer|max:12',
             ]);
 
             $tags = $this->tagRepository->createTag($validated);
@@ -253,10 +250,9 @@ class AdminTagController extends Controller
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             required={"title", "description", "updated_by"},
+     *             required={"title", "description"},
      *             @OA\Property(property="title", type="string", maxLength=500, example="تگ جدید"),
      *             @OA\Property(property="description", type="string", example="توضیحات تگ", nullable=true),
-     *             @OA\Property(property="updated_by", type="integer", example=1),
      *         )
      *     ),
      *     @OA\Response(
@@ -309,7 +305,6 @@ class AdminTagController extends Controller
             $validated = $request->validate([
                 'title' => 'required|string|max:255',
                 'description' => 'nullable|string',
-                'updated_by' => 'required|integer'
             ]);
 
             $this->tagRepository->updateTag($id, $validated);

@@ -26,7 +26,11 @@ use App\Repositories\ObjectRepository;
 use App\Interfaces\EvaluationObjectRepositoryInterface;
 use App\Repositories\EvaluationObjectRepository;
 use App\Interfaces\IdeaLogsRepositoryInterface;
+use App\Interfaces\TopicCategoryRepositoryInterface;
+use App\Interfaces\TopicTagRepositoryInterface;
 use App\Repositories\IdeaLogsRepository;
+use App\Repositories\TopicCategoryRepository;
+use App\Repositories\TopicTagRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -100,6 +104,15 @@ class AppServiceProvider extends ServiceProvider
             IdeaLogsRepository::class
         );
 
+        $this->app->bind(
+            TopicTagRepositoryInterface::class,
+            TopicTagRepository::class
+        );
+
+        $this->app->bind(
+            TopicCategoryRepositoryInterface::class,
+            TopicCategoryRepository::class
+        );
     }
 
     /**

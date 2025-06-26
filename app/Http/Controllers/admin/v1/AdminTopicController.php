@@ -7,6 +7,7 @@ use App\Http\Requests\TopicIndexRequest;
 use App\Http\Requests\StoreTopicRequest;
 use App\Http\Resources\Admin\TopicResource;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Admin\TopicCollection;
 use App\Traits\ApiResponse;
 
 
@@ -106,56 +107,20 @@ class AdminTopicController extends Controller
      *         response=200,
      *         description="عملیات موفق",
      *         @OA\JsonContent(
-     *             @OA\Property(property="status", type="string", example="success"),
-     *             @OA\Property(property="message", type="string", example="لیست موضوعات با موفقیت بارگذاری شد"),
      *             @OA\Property(
      *                 property="data",
-     *                 type="object",
-     *                 @OA\Property(
-     *                     property="topics",
-     *                     type="array",
-     *                     @OA\Items(
-     *                         type="object",
-     *                         @OA\Property(property="id", type="integer", example=32323),
-     *                         @OA\Property(
-     *                             property="categories",
-     *                             type="array",
-     *                             @OA\Items(
-     *                                 type="object",
-     *                                 @OA\Property(property="title", type="string", example="موضوعات عام"),
-     *                                 @OA\Property(property="id", type="integer", example=32323)
-     *                             )
-     *                         ),
-     *                         @OA\Property(property="title", type="string", example="رواق ود"),
-     *                         @OA\Property(
-     *                             property="current_state",
-     *                             type="object",
-     *                             @OA\Property(property="title", type="string", example="ثبت ایده"),
-     *                             @OA\Property(property="slug", type="string", example="add_idea")
-     *                         ),
-     *                         @OA\Property(property="submit_date_from", type="string", format="date-time", example="2025-06-10T23:59:59Z"),
-     *                         @OA\Property(property="submit_date_to", type="string", format="date-time", example="2025-06-10T23:59:59Z"),
-     *                         @OA\Property(
-     *                             property="language",
-     *                             type="object",
-     *                             @OA\Property(property="title", type="string", example="فارسی"),
-     *                             @OA\Property(property="id", type="string", example="22")
-     *                         ),
-     *                         @OA\Property(
-     *                             property="department",
-     *                             type="object",
-     *                             @OA\Property(property="title", type="string", example="معاونت تبلیغات"),
-     *                             @OA\Property(property="id", type="string", example="12")
-     *                         )
-     *                     )
-     *                 ),
-     *                 @OA\Property(
-     *                     property="pagination",
-     *                     type="object",
-     *                     @OA\Property(property="total", type="integer", example=15),
-     *                     @OA\Property(property="current_page", type="integer", example=1),
-     *                     @OA\Property(property="per_page", type="integer", example=10)
-     *                 )
+     *                 type="array",
+     *                 @OA\Items(ref="#/components/schemas/AdminTopicResource")
+     *             ),
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="لیست موضوعات با موفقیت دریافت شد."
+     *             ),
+     *             @OA\Property(
+     *                 property="status",
+     *                 type="integer",
+     *                 example=200
      *             )
      *         )
      *     ),
@@ -179,10 +144,22 @@ class AdminTopicController extends Controller
      */
     public function index(TopicIndexRequest $request)
     {
-        $validated = $request->validated();
-        $perPage = $request->per_page ?? 10;
+        try {
+            $validated = $request->validated();
+            $perPage = $request->per_page ?? 10;
 
-        return $this->topicRepository->getAllFilteredTopics($validated, $perPage);
+            $topicsAll =  $this->topicRepository->getAllFilteredTopics($validated, $perPage);
+            $topicsResource = TopicResource::collection($topicsAll);
+            $topicsResource->additional(['mode' => 'index']);
+
+            return $this->successResponse(
+                ['topics' => $topicsResource],
+                'لیست موضوعات با موفقیت دریافت شد.',
+                200
+            );
+        } catch (\Exception $e) {
+            return exception_response_exception(request(), $e);
+        }
     }
 
     /**
@@ -214,7 +191,7 @@ class AdminTopicController extends Controller
      *             @OA\Property(property="minimum_score", type="integer", example=50),
      *             @OA\Property(property="evaluation_id", type="integer", nullable=true, example=1),
      *             @OA\Property(property="status", type="boolean", example=true),
-     *             @OA\Property(property="is_archive", type="boolean", example=false),
+     *             @OA\Property(property="is_archive", type="integer", example=0),
      *             @OA\Property(property="created_by", type="integer", example=1),
      *             @OA\Property(property="updated_by", type="integer", example=1)
      *         )
@@ -236,7 +213,7 @@ class AdminTopicController extends Controller
      *                 @OA\Property(property="submit_date_to", type="string", format="date-time", example="2023-01-01T00:00:00Z"),
      *                 @OA\Property(property="current_state", type="boolean", example="false"),
      *                 @OA\Property(property="status", type="string", example="پیش نویس"),
-     *                 @OA\Property(property="is_archive", type="boolean", example="false"),
+     *                 @OA\Property(property="is_archive", type="integer", example="0"),
      *                 @OA\Property(property="created_at", type="string", format="date-time", example="2023-01-01T00:00:00Z")
      *             )
      *         )
@@ -268,7 +245,6 @@ class AdminTopicController extends Controller
      */
     public function store(StoreTopicRequest $request)
     {
-        // اعتبارسنجی داده‌های ورودی
         $validatedData = $request->validated();
         try {
             $topic = $this->topicRepository->create($validatedData);
@@ -276,7 +252,7 @@ class AdminTopicController extends Controller
             $topicArray = $this->topicRepository->findById($topic->id);
 
             return $this->successResponse(
-                $topicArray,
+                 ['id' =>  $topicArray->id],
                 'ایده با موفقیت ثبت شد.',
                 201
             );
@@ -364,11 +340,14 @@ class AdminTopicController extends Controller
             if (!$topic) {
                 return $this->errorResponse('موضوع مورد نظر یافت نشد', 404);
             }
+            $topicResource = new TopicResource($topic);
+            $topicResource->additional(['mode' => 'show']);
 
             return $this->successResponse(
-                new TopicResource($topic),
+                ['topic' => $topicResource],
                 'اطلاعات موضوع با موفقیت دریافت شد'
             );
+
         } catch (\Exception $e) {
             return exception_response_exception(request(), $e);
         }
@@ -410,6 +389,7 @@ class AdminTopicController extends Controller
      *             @OA\Property(property="minimum_score", type="integer", example=75),
      *             @OA\Property(property="evaluation_id", type="integer", nullable=true, example=2),
      *             @OA\Property(property="status", type="boolean", example=true),
+     *             @OA\Property(property="created_by", type="integer", example=1),
      *             @OA\Property(property="updated_by", type="integer", example=1)
      *         )
      *     ),
@@ -455,7 +435,7 @@ class AdminTopicController extends Controller
     {
         try {
             $topic = $this->topicRepository->findById($id);
-            
+
             if (!$topic) {
                 return $this->errorResponse('موضوع مورد نظر یافت نشد', 404);
             }
@@ -515,7 +495,7 @@ class AdminTopicController extends Controller
     {
         try {
             $topic = $this->topicRepository->findById($id);
-            
+
             if (!$topic) {
                 return $this->errorResponse('موضوع مورد نظر یافت نشد', 404);
             }

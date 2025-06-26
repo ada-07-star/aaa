@@ -28,7 +28,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::resource('/idea', IdeaController::class);
     Route::resource('/topics', TopicController::class);
     Route::post('refresh', [AuthController::class, 'refresh']);
-    Route::get('/topics/{topic}/ideas', [IdeaController::class, 'index'])->name('api.topics.ideas.index');
+    Route::get('/topics/{topic}/ideas', [IdeaController::class, 'index']);
     Route::post('/idea/{idea}/rate', [IdeaRatingController::class, 'rate']);
    
 });

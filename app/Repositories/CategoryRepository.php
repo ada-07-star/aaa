@@ -21,9 +21,13 @@ class CategoryRepository implements CategoryRepositoryInterface
         if (isset($filters['department_id'])) {
             $query->where('department_id', $filters['department_id']);
         }
-        
+
+        if (isset($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+
         $sortField = $filters['sort'] ?? 'created_at';
-        $query->where('status', 1)->orderBy($sortField, 'desc');
+        $query->orderBy($sortField, 'desc');
 
         return $query->get();
     }
@@ -47,4 +51,4 @@ class CategoryRepository implements CategoryRepositoryInterface
     {
         return $this->model->find($id)->delete();
     }
-} 
+}

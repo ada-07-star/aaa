@@ -155,8 +155,12 @@ class AdminIdeaUserController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        $ideaUser = $this->ideaUserRepository->createIdeaUser($request->only(['idea_id', 'user_id']));
-        return $this->successResponse(['id' => $ideaUser->id], 'User added to idea successfully');
+        try {
+            $ideaUser = $this->ideaUserRepository->createIdeaUser($request->only(['idea_id', 'user_id']));
+            return $this->successResponse(['id' => $ideaUser->id], 'User added to idea successfully');
+        } catch (\Exception $e) {
+            return exception_response_exception(request(), $e);
+        }
     }
 
     /**
@@ -296,7 +300,7 @@ class AdminIdeaUserController extends Controller
             }
 
             $this->ideaUserRepository->deleteIdeaUser($id);
-           
+
             return $this->successResponse(
                 ['id' => $id],
                 'رکورد ارتباطی کاربر و ایده با موفقیت حذف شد'

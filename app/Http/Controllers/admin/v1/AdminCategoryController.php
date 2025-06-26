@@ -35,6 +35,13 @@ class AdminCategoryController extends Controller
      *         @OA\Schema(type="integer", example=1)
      *     ),
      *     @OA\Parameter(
+     *         name="status",
+     *         in="query",
+     *         description="فیلتر بر اساس وضعیت",
+     *         required=false,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Parameter(
      *         name="sort",
      *         in="query",
      *         description="فیلد مرتب‌سازی",
@@ -73,6 +80,7 @@ class AdminCategoryController extends Controller
         try {
             $filters = [
                 'department_id' => $request->department_id,
+                'status' => $request->status,
                 'sort' => $request->sort
             ];
 

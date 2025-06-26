@@ -4,6 +4,8 @@ namespace App\Repositories;
 
 use App\Interfaces\IdeaRepositoryInterface;
 use App\Models\Idea;
+use App\Models\IdeaUser;
+use Illuminate\Support\Facades\Auth;
 
 class IdeaRepository implements IdeaRepositoryInterface
 {
@@ -12,6 +14,14 @@ class IdeaRepository implements IdeaRepositoryInterface
     public function __construct(Idea $model)
     {
         $this->model = $model;
+    }
+
+    public function getPublishedIdeasForTopic($topic)
+    {
+
+        $query = $this->model->query();
+
+        return $query->where('topic_id', $topic)->where('is_published', 1)->get();
     }
 
     public function getAllIdeas(array $filters = [], string $sort = 'created_at')
@@ -36,7 +46,11 @@ class IdeaRepository implements IdeaRepositoryInterface
 
     public function createIdea($data)
     {
-        return $this->model->create($data);
+        $idea = $this->model->create($data);
+
+        $idea->users()->sync([$data['user_id']]);
+
+        return $idea;
     }
 
     public function findById($ideaId)
@@ -46,7 +60,9 @@ class IdeaRepository implements IdeaRepositoryInterface
 
     public function updateIdea(array $data, $ideaId)
     {
-        return $this->model->where('id', $ideaId)->update($data);
+        $results = $this->model->where('id', $ideaId)->update($data);
+        $result = Idea::findOrFail($results);
+        return $result;
     }
 
     public function deleteIdea($ideaId)

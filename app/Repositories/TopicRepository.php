@@ -14,9 +14,28 @@ class TopicRepository implements TopicRepositoryInterface
         $this->model = $model;
     }
 
+    public function getAllTopicsUsers(array $filters, int $perPage = 10)
+    {
+        $query = $this->model->with(['categories', 'language', 'department'])
+            ->when(isset($filters['keyword']), function ($q) use ($filters) {
+                $q->where('title', 'like', '%' . $filters['keyword'] . '%');
+            });
+            
+        if (isset($filters['department_id'])) {
+            $query->where('department_id', $filters['department_id']);
+        }
+
+        $sortBy = $filters['sort_by'] ?? 'created_at';
+        $sortDirection = $filters['sort_direction'] ?? 'asc';
+        $query->orderBy($sortBy, $sortDirection);
+
+        $topics = $query->paginate($perPage);
+        return $topics;
+    }
+
     public function getAllFilteredTopics(array $filters, int $perPage = 10)
     {
-        $query = Topic::with(['categories', 'language', 'department'])
+        $query = $this->model->with(['categories', 'language', 'department'])
             ->when(isset($filters['keyword']), function ($q) use ($filters) {
                 $q->where('title', 'like', '%' . $filters['keyword'] . '%');
             })

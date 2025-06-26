@@ -35,13 +35,13 @@ class EvaluationRepository implements EvaluationRepositoryInterface
     public function create(array $data, int $creatorId)
     {
         return $this->model->create([
-                'title' => $data['title'],
-                'department_id' => $data['department_id'],
-                'description' => $data['description'],
-                'status' => $data['status'],
-                'created_by' => $creatorId,
-                'updated_by' => $creatorId,
-            ]);
+            'title' => $data['title'],
+            'department_id' => $data['department_id'],
+            'description' => $data['description'],
+            'status' => $data['status'],
+            'created_by' => $creatorId,
+            'updated_by' => $creatorId,
+        ]);
     }
 
     public function update($id, array $data)

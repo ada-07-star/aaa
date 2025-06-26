@@ -38,8 +38,8 @@ class IdeaCommentController extends Controller
      *     path="/api/v1/app/idea/{idea}/comment",
      *     operationId="getIdeaComments",
      *     tags={"Idea Comments"},
-     *     summary="Get list of comments for an idea",
-     *     description="Returns list of published comments and user's unpublished comments",
+     *     summary="دریافت لیست نظرات یک ایده",
+     *     description="دریافت لیست نظرات منتشر شده از یک ایده",
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="idea",
@@ -53,91 +53,15 @@ class IdeaCommentController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Successful operation",
+     *         description="عملیات موفق",
      *         @OA\JsonContent(
-     *             @OA\Property(
-     *                 property="status",
-     *                 type="string",
-     *                 example="success"
-     *             ),
-     *             @OA\Property(
-     *                 property="message",
-     *                 type="string",
-     *                 example="لیست نظرات با موفقیت دریافت شد"
-     *             ),
+     *             @OA\Property(property="status", type="string", example="success"),
      *             @OA\Property(
      *                 property="data",
      *                 type="object",
-     *                 @OA\Property(
-     *                     property="comments",
-     *                     type="array",
-     *                     @OA\Items(
-     *                         @OA\Property(
-     *                             property="id",
-     *                             type="integer",
-     *                             example=32323
-     *                         ),
-     *                         @OA\Property(
-     *                             property="idea",
-     *                             type="object",
-     *                             @OA\Property(
-     *                                 property="title",
-     *                                 type="string",
-     *                                 example="موضوعات عام"
-     *                             ),
-     *                             @OA\Property(
-     *                                 property="id",
-     *                                 type="integer",
-     *                                 example=32323
-     *                             )
-     *                         ),
-     *                         @OA\Property(
-     *                             property="comment_text",
-     *                             type="string",
-     *                             example="رواق کودک"
-     *                         ),
-     *                         @OA\Property(
-     *                             property="likes",
-     *                             type="integer",
-     *                             example=0
-     *                         ),
-     *                         @OA\Property(
-     *                             property="created_at",
-     *                             type="string",
-     *                             format="date-time",
-     *                             example="2025-02-12 16:27:01"
-     *                         ),
-     *                         @OA\Property(
-     *                             property="status",
-     *                             type="object",
-     *                             @OA\Property(
-     *                                 property="title",
-     *                                 type="string",
-     *                                 example="پیش نویس"
-     *                             ),
-     *                             @OA\Property(
-     *                                 property="slug",
-     *                                 type="string",
-     *                                 example="draft"
-     *                             )
-     *                         ),
-     *                         @OA\Property(
-     *                             property="created_by",
-     *                             type="object",
-     *                             @OA\Property(
-     *                                 property="name",
-     *                                 type="string",
-     *                                 example="نام"
-     *                             ),
-     *                             @OA\Property(
-     *                                 property="family",
-     *                                 type="string",
-     *                                 example="نام خانوادگی"
-     *                             )
-     *                         )
-     *                     )
-     *                 )
-     *             )
+     *                 @OA\Property(property="ideaComments", ref="#/components/schemas/IdeaCommentIndexResource")
+     *             ),
+     *             @OA\Property(property="message", type="string", example="تظرات ایده با موفقیت دریافت شد")
      *         )
      *     ),
      *     @OA\Response(
@@ -166,11 +90,9 @@ class IdeaCommentController extends Controller
                 IdeaCommentResource::collection($response),
                 'لیست نظرات با موفقیت دریافت شد'
             );
-        } 
-        catch (NotFoundHttpException $exception) {
+        } catch (NotFoundHttpException $exception) {
             return $this->notFoundResponse($exception->getMessage());
-        }
-        catch (Throwable $exception) {
+        } catch (Throwable $exception) {
             return exception_response_exception(request(), $exception);
         }
     }
@@ -348,7 +270,7 @@ class IdeaCommentController extends Controller
             ]);
 
             $comment = $this->ideaCommentRepository->createIdeaComment($request, $idea);
-            
+
             return $this->successResponse(
                 new IdeaCommentResource($comment),
                 'نظر با موفقیت ثبت شد',
@@ -467,7 +389,7 @@ class IdeaCommentController extends Controller
      *     )
      * )
      */
-    public function toggleLike(Request $request, $ideaId)
+    public function toggleLike(Request $request)
     {
         $request->validate([
             'comment_id' => 'required|integer|exists:idea_comments,id',
@@ -476,17 +398,11 @@ class IdeaCommentController extends Controller
         $comment = IdeaComment::find($request->comment_id);
 
         if ($comment) {
-            $isLiked = $comment->likes > 0;
-
-            if ($isLiked) {
-                $comment->decrement('likes');
-            } else {
-                $comment->increment('likes');
-            }
+            $comment->increment('likes');
 
             return $this->successResponse(
-                ['comment' => $comment->fresh()],
-                'تصمیم شما ثبت شد.'
+                ['comment' => new IdeaCommentResource($comment->fresh())],
+                'نظر شما ثبت شد.'
             );
         }
 

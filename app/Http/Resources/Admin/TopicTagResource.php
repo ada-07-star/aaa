@@ -4,14 +4,16 @@ namespace App\Http\Resources\Admin;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Morilog\Jalali\Jalalian;
+
 /**
  * @OA\Schema(
  *     schema="TopicTagIndexResource",
  *     type="object",
- *     @OA\Property(property="id", type="integer", example=1),
- *     @OA\Property(property="title", type="string", example="فناوری اطلاعات"),
- *     @OA\Property(property="status", type="boolean", example=true),
- *     @OA\Property(property="created_at", type="string", format="date", example="1402/01/01")
+ *             @OA\Property(property="id", type="integer", example="1"),
+ *             @OA\Property(property="topic_id", type="integer", example="1"),
+ *             @OA\Property(property="tag_id", type="integer", example="4"),
+ *             @OA\Property(property="created_at", type="date", format="date", example="1402/01/01")
  * )
  *
  * @OA\Schema(
@@ -21,22 +23,30 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *         @OA\Schema(ref="#/components/schemas/TopicTagIndexResource"),
  *         @OA\Schema(
  *             @OA\Property(property="id", type="integer", example="1"),
- *             @OA\Property(property="title", type="string", format="date", example="1402/01/01"),
- *             @OA\Property(property="description", type="string", example="توضیحات تگ"),
- *             @OA\Property(property="created_at", type="date", example=101)
+ *             @OA\Property(property="topic_id", type="integer", example="1"),
+ *             @OA\Property(property="tag_id", type="integer", example="4"),
+ *             @OA\Property(property="created_at", type="date", format="date", example="1402/01/01")
  *         )
  *     }
  * )
  */
 class TopicTagResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
-    public function toArray(Request $request): array
+     private function formatDate($date)
     {
-        return parent::toArray($request);
+        if (!$date) {
+            return null;
+        }
+
+        return Jalalian::fromDateTime($date)->format('Y/m/d');
+    }
+    public function toArray(Request $request)
+    {
+        return [
+            // 'id' => $this->id,
+            'topic_id' => $this->topic_id,
+            'tag_id' => $this->tag_id,
+            'created_at' => $this->formatDate($this->created_at),
+        ];
     }
 }

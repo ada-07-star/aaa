@@ -1,7 +1,5 @@
 <?php
 
-use App\Enums\CurrentStateEnum;
-use App\Enums\ParticipationTypeEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -19,8 +17,8 @@ return new class extends Migration
             $table->string('title', 500);
             $table->text('description');
             $table->Boolean('is_published');
-            $table->enum('current_state', CurrentStateEnum::values())->default(CurrentStateEnum::DRAFT->value);
-            $table->enum('participation_type', ParticipationTypeEnum::values())->default(ParticipationTypeEnum::INDIVIDUAL->value);
+            $table->enum('current_state', ['draft', 'active', 'archived'])->default('draft');
+            $table->enum('participation_type', ['team', 'individual'])->default('individual');
             $table->integer('final_score');
             $table->timestamps();
         });

@@ -57,7 +57,7 @@ class IdeaLogResource extends JsonResource
             'id' => $this->id,
             'idea_id' => $this->idea_id,
             'description' => $this->description,
-            'created_at' => $this->created_at,
+            'created_at' => $this->formatDate($this->created_at),
         ];
     }
 

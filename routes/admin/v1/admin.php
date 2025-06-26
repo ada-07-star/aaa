@@ -14,6 +14,7 @@ use App\Http\Controllers\admin\v1\AdminIdeaRatingController;
 use App\Http\Controllers\admin\v1\AdminEvaluationObjectController;
 use App\Http\Controllers\admin\v1\AdminIdeaLogsController;
 use App\Http\Controllers\admin\v1\AdminObjectController;
+use App\Http\Controllers\admin\v1\AdminTopicCategoryController;
 
 // Route::get('/', function () {
 //     return response()->json(['message' => 'Admin API V1']);
@@ -33,3 +34,4 @@ Route::resource('/evaluations', AdminEvaluationController::class);
 Route::resource('/objects', AdminObjectController::class);
 Route::resource('/evaluation-objects', AdminEvaluationObjectController::class);
 Route::resource('/idea-logs', AdminIdeaLogsController::class);
+Route::resource('/topic-categories', AdminTopicCategoryController::class);

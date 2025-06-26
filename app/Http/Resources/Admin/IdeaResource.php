@@ -95,7 +95,7 @@ class IdeaResource extends JsonResource
     protected function forShow()
     {
         return [
-            'title' => $this->title,
+            'id' => $this->id,
             'topic_id' => $this->topic_id,
             'title' => $this->title,
             'description' => $this->description,

@@ -9,5 +9,5 @@ class TopicCategory extends Model
 {
     /** @use HasFactory<\Database\Factories\TopicCategoryFactory> */
     use HasFactory;
-    
+    protected $fillable = ['topic_id', 'category_id'];
 }

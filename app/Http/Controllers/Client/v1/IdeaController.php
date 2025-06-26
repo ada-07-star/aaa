@@ -78,7 +78,7 @@ class IdeaController extends Controller
      *     path="/api/v1/app/topics/{topic}/ideas",
      *     summary="دریافت لیست ایده‌های یک موضوع خاص",
      *     description="این endpoint لیست ایده‌های منتشر شده یا قابل انتشار یک موضوع خاص را برمی‌گرداند.",
-     *     tags={"ایده - user"},
+     *     tags={"user - idea"},
      *     @OA\Parameter(
      *         name="topic",
      *         in="path",
@@ -243,7 +243,7 @@ class IdeaController extends Controller
         try {
             $ideas = $this->ideaRepository->getPublishedIdeasForTopic($topic);
             return $this->successResponse(
-                ['ideas' => IdeaResource::collection($ideas)],
+                ['ideas' => $ideas],
                 'ایده‌ها با موفقیت دریافت شدند'
             );
         } catch (Throwable $exception) {
@@ -263,7 +263,7 @@ class IdeaController extends Controller
      * @OA\Post(
      *     path="/api/v1/app/idea",
      *     summary="ایده جدید ثبت کنید",
-     *     tags={"ایده - user"},
+     *     tags={"user - idea"},
      *     security={{"bearerAuth": {}}},
      *     @OA\RequestBody(
      *         required=true,
@@ -275,13 +275,13 @@ class IdeaController extends Controller
      *             @OA\Property(property="is_published", type="boolean", example=true),
      *             @OA\Property(property="participation_type", type="string", enum={"team", "individual"}, example="team"),
      *             @OA\Property(property="final_score", type="number", format="float", example=0.0),
-     *             @OA\Property(property="id", type="integer", example=1)
+     *             @OA\Property(property="user_id", type="integer", example=1)
      *         )
      *     ),
      *     @OA\Response(
      *         response=201,
      *         description="Idea created successfully",
-     *         @OA\JsonContent(ref="#/components/schemas/IdeaResponse")
+     *         @OA\JsonContent(ref="#/components/schemas/IdeaStoreResponse")
      *     ),
      *     @OA\Response(
      *         response=401,
@@ -292,90 +292,78 @@ class IdeaController extends Controller
      *     )
      * )
      */
-    public function store(StoreIdeaRequest $request): JsonResponse
+    public function store(StoreIdeaRequest $request)
     {
-        $validatedData = $request->validated();
-        $idea = $this->ideaRepository->createIdea($validatedData);
+        try {
+            $validatedData = $request->validated();
+            $idea = $this->ideaRepository->createIdea($validatedData);
 
-        return $this->successResponse(
-            new IdeaResource($idea),
-            'ایده با موفقیت ثبت شد.',
-            201
-        );
+            return $this->successResponse(
+                new IdeaResource($idea),
+                'ایده با موفقیت ثبت شد.',
+                201
+            );
+        } catch (Throwable $exception) {
+            return exception_response_exception(request(), $exception);
+        }
     }
 
     /**
      * @OA\Get(
      *     path="/api/v1/app/idea/{id}",
-     *     tags={"ایده - user"},
+     *     summary="نمایش جزئیات یک ایده",
+     *     tags={"user - idea"},
      *     security={{"bearerAuth": {}}},
-     *     @OA\RequestBody(
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="شناسه ایده",
      *         required=true,
-     *         description="Idea data including related users",
-     *         @OA\JsonContent(
-     *             required={"title", "description", "topic_id", "is_published", "participation_type", "final_score"},
-     *             @OA\Property(property="title", type="string", example="New Product Idea", maxLength=255),
-     *             @OA\Property(property="description", type="string", example="Detailed description"),
-     *             @OA\Property(property="topic_id", type="integer", example=1),
-     *             @OA\Property(property="is_published", type="boolean", example=true),
-     *             @OA\Property(
-     *                 property="participation_type", 
-     *                 type="string", 
-     *                 enum={"team", "individual"}, 
-     *                 example="team"
-     *             ),
-     *             @OA\Property(property="final_score", type="number", format="float", example=0.0),
-     *             @OA\Property(
-     *                 property="users",
-     *                 type="array",
-     *                 @OA\Items(
-     *                     type="integer",
-     *                     format="int64",
-     *                     description="User IDs to associate with the idea",
-     *                     example=1
-     *                 ),
-     *                 description="Array of user IDs to associate with the idea"
-     *             )
-     *         )
+     *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Response(
-     *         response=201,
-     *         description="Idea created successfully",
-     *         @OA\JsonContent(ref="#/components/schemas/IdeaResponse")
-     *     ),
-     *     @OA\Response(
-     *         response=401,
-     *         description="Unauthorized",
+     *         response=200,
+     *         description="عملیات موفق",
      *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=422,
-     *         description="Validation error",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="The given data was invalid."),
+     *             @OA\Property(property="status", type="string", example="success"),
      *             @OA\Property(
-     *                 property="errors",
+     *                 property="data",
      *                 type="object",
-     *                 @OA\Property(
-     *                     property="field_name",
-     *                     type="array",
-     *                     @OA\Items(type="string", example="The field name is required.")
-     *                 )
-     *             )
+     *                 @OA\Property(property="idea", ref="#/components/schemas/IdeaStoreResponse")
+     *             ),
+     *             @OA\Property(property="message", type="string", example="ایده با موفقیت دریافت شد")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="ایده یافت نشد",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="اطلاعات ایده با موفقیت دریافت نشد")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="خطای سرور",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="خطای داخلی سرور")
      *         )
      *     )
      * )
      */
     public function show($id)
     {
-        $results = $this->ideaRepository->showIdeaRepository($id);
+        $results = $this->ideaRepository->findById($id);
         if (!$results) {
             return $this->notFoundResponse('موضوع مورد نظر یافت نشد.');
         }
 
-        return $this->successResponse($results, 'اطلاعات با موفقیت دریافت شد.');
+        return $this->successResponse(
+            new IdeaResource($results),
+            'نمایش جزئیات یک ایده.',
+            201
+        );
     }
 
     /**
@@ -389,7 +377,7 @@ class IdeaController extends Controller
     /**
      * @OA\Put(
      *     path="/api/v1/app/idea/{ideaId}",
-     *     tags={"ایده - user"},
+     *     tags={"user - idea"},
      *     summary="به‌روزرسانی ایده",
      *     description="این endpoint برای به‌روزرسانی عنوان ایده با شناسه مشخص استفاده می‌شود.",
      *     operationId="updateIdea",
@@ -424,38 +412,25 @@ class IdeaController extends Controller
      *                 enum={"individual", "team"},
      *                 example="individual",
      *                 description="نوع مشارکت در ایده"
+     *             ),
+     *             @OA\Property(
+     *                 property="users",
+     *                 type="integer",
+     *                 example="1",
      *             )
      *         )
      *     ),
      *     @OA\Response(
      *         response=200,
      *         description="عملیات موفق",
-     *        @OA\JsonContent(
+     *         @OA\JsonContent(
      *             @OA\Property(property="status", type="string", example="success"),
-     *             @OA\Property(property="message", type="string", example="ایده با موفقیت به‌روزرسانی شد."),
      *             @OA\Property(
      *                 property="data",
      *                 type="object",
-     *                 @OA\Property(
-     *                     property="idea",
-     *                     type="object",
-     *                     @OA\Property(property="id", type="integer", example=1),
-     *                     @OA\Property(property="title", type="string", example="عنوان جدید ایده"),
-     *                     @OA\Property(property="description", type="string", example="توضیحات کامل"),
-     *                     @OA\Property(
-     *                         property="participation_type",
-     *                         type="string",
-     *                         example="individual",
-     *                         description="نوع مشارکت: team یا individual"
-     *                     ),
-     *                     @OA\Property(
-     *                         property="updated_at",
-     *                         type="string",
-     *                         format="date-time",
-     *                         example="2023-05-01T12:00:00Z"
-     *                     )
-     *                 )
-     *             )
+     *                 @OA\Property(property="idea", ref="#/components/schemas/IdeaStoreResponse")
+     *             ),
+     *             @OA\Property(property="message", type="string", example="ایده با موفقیت بروزرسانی شد")
      *         )
      *     ),
      *     @OA\Response(
@@ -492,15 +467,18 @@ class IdeaController extends Controller
      */
     public function update(UpdateIdeaRequest $request, $ideaId)
     {
-        $idea = Idea::findOrFail($ideaId)->users()->first()->id;
+        try {
+            $idea = Idea::findOrFail($ideaId)->users()->first()->id;
 
-        if ($idea == Auth::user()->id) {
-            $ideaUpdate = $this->ideaRepository->updateIdea($request->all(), $ideaId);
-            $results = $this->ideaRepository->formatUpdateIdea($ideaUpdate);
-            return $this->successResponse($results, 'ایده با موفقیت به‌روزرسانی شد.');
+            if ($idea == Auth::user()->id) {
+                $ideaUpdate = $this->ideaRepository->updateIdea($request->all(), $ideaId);
+                
+                return $this->successResponse(new IdeaResource($ideaUpdate), 'ایده با موفقیت به‌روزرسانی شد.');
+            }
+            return $this->errorResponse('شما مجاز به ویرایش این ایده نیستید.', 422);
+        } catch (Throwable $exception) {
+            return exception_response_exception(request(), $exception);
         }
-
-        return $this->errorResponse('شما مجاز به ویرایش این ایده نیستید.', 422);
     }
 
     /**
