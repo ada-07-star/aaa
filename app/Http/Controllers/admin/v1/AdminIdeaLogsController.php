@@ -5,6 +5,7 @@ namespace App\Http\Controllers\admin\v1;
 use App\Interfaces\IdeaLogsRepositoryInterface;
 use App\Http\Resources\Admin\IdeaLogResource;
 use App\Http\Controllers\Controller;
+use App\Models\Idea;
 use App\Models\IdeaLog;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -101,63 +102,9 @@ class AdminIdeaLogsController extends Controller
         //
     }
 
-    /**
-     * @OA\Post(
-     *     path="/api/v1/admin/idea-logs",
-     *     summary="ثبت لاگ جدید برای یک ایده",
-     *     description="ثبت یک لاگ یا توضیح درباره تغییری که روی یک ایده انجام شده است",
-     *     tags={"Admin Idea-Logs"},
-     *     @OA\RequestBody(
-     *         required=true,
-     *         description="اطلاعات لاگ ایده",
-     *         @OA\JsonContent(
-     *             required={"idea_id", "description"},
-     *             @OA\Property(property="idea_id", type="integer", example=15),
-     *             @OA\Property(property="description", type="string", example="امتیاز نهایی توسط داوران ثبت شد.")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=201,
-     *         description="لاگ با موفقیت ثبت شد",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="status", type="string", example="success"),
-     *             @OA\Property(property="data", type="object",
-     *                 @OA\Property(property="id", type="integer", example=12)
-     *             )
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=422,
-     *         description="خطای اعتبارسنجی",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="The given data was invalid."),
-     *             @OA\Property(property="errors", type="object")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=500,
-     *         description="خطای سرور داخلی",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Server Error")
-     *         )
-     *     )
-     * )
-     */
     public function store(Request $request): JsonResponse
     {
-        try {
-            $log = IdeaLog::create([
-                'idea_id' => $request->idea_id,
-                'description' => $request->description
-            ]);
-
-            return response()->json([
-                'status' => 'success',
-                'data' => ['id' => $log->id]
-            ], 201);
-        } catch (\Exception $e) {
-            return exception_response_exception($request, $e);
-        }
+      //
     }
 
     /**
@@ -304,15 +251,16 @@ class AdminIdeaLogsController extends Controller
      * )
      */
     public function destroy(string $id)
-    {  try {
-        $ideaRating = $this->ideaLogRepository->findById($id);
-        if (!$ideaRating) {
-            return $this->notFoundResponse('لاگی برای ایده یافت نشد', 404);
+    {
+        try {
+            $ideaRating = $this->ideaLogRepository->findById($id);
+            if (!$ideaRating) {
+                return $this->notFoundResponse('لاگی برای ایده یافت نشد', 404);
+            }
+            $this->ideaLogRepository->deleteIdeaLog($id);
+            return $this->successResponse(null, 'لاگ با موفقیت حذف شد');
+        } catch (\Exception $e) {
+            return $this->errorResponse('خطا در حذف لاگ', 500);
         }
-        $this->ideaLogRepository->deleteIdeaLog($id);
-        return $this->successResponse(null, 'لاگ با موفقیت حذف شد');
-    } catch (\Exception $e) {
-        return $this->errorResponse('خطا در حذف لاگی', 500);
-    }
     }
 }

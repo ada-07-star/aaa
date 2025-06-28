@@ -349,7 +349,7 @@ class AdminIdeaController extends Controller
                 'final_score' => 'required|integer',
             ]);
 
-            $this->ideaRepository->updateIdea($validated, $id);
+            $this->ideaRepository->updateIdea($idea, $validated);
 
             return $this->successResponse(
                 ['id' => (int)$id],

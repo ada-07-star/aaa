@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use App\Traits\ApiResponse;
 use App\Models\Idea;
+use Illuminate\Http\Request;
 use Throwable;
 
 /**
@@ -413,11 +414,6 @@ class IdeaController extends Controller
      *                 example="individual",
      *                 description="نوع مشارکت در ایده"
      *             ),
-     *             @OA\Property(
-     *                 property="users",
-     *                 type="integer",
-     *                 example="1",
-     *             )
      *         )
      *     ),
      *     @OA\Response(
@@ -465,17 +461,27 @@ class IdeaController extends Controller
      *     )
      * )
      */
-    public function update(UpdateIdeaRequest $request, $ideaId)
+    public function update(Request $request, $ideaId)
     {
         try {
-            $idea = Idea::findOrFail($ideaId)->users()->first()->id;
+            $idea = Idea::with('users')->find($ideaId);
 
-            if ($idea == Auth::user()->id) {
-                $ideaUpdate = $this->ideaRepository->updateIdea($request->all(), $ideaId);
-                
-                return $this->successResponse(new IdeaResource($ideaUpdate), 'ایده با موفقیت به‌روزرسانی شد.');
+            $isOwner = $idea->users->contains(Auth::id());
+            
+            if (!$isOwner) {
+                return $this->errorResponse('شما مجاز به ویرایش این ایده نیستید.', 403);
             }
-            return $this->errorResponse('شما مجاز به ویرایش این ایده نیستید.', 422);
+            $validatedData = $request->validate([
+                'title' => 'required|string|max:255',
+                'description' => 'nullable|string',
+            ]);
+
+            $updatedIdea  = $this->ideaRepository->updateIdea($idea, $validatedData);
+
+            return $this->successResponse(
+                new IdeaResource($updatedIdea),
+                'ایده با موفقیت به‌روزرسانی شد.'
+            );
         } catch (Throwable $exception) {
             return exception_response_exception(request(), $exception);
         }

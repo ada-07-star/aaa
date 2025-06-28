@@ -24,13 +24,15 @@ use App\Repositories\IdeaUserRepository;
 use App\Interfaces\ObjectRepositoryInterface;
 use App\Repositories\ObjectRepository;
 use App\Interfaces\EvaluationObjectRepositoryInterface;
+use App\Interfaces\TopicCategoryRepositoryInterface;
 use App\Repositories\EvaluationObjectRepository;
 use App\Interfaces\IdeaLogsRepositoryInterface;
-use App\Interfaces\TopicCategoryRepositoryInterface;
 use App\Interfaces\TopicTagRepositoryInterface;
-use App\Repositories\IdeaLogsRepository;
 use App\Repositories\TopicCategoryRepository;
+use App\Repositories\IdeaLogsRepository;
 use App\Repositories\TopicTagRepository;
+use App\Observers\IdeaObserver;
+use App\Models\Idea;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -120,6 +122,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Idea::observe(IdeaObserver::class);
     }
 }

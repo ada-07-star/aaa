@@ -948,10 +948,6 @@
                                             "team"
                                         ],
                                         "example": "individual"
-                                    },
-                                    "users": {
-                                        "type": "integer",
-                                        "example": "1"
                                     }
                                 },
                                 "type": "object"

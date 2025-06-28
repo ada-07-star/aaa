@@ -18,6 +18,7 @@ class Idea extends Model
 {
     /** @use HasFactory<\Database\Factories\IdeaFactory> */
     use HasFactory;
+    
     protected $fillable = [
         'topic_id',
         'title',

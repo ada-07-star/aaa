@@ -11,7 +11,7 @@ class UpdateIdeaRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -28,11 +28,6 @@ class UpdateIdeaRequest extends FormRequest
 
     public function messages()
     {
-        return [
-            'title.required' => 'عنوان الزامی است.',
-            'title.string' => 'عنوان باید یک رشته باشد.',
-            'title.min' => 'عنوان باید حداقل ۱ کاراکتر باشد.',
-            'title.max' => 'عنوان نباید بیشتر از ۱۰۰ کاراکتر باشد.',
-        ];
+        //
     }
 }

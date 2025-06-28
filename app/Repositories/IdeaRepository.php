@@ -58,11 +58,13 @@ class IdeaRepository implements IdeaRepositoryInterface
         return $this->model->find($ideaId);
     }
 
-    public function updateIdea(array $data, $ideaId)
+    public function updateIdea(Idea $idea, array $data)
     {
-        $results = $this->model->where('id', $ideaId)->update($data);
-        $result = Idea::findOrFail($results);
-        return $result;
+        $idea->update($data);
+
+        $idea->refresh();
+
+        return $idea;
     }
 
     public function deleteIdea($ideaId)

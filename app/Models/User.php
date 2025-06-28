@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasCreatorUpdater;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -12,6 +13,7 @@ class User extends Authenticatable implements JWTSubject
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
+    use HasCreatorUpdater;
 
     /**
      * The attributes that are mass assignable.
