@@ -5,7 +5,6 @@ namespace Database\Factories;
 use App\Models\Department;
 use App\Models\DepartmentAccess;
 use App\Models\User;
-use App\Models\Role;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -23,7 +22,7 @@ class DepartmentAccessFactory extends Factory
     {
         return [
             'user_id' => User::pluck('id')->random(),
-            'role_id' => Role::pluck('id')->random(),
+            'role_id' => $this->faker->numberBetween(1, 10),
             'department_id' => Department::pluck('id')->random(),
             'status' => $this->faker->boolean(),
             'created_by' => User::pluck('id')->random(),
