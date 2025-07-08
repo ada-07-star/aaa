@@ -63,4 +63,14 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->belongsToMany(Idea::class, 'idea_users');
     }
+
+    public function judgedTopics(): BelongsToMany
+    {
+        return $this->belongsToMany(Topic::class, 'topic_judges');
+    }
+
+    public function topicJudges(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(TopicJudge::class);
+    }
 }

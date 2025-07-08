@@ -60,4 +60,14 @@ class Topic extends Model
     {
         return $this->belongsTo(Department::class);
     }
+
+    public function judges(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'topic_judges');
+    }
+
+    public function topicJudges(): HasMany
+    {
+        return $this->hasMany(TopicJudge::class);
+    }
 }

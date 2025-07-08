@@ -15,6 +15,7 @@ use App\Http\Controllers\admin\v1\AdminEvaluationObjectController;
 use App\Http\Controllers\admin\v1\AdminIdeaLogsController;
 use App\Http\Controllers\admin\v1\AdminObjectController;
 use App\Http\Controllers\admin\v1\AdminTopicCategoryController;
+use App\Http\Controllers\admin\v1\AdminTopicJudgeController;
 
 // Route::get('/', function () {
 //     return response()->json(['message' => 'Admin API V1']);
@@ -35,3 +36,8 @@ Route::resource('/objects', AdminObjectController::class);
 Route::resource('/evaluation-objects', AdminEvaluationObjectController::class);
 Route::resource('/idea-logs', AdminIdeaLogsController::class);
 Route::resource('/topic-categories', AdminTopicCategoryController::class);
+
+// Topic Judges routes
+Route::get('/topic-judges', [AdminTopicJudgeController::class, 'index']);
+Route::post('/topic-judges', [AdminTopicJudgeController::class, 'store']);
+Route::delete('/topic-judges', [AdminTopicJudgeController::class, 'destroy']);

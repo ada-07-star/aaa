@@ -31,6 +31,8 @@ use App\Interfaces\TopicTagRepositoryInterface;
 use App\Repositories\TopicCategoryRepository;
 use App\Repositories\IdeaLogsRepository;
 use App\Repositories\TopicTagRepository;
+use App\Interfaces\TopicJudgeRepositoryInterface;
+use App\Repositories\TopicJudgeRepository;
 use App\Observers\IdeaObserver;
 use App\Models\Idea;
 
@@ -114,6 +116,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             TopicCategoryRepositoryInterface::class,
             TopicCategoryRepository::class
+        );
+
+        $this->app->bind(
+            TopicJudgeRepositoryInterface::class,
+            TopicJudgeRepository::class
         );
     }
 
